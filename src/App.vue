@@ -17,14 +17,14 @@ export default {
 }
 
 body {
-  font-family: 'Montserrat', sans-serif;
+  
   padding: 0;
   margin: 0;
   box-sizing: border-box;
 }
 
 #app {
-  font-family: 'Montserrat', sans-serif;
+  font-family: 'Poppins', sans-serif;
   color: #2c3e50;
 }
 
@@ -36,7 +36,7 @@ main {
 
 .title_poppins{
   font-family: 'Poppins', sans-serif;
-  color: #5e5e5e;
+  color: #6d6d6d;
 }
 
 </style>

@@ -1,13 +1,13 @@
 <template>
     <div class="bg-white rounded-lg p-5 grid grid-cols-4 shadow-sm items-center">
         <div class="col-span-1 flex items-center justify-start">
-            <div class="p-4 rounded-lg text-white" :class="BgCard">
+            <div class="rounded-lg text-white w-full flex justify-center h-[4rem] items-center" :class="BgCard">
                 <v-icon size="large">{{ Icon }}</v-icon>
             </div>
         </div>
-        <div class="col-span-3">
+        <div class="col-span-3 pl-3 text-gray-500">
             <p>{{ Title }}</p>
-            <p class="text-2xl font-bold pt-3 title_poppins">{{ Amount }}</p>
+            <p class="text-2xl font-bold pt-3">{{ Amount }}</p>
         </div>
     </div>
 </template>

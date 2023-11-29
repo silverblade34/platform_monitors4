@@ -6,11 +6,13 @@
                 <div class="p-2 py-8 flex items-center justify-center">
                     <img :src="logoBusiness" class="w-[6rem] bg-white p-3 rounded-md" />
                 </div>
-                <SidebarLayout :itemsNavegation="ItemsNavegation"/>
+                <SidebarLayout :itemsNavegation="ItemsNavegation" />
             </v-navigation-drawer>
             <v-main class="h-screen bg-slate-50">
                 <HeaderLayout :avatarPath="avatarPath" @action-rail="rail = !rail" />
-                <router-view />
+                <section class="overflow-y-auto section_main p-8">
+                    <router-view />
+                </section>
             </v-main>
         </v-layout>
     </v-card>
@@ -54,24 +56,28 @@ export default {
                         icon: "mdi-format-list-bulleted",
                         title: "Pendientes listados",
                         value: "Pendientes listados",
+                        to: "pendienteslistados",
                         children: []
                     },
                     {
                         icon: "mdi-image",
                         title: "Pendientes iconos",
                         value: "Pendientes iconos",
+                        to: "pendientesiconos",
                         children: []
                     },
                     {
                         icon: "mdi-account-check",
                         title: "Confirmados",
                         value: "Confirmados",
+                        to: "confirmados",
                         children: []
                     },
                     {
                         icon: "mdi-bell-remove",
                         title: "Descartados",
                         value: "Descartados",
+                        to: "descartados",
                         children: []
                     }
                 ]
@@ -185,4 +191,11 @@ export default {
 .v-list-item-subtitle {
     font-size: 13px !important;
 }
+
+.section_main {
+    overflow-y: auto !important;
+    height: 100%;
+    padding-bottom: 5rem !important;
+}
+
 </style>

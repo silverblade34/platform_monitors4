@@ -16,6 +16,11 @@ const router = createRouter({
                     name: "home",
                     path: "home",
                     component: () => import("@/views/HomeView.vue"),
+                },
+                {
+                    name: "pendienteslistados",
+                    path: "pendienteslistados",
+                    component: () => import("@/views/events/ListedEarringsView.vue"),
                 }
             ]
         },
@@ -32,7 +37,6 @@ const router = createRouter({
 // Navigation Guard
 router.beforeEach((to, from, next) => {
     const requiresAuth = to.matched.some(record => record.meta.requiresAuth);
-    console.log(store.state.isAuthenticated)
     if (requiresAuth && !store.state.isAuthenticated) {
         // Si la ruta requiere autenticación y el usuario no está autenticado, redirigir a la página de inicio de sesión
         next({ name: 'login' });
