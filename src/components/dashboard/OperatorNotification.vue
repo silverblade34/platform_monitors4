@@ -11,7 +11,7 @@
                 <span class="w-full pl-2 text-gray-500">
                     {{ item.clave }}
                 </span>
-                <span class="font-bold text-indigo-800 text-xl pr-3">
+                <span class="font-bold text-cyan-lighten-1 text-xl pr-3">
                     {{ item.valor}}
                 </span>
             </div>

@@ -1,5 +1,5 @@
 <template>
-    <div class="shadow-md bg-white rounded-lg">
+    <div class="h-full shadow-md bg-white rounded-lg">
         <p class="border-b p-3 font-medium text-gray-600 text-center">
             Notificaciones por vehiculos
         </p>

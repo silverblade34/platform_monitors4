@@ -1,14 +1,14 @@
 <template>
     <v-card>
         <v-layout>
-            <v-navigation-drawer v-model="drawer" :rail="rail" permanent @click="rail = false" color="indigo-darken-4"
+            <v-navigation-drawer v-model="drawer" :rail="rail" permanent @click="rail = false" color="indigo-darken-1"
                 class="border-2 border-sky-500">
                 <div class="p-2 py-8 flex items-center justify-center">
                     <img :src="logoBusiness" class="w-[6rem] bg-white p-3 rounded-md" />
                 </div>
                 <SidebarLayout :itemsNavegation="ItemsNavegation" />
             </v-navigation-drawer>
-            <v-main class="h-screen bg-slate-50">
+            <v-main class="h-screen bg-slate-100">
                 <HeaderLayout :avatarPath="avatarPath" @action-rail="rail = !rail" />
                 <section class="overflow-y-auto section_main p-8">
                     <router-view />

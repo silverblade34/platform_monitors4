@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="mb-5">
         <h1 class="font-bold text-xl title_poppins">Dashboard</h1>
         <div class="grid grid-cols-4 gap-5 pt-5">
             <CardEventsVue :BgCard="card.bgCard" :Icon="card.icon" :Amount="card.amount" :Title="card.title"
