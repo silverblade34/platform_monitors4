@@ -4,12 +4,14 @@
         <div class="grid grid-cols-4 gap-5 pt-5">
             <CardEventsVue :BgCard="card.bgCard" :Icon="card.icon" :Amount="card.amount" :Title="card.title"
                 v-for="(card, index) in listCards" :key="index" />
-            <div class="col-span-2">
-                <EventNotificationVue />
+            <div class="col-span-2 max-h-[50rem]">
+                <EventNotificationVue :data="dataEvents"/>
             </div>
-            <VehicleNotificationVue />
-            <div class="col-span-1">
-                <OperatorNotificationVue />
+            <div class="col-span-1 max-h-[50rem]">
+                <VehicleNotificationVue :data="dataVehicles"/>
+            </div>
+            <div class="col-span-1 max-h-[50rem]">
+                <OperatorNotificationVue :data="dataOperators"/>
             </div>
         </div>
     </div>
@@ -63,15 +65,30 @@ export default ({
                 key: "discarded_events"
             }
         ]);
-
+        const dataEvents = ref([])
+        const dataVehicles = ref([])
+        const dataOperators = ref([])
 
         onMounted(async () => {
-            const [responseEvent, cardsEvent] = await Promise.all([
+            const [responseEvent, tableEvent] = await Promise.all([
                 notificationsAccountApi(),
                 homeClientsApi()
             ])
             const eventData = responseEvent.data.data;
-
+            Promise.all([
+                tableValuePorcentage(tableEvent.data.data_eventos),
+                tableValuePorcentage(tableEvent.data.data_vehiculos),
+                tableValuePorcentage(tableEvent.data.data_operadores)
+            ])
+                .then(([events, vehicles, operators]) => {
+                    dataEvents.value = events;
+                    dataVehicles.value = vehicles;
+                    dataOperators.value = operators;
+                })
+                .catch(error => {
+                    // Manejar cualquier error que pueda ocurrir durante el proceso
+                    console.error("Error:", error);
+                });
             const filterPromises = [
                 filterByStatus(eventData, "Sin Atender"),
                 filterByStatus(eventData, "En Gestion"),
@@ -87,13 +104,29 @@ export default ({
             listCards.value[3].amount = filteredResults[3].length;
         });
 
-        async function filterByStatus(events, status) {
+        const filterByStatus = async (events, status) => {
             return events.filter(event => event.descripcion_estado === status);
         }
 
+        const tableValuePorcentage = async (tableData) => {
+            const total = Object.values(tableData).reduce((acc, curr) => acc + curr, 0);
+
+            const resultados = Object.entries(tableData).map(([clave, valor]) => {
+                const porcentaje = ((valor / total) * 100).toFixed(2);
+                return { clave, valor, porcentaje: parseFloat(porcentaje) }; // Convertir a número para ordenar
+            });
+
+            // Ordenar de mayor a menor según el porcentaje
+            resultados.sort((a, b) => b.porcentaje - a.porcentaje);
+
+            return resultados;
+        };
 
         return {
-            listCards
+            listCards,
+            dataEvents,
+            dataVehicles,
+            dataOperators
         }
     }
 })
