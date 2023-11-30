@@ -2,9 +2,6 @@
     <div>
         <h1 class="font-bold text-xl title_poppins pb-5">Eventos pendientes</h1>
         <div class="w-full rounded-lg bg-white shadow-md">
-            <!-- <div class="w-full bg-indigo-400 text-white">
-                <v-icon>mdi-filter-menu</v-icon>
-            </div> -->
             <div class="p-5">
                 <div class="rounded-lg overflow-hidden shadow mb-3">
                     <v-expansion-panels variant="accordion">
@@ -64,7 +61,7 @@
 </template>
 <script>
 import TableEventsVue from "@/components/events/listedEarrings/TableEvents.vue";
-import { homeClientsApi } from '@/api/DashboardService';
+import { notificationsAccountApi } from '@/api/EventsService';
 import { onMounted, ref } from "vue"
 
 export default ({
@@ -74,14 +71,54 @@ export default ({
     },
     setup() {
         const selectedColumns = ref([]);
-        onMounted(() => {
-            homeClientsApi()
-                .then(response => {
-                    console.log(response.data)
-                })
+        const pendingEvents = ref([]);
+        const listedHeaders = ref([
+            {
+                title: 'Codigo evento',
+                align: 'start',
+                key: 'cod_evento',
+                sortable: true,
+            },
+            {
+                title: 'Placa',
+                align: 'start',
+                key: 'placa',
+                sortable: true,
+            },
+            {
+                title: 'Fecha evento', align: 'start', key: 'dateEvent', sortable: true,
+            },
+            {
+                title: 'Fecha recepción', align: 'start', key: 'dateReception', sortable: true,
+            },
+            {
+                title: 'Velocidad', align: 'start', key: 'speed', sortable: true,
+            },
+            {
+                title: 'Dirección', align: 'start', key: 'direction', sortable: true,
+            },
+            {
+                title: 'Estado', align: 'start', key: 'state', sortable: true,
+            },
+            {
+                title: 'Última acción', align: 'start', key: 'lastAction', sortable: true,
+            },
+            {
+                title: 'Prioridad', align: 'start', key: 'priority', sortable: true,
+            },
+            {
+                title: 'Acción', align: 'start', key: 'action', sortable: true,
+            }
+        ])
+
+        onMounted(async () => {
+            const responseEvent = await notificationsAccountApi()
+            pendingEvents.value = responseEvent.data.data
         })
         return {
-            selectedColumns
+            selectedColumns,
+            pendingEvents,
+            listedHeaders
         }
     }
 })
