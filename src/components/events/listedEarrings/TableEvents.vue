@@ -1,10 +1,19 @@
 <template>
   <v-data-table item-value="ID" v-model="selected" :items="desserts" :headers="listedHeaders"
-    :sort-by="[{ key: 'fecha_actual', order: 'desc' }]" show-select class="text-sm table_events">
+    :sort-by="[{ key: 'fecha_actual', order: 'desc' }]" show-select class="text-sm table_events" :search="search">
     <template v-slot:[`item.fecha`]="{ item }">
       <span>
         {{ item.fecha }} {{ item.hora }}
       </span>
+    </template>
+    <template v-slot:[`item.prioridad`]="{ item }">
+      <div class="h-5 w-5 rounded-full mr-2" :class="{
+        'bg-orange-300': item.prioridad === 'URGENTE',
+        'bg-red-300': item.prioridad === 'CRITICO',
+        'bg-blue-300': item.prioridad === 'REGULAR'
+      }">
+      </div>
+
     </template>
     <template v-slot:[`item.actions`]="{ item }">
       <div class="flex gap-1">
@@ -24,20 +33,22 @@
   </v-data-table>
 </template>
 <script>
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 import { VDataTable } from 'vuetify/labs/VDataTable';
 import ImgEvidencia from '@/assets/evidencias.jpg';
 import Swal from 'sweetalert2';
 
 export default {
   props: {
+    search: String,
     desserts: Array,
     listedHeaders: Array
   },
   components: {
     VDataTable,
   },
-  setup() {
+  emits: ['selected-events'],
+  setup(_, { emit }) {
     const selected = ref([]);
 
     const seeEvidence = (link_img, link_video) => {
@@ -145,6 +156,10 @@ export default {
         }
       });
     };
+
+    watch(() => selected.value, (newVal) => {
+      emit('selected-events', { selected: newVal })
+    })
 
     return {
       selected, seeEvidence

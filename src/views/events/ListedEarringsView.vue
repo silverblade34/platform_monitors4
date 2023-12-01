@@ -14,8 +14,9 @@
                             </v-expansion-panel-title>
                             <v-expansion-panel-text class="rounded-md">
                                 <div class="flex justify-between">
-                                    <v-checkbox v-for="item in listedHeaders.filter(header => header.key != 'actions')" v-model="selectedColumns" color="blue"
-                                        :value="item.key" hide-details :key="item.key">
+                                    <v-checkbox v-for="item in listedHeaders.filter(header => header.key != 'actions')"
+                                        v-model="selectedColumns" color="blue" :value="item.key" hide-details
+                                        :key="item.key">
                                         <template v-slot:label>
                                             <span class="text-xs">
                                                 {{ item.title }}
@@ -29,22 +30,26 @@
                 </div>
                 <div class="w-full flex justify-between pt-4">
                     <div class="lg:w-[30%] pb-4 w-full">
-                        <v-text-field variant="underlined" color="indigo" v-model="search" append-icon="mdi-magnify"
-                            label="Buscar" hide-details density="compact"></v-text-field>
+                        <v-text-field clearable color="indigo" v-model="search" prepend-inner-icon="mdi-magnify"
+                            label="Buscar" hide-details density="compact" variant="outlined"></v-text-field>
                     </div>
                     <div>
-                        <v-btn color="red" size="small">Descarte masivo</v-btn>
+                        <v-btn color="red" size="small" @click="onMassDiscard"><v-icon>mdi-bell-remove</v-icon> Descarte
+                            masivo</v-btn>
                     </div>
                 </div>
-                <TableEventsVue :desserts="pendingEvents" :listedHeaders="listedHeaders" />
+                <TableEventsVue :desserts="pendingEvents" :listedHeaders="listedHeadersFilter" :search="search"
+                    @selected-events="onSelectedEvents" />
             </div>
         </div>
     </div>
 </template>
 <script>
 import TableEventsVue from "@/components/events/listedEarrings/TableEvents.vue";
-import { notificationsAccountApi } from '@/api/EventsService';
-import { onMounted, ref } from "vue"
+import { notificationsAccountApi, massDiscardofEventsApi } from '@/api/EventsService';
+import { confirmBasic, basicAlert } from '@/helpers/SweetAlert';
+import { onMounted, ref, watch } from "vue"
+import store from "@/store";
 
 export default ({
     name: "ListedEarringsView",
@@ -52,9 +57,11 @@ export default ({
         TableEventsVue
     },
     setup() {
-        const selectedColumns = ref(['cod_evento', 'placa', 'conductor', 'fecha', 'fecha_actual', 'velocidad', 
-        'direccion', 'descripcion_estado', 'fecha_ultima_accion','prioridad']);
+        const search = ref('');
+        const selectedDiscardEvents = ref([]);
         const pendingEvents = ref([]);
+        const selectedColumns = ref(['cod_evento', 'placa', 'conductor', 'fecha', 'fecha_actual', 'velocidad',
+            'direccion', 'descripcion_estado', 'fecha_ultima_accion', 'prioridad', 'actions']);
         const listedHeaders = ref([
             {
                 title: 'Codigo evento',
@@ -96,20 +103,66 @@ export default ({
                 title: 'Prioridad', align: 'start', key: 'prioridad', sortable: true,
             },
             {
-                title: 'Acción', align: 'start', key: 'actions', sortable: true,
+                title: 'Acciones', align: 'start', key: 'actions', sortable: true,
             }
         ])
 
+        const listedHeadersFilter = ref([]);
+
         onMounted(async () => {
-            const responseEvent = await notificationsAccountApi()
+            await loadData();
+            updateColumnVisibility();
+        })
+
+        const loadData = async () => {
+            const responseEvent = await notificationsAccountApi(store.state.codcuenta, store.state.codcliente, store.state.username, store.state.codregla);
             pendingEvents.value = responseEvent.data.data.filter(event => {
                 return event.descripcion_estado === "Sin Atender" || event.descripcion_estado === "En Gestion";
             })
+        }
+
+        const updateColumnVisibility = () => {
+            listedHeadersFilter.value = listedHeaders.value.filter(item => {
+                return selectedColumns.value.includes(item.key);
+            });
+        }
+
+        watch(() => selectedColumns.value, () => {
+            updateColumnVisibility();
         })
+
+        const onSelectedEvents = (data) => {
+            selectedDiscardEvents.value = data.selected
+        }
+
+        const onMassDiscard = () => {
+            if (selectedDiscardEvents.value.length > 0) {
+                confirmBasic(async () => {
+                    massDiscardofEventsApi(selectedDiscardEvents.value, store.state.codcuenta, store.state.codcliente)
+                        .then(() => {
+                            basicAlert(() => {
+                                loadData()
+                            }, 'success', 'Logrado', 'Se ha descartado los eventos correctamente')
+                        })
+                        .catch(() => {
+                            basicAlert(() => {
+                                loadData()
+                            }, 'error', 'Hubo un error', 'No se logro descartar los eventos')
+                        })
+                }, '¿Estás seguro de realizar el descarte de los eventos seleccionados?', 'Aceptar');
+            } else {
+                basicAlert(() => { }, 'warning', 'Advertencia', 'No se ha encontrado eventos seleccionados para el descarte masivo')
+            }
+        }
+
         return {
+            onMassDiscard,
+            onSelectedEvents,
+            listedHeadersFilter,
             selectedColumns,
             pendingEvents,
-            listedHeaders
+            listedHeaders,
+            search,
         }
     }
 })

@@ -1,74 +1,210 @@
 <template>
-    <div>
-      <v-img
-        class="mx-auto my-6"
-        max-width="228"
-        src="https://cdn.vuetifyjs.com/docs/images/logos/vuetify-logo-v3-slim-text-light.svg"
-      ></v-img>
-      <v-card
-        class="mx-auto pa-12 pb-8"
-        elevation="8"
-        max-width="448"
-        rounded="lg"
-      >
-        <div class="text-subtitle-1 text-medium-emphasis">Account</div>
-  
-        <v-text-field
-          density="compact"
-          placeholder="Email address"
-          prepend-inner-icon="mdi-email-outline"
-          variant="outlined"
-        ></v-text-field>
-  
-        <div class="text-subtitle-1 text-medium-emphasis d-flex align-center justify-space-between">
-          Password
-  
-          <a
-            class="text-caption text-decoration-none text-blue"
-            href="#"
-            rel="noopener noreferrer"
-            target="_blank"
-          >
-            Forgot login password?</a>
-        </div>
-  
-        <v-text-field
-          :append-inner-icon="visible ? 'mdi-eye-off' : 'mdi-eye'"
-          :type="visible ? 'text' : 'password'"
-          density="compact"
-          placeholder="Enter your password"
-          prepend-inner-icon="mdi-lock-outline"
-          variant="outlined"
-          @click:append-inner="visible = !visible"
-        ></v-text-field>
-  
-        <v-btn
-          block
-          class="mb-8"
-          color="blue"
-          size="large"
-          variant="tonal"
-        >
-          Log In
-        </v-btn>
-  
-        <v-card-text class="text-center">
-          <a
-            class="text-blue text-decoration-none"
-            href="#"
-            rel="noopener noreferrer"
-            target="_blank"
-          >
-            Sign up now <v-icon icon="mdi-chevron-right"></v-icon>
-          </a>
-        </v-card-text>
-      </v-card>
+  <div class="flex w-full h-screen overflow-y-hidden">
+    <div class="left">
+      <div class="text-indigo font-bold text-center text-2xl pb-4">MONITORS4</div>
+      <img :src="LogoSysnet" class="animation a6 pb-5" style="margin: 0 auto 10px;width: 150px">
+      <div class="flex justify-center">
+        <form id="login-form" class="lg:w-[80%] w-full flex flex-col justify-center text-center">
+
+          <span class="text-gray-600 pb-1 label text-start">Usuario</span>
+          <v-text-field color="indigo" density="compact" placeholder="Ingrese su usuario"
+            prepend-inner-icon="mdi mdi-account" variant="outlined" v-model="username"></v-text-field>
+          <div class="flex justify-between">
+            <span class="text-gray-600 pb-1 label">Contraseña</span>
+            <a class="text-caption text-decoration-none text-blue" href="#" rel="noopener noreferrer" target="_blank">
+              Olvidaste tu contraseña?</a>
+          </div>
+          <v-text-field color="indigo" :append-inner-icon="visible ? 'mdi-eye-off' : 'mdi-eye'"
+            :type="visible ? 'text' : 'password'" density="compact" placeholder="Ingrese su contraseña"
+            prepend-inner-icon="mdi-lock-outline" variant="outlined" @click:append-inner="visible = !visible"
+            v-model="password"></v-text-field>
+          <div>
+            <v-col cols="auto">
+              <v-btn size="large" color="indigo" @click="validateCredential">Ingresar</v-btn>
+            </v-col>
+          </div>
+        </form>
+      </div>
     </div>
-  </template>
-  <script>
-    export default {
-      data: () => ({
-        visible: false,
-      }),
+    <div id="right">
+    </div>
+  </div>
+</template>
+
+<script>
+import { ref } from "vue";
+import { loginApi } from '@/api/LoginService';
+import { basicAlert } from '@/helpers/SweetAlert';
+import LogoSysnet from '@/assets/login/logo_sysnet.png';
+import { useRouter } from 'vue-router';
+import store from '@/store';
+import md5 from 'md5';
+
+export default ({
+  setup() {
+    const username = ref('');
+    const password = ref('');
+    const router = useRouter();
+
+    const validateCredential = async () => {
+      const hashedPassword = md5(password.value); 
+      await loginApi(username.value, hashedPassword)
+        .then(response => {
+          if (response.data.status == true) {
+            store.commit('setCodCuenta', response.data.data.CodCuenta);
+            store.commit('setCodCliente', response.data.data.CodCliente);
+            store.commit('setCodClienteAdmin', response.data.data.CodClienteAdmin);
+            store.commit('setRol', response.data.data.Rol);
+
+            store.commit('setCodRegla', response.data.data.Cod_Regla);
+            store.commit('setUsername', response.data.data.Usuario);
+            store.commit('setUsernameAdmin', response.data.data.UsuarioClienteAdmin);
+
+            store.commit('setIsAuthenticated', true);
+            router.push('/');
+
+          } else {
+            basicAlert(() => { }, 'warning', 'Credenciales incorrectas', 'Verifique su usuario y contraseña')
+          }
+        })
+        .catch(() => {
+          basicAlert(() => { }, 'error', 'Error de conexión', 'Hubo un problema de conexión con el origen de datos')
+        })
     }
-  </script>
+    return {
+      validateCredential,
+      username,
+      password
+    }
+  },
+  data: () => ({
+    visible: false,
+    LogoSysnet: LogoSysnet
+  }),
+})
+</script>
+
+<style scoped>
+.left {
+  font-family: 'Poppins', sans-serif;
+  overflow: hidden;
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: column;
+  justify-content: center;
+  -webkit-animation-name: left;
+  animation-name: left;
+  -webkit-animation-duration: .8s;
+  animation-duration: .8s;
+  -webkit-animation-fill-mode: both;
+  animation-fill-mode: both;
+  -webkit-animation-delay: .5s;
+  animation-delay: .5s;
+}
+
+#right {
+  width: 100%;
+  margin: 0;
+  flex: 1;
+  background-color: rgba(72, 128, 150, 0.418);
+  transition: 1s;
+  background-image: url('../assets/login/fondo_login.webp');
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+  background-position: center center;
+}
+
+#right:before {
+  content: '';
+  position: fixed;
+  width: 100vw;
+  height: 100vh;
+  top: 0;
+  background: rgba(38, 116, 212, 0.6);
+}
+
+.header>h2 {
+  margin: 0;
+  color: #535699;
+  text-align: center;
+}
+
+.header>p {
+  margin-top: 10px;
+  font-weight: normal;
+  font-size: 12px;
+  color: rgba(0, 0, 0, 0.4);
+  line-height: 1.5;
+  text-align: justify;
+}
+
+
+.animation {
+  -webkit-animation-name: fadeInUp;
+  animation-name: fadeInUp;
+  -webkit-animation-duration: 1s;
+  animation-duration: 1s;
+  -webkit-animation-fill-mode: both;
+  animation-fill-mode: both;
+}
+
+.a6 {
+  -webkit-animation-delay: 1.8s;
+  animation-delay: 1.3s;
+}
+
+@-webkit-keyframes fadeInUp {
+  from {
+    opacity: 0;
+    -webkit-transform: translate3d(0, 30%, 0);
+    transform: translate3d(0, 30%, 0);
+  }
+
+  to {
+    opacity: 1;
+    -webkit-transform: translate3d(0, 0, 0);
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    -webkit-transform: translate3d(0, 30%, 0);
+    transform: translate3d(0, 30%, 0);
+  }
+
+  to {
+    opacity: 1;
+    -webkit-transform: translate3d(0, 0, 0);
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@-webkit-keyframes left {
+  0% {
+    opacity: 0;
+    width: 0;
+  }
+
+  100% {
+    opacity: 1;
+    padding: 20px 40px;
+    width: 500px;
+  }
+}
+
+@keyframes left {
+  0% {
+    opacity: 0;
+    width: 0;
+  }
+
+  100% {
+    opacity: 1;
+    padding: 20px 40px;
+    width: 500px;
+  }
+}
+</style>

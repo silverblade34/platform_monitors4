@@ -17,7 +17,6 @@
     </div>
 </template>
 <script>
-/* eslint-disable */
 import { ref, onMounted } from 'vue';
 import CardEventsVue from '@/components/dashboard/CardEvents.vue';
 import EventNotificationVue from '@/components/dashboard/EventNotification.vue';
@@ -25,6 +24,7 @@ import VehicleNotificationVue from '@/components/dashboard/VehicleNotification.v
 import OperatorNotificationVue from '@/components/dashboard/OperatorNotification.vue';
 import { notificationsAccountApi } from '@/api/EventsService';
 import { homeClientsApi } from '@/api/DashboardService';
+import store from '@/store';
 
 export default ({
     name: "HomeView",
@@ -71,8 +71,8 @@ export default ({
 
         onMounted(async () => {
             const [responseEvent, tableEvent] = await Promise.all([
-                notificationsAccountApi(),
-                homeClientsApi()
+                notificationsAccountApi(store.state.codcuenta, store.state.codcliente, store.state.username, store.state.codregla),
+                homeClientsApi(store.state.codcuenta, store.state.codcliente, store.state.username)
             ])
             const eventData = responseEvent.data.data;
             Promise.all([

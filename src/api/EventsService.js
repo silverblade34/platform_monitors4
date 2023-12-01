@@ -2,12 +2,23 @@ import axios from 'axios';
 
 const baseURL = process.env.VUE_APP_BASE_URL;
 
-export function notificationsAccountApi() {
+export function notificationsAccountApi(cod_cuenta, cod_cliente, usuario, codigo) {
     return axios.post(`${baseURL}/notifications/Account`,
         {
-            "cod_cuenta": "ON001",
-            "cod_cliente": "DU001",
-            "usuario": "duragas",
-            "codigo": "00000"
+            cod_cuenta,
+            cod_cliente,
+            usuario,
+            codigo
+        })
+}
+
+export function massDiscardofEventsApi(eventsId, cod_cuenta, cod_cliente) {
+    return axios.post(`${baseURL}/massiveDiscard`,
+        {
+            "ids": eventsId,
+            cod_cliente,
+            cod_cuenta,
+            "descripcion_estado": "Descartado",
+            "estado": 1
         })
 }

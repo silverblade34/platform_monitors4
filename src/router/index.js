@@ -21,6 +21,11 @@ const router = createRouter({
                     name: "pendienteslistados",
                     path: "pendienteslistados",
                     component: () => import("@/views/events/ListedEarringsView.vue"),
+                },
+                {
+                    name: "pendientesiconos",
+                    path: "pendientesiconos",
+                    component: () => import("@/views/events/IconsEarringsView.vue"),
                 }
             ]
         },
