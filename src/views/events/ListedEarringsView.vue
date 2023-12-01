@@ -48,7 +48,7 @@
 import TableEventsVue from "@/components/events/listedEarrings/TableEvents.vue";
 import { notificationsAccountApi, massDiscardofEventsApi } from '@/api/EventsService';
 import { confirmBasic, basicAlert } from '@/helpers/SweetAlert';
-import { onMounted, ref, watch } from "vue"
+import { onMounted, ref, watch, onBeforeUnmount } from "vue"
 import store from "@/store";
 
 export default ({
@@ -63,48 +63,17 @@ export default ({
         const selectedColumns = ref(['cod_evento', 'placa', 'conductor', 'fecha', 'fecha_actual', 'velocidad',
             'direccion', 'descripcion_estado', 'fecha_ultima_accion', 'prioridad', 'actions']);
         const listedHeaders = ref([
-            {
-                title: 'Codigo evento',
-                align: 'start',
-                key: 'cod_evento',
-                sortable: true,
-            },
-            {
-                title: 'Placa',
-                align: 'start',
-                key: 'placa',
-                sortable: true,
-            },
-            {
-                title: 'Conductor',
-                align: 'start',
-                key: 'conductor',
-                sortable: true,
-            },
-            {
-                title: 'Fecha evento', align: 'start', key: 'fecha', sortable: true,
-            },
-            {
-                title: 'Fecha recepción', align: 'start', key: 'fecha_actual', sortable: true,
-            },
-            {
-                title: 'Velocidad', align: 'start', key: 'velocidad', sortable: true,
-            },
-            {
-                title: 'Dirección', align: 'start', key: 'direccion', sortable: true,
-            },
-            {
-                title: 'Estado', align: 'start', key: 'descripcion_estado', sortable: true,
-            },
-            {
-                title: 'Última acción', align: 'start', key: 'fecha_ultima_accion', sortable: true,
-            },
-            {
-                title: 'Prioridad', align: 'start', key: 'prioridad', sortable: true,
-            },
-            {
-                title: 'Acciones', align: 'start', key: 'actions', sortable: true,
-            }
+            { title: 'Codigo evento', align: 'start', key: 'cod_evento', sortable: true },
+            { title: 'Placa', align: 'start', key: 'placa', sortable: true },
+            { title: 'Conductor', align: 'start', key: 'conductor', sortable: true },
+            { title: 'Fecha evento', align: 'start', key: 'fecha', sortable: true },
+            { title: 'Fecha recepción', align: 'start', key: 'fecha_actual', sortable: true },
+            { title: 'Velocidad', align: 'start', key: 'velocidad', sortable: true },
+            { title: 'Dirección', align: 'start', key: 'direccion', sortable: true },
+            { title: 'Estado', align: 'start', key: 'descripcion_estado', sortable: true },
+            { title: 'Última acción', align: 'start', key: 'fecha_ultima_accion', sortable: true },
+            { title: 'Prioridad', align: 'center', key: 'prioridad', sortable: true },
+            { title: 'Acciones', align: 'start', key: 'actions', sortable: true }
         ])
 
         const listedHeadersFilter = ref([]);
@@ -112,6 +81,13 @@ export default ({
         onMounted(async () => {
             await loadData();
             updateColumnVisibility();
+            const interval = setInterval(loadData, 10000); // Llama a loadData() cada 10 segundos (10000 milisegundos)
+
+            // Limpiar el intervalo cuando el componente se desmonte para evitar fugas de memoria
+            onBeforeUnmount(() => {
+                clearInterval(interval);
+            });
+
         })
 
         const loadData = async () => {

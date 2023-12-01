@@ -6,16 +6,21 @@
             <v-btn icon="mdi-bell-ring" color="blue" size="small" variant="tonal"></v-btn>
             <v-list>
                 <v-list-item class="text-start text-xs item-personalizado" :prepend-avatar="avatarPath"
-                    :title="['Hola, ', username]" :subtitle="rol">
+                    :title="`Hola, ${username}`" :subtitle="rol">
                 </v-list-item>
             </v-list>
+            <MenuAsPopover />
         </div>
     </div>
 </template>
 <script>
-import store from '@/store'
+import store from '@/store';
+import MenuAsPopover from '@/components/general/MenuAsPopover.vue';
 
 export default ({
+    components: {
+        MenuAsPopover
+    },
     props: {
         avatarPath: String
     },

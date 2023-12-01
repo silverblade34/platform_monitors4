@@ -1,120 +1,132 @@
 <template>
-    <v-card>
-        <v-data-iterator :items="games" :items-per-page="3" :search="search">
-            <template v-slot:header>
-                <v-toolbar class="px-2">
-                    <v-text-field v-model="search" clearable density="comfortable" hide-details placeholder="Search"
-                        prepend-inner-icon="mdi-magnify" style="max-width: 300px;" variant="solo"></v-text-field>
-                </v-toolbar>
+  <v-card class="elevation-0">
+    <v-container class="pa-2" fluid>
+      <div class="grid gap-3" :class="gridClass">
+        <v-card class="pb-3" border flat v-for="(item, index) in paginatedDesserts" :key="index">
+          <div style="position: relative;">
+            <!-- Checkbox -->
+            <input type="checkbox" style="position: absolute; top: 10px; right: 10px; z-index: 2; transform: scale(1.3);"
+              :value="item.ID" @change="toggleSelection(item.ID)" />
+            <!-- Imagen -->
+            <v-img :src="item.link_imagen || require('@/assets/events/imagen_vacia.jpg')"
+              :max-height="item.link_imagen ? '' : '200'"></v-img>
+          </div>
+
+          <v-list-item class="mb-2" :subtitle="item.placa + ' - ' + item.conductor">
+            <template v-slot:title>
+              <strong class="text-h6 mb-2">{{ item.cod_evento }}</strong>
             </template>
+          </v-list-item>
 
-            <template v-slot:default="{ items }">
-                <v-container class="pa-2" fluid>
-                    <v-row dense>
-                        <v-col v-for="item in items" :key="item.title" cols="auto" md="4">
-                            <v-card class="pb-3" border flat>
-                                <v-img :src="item.raw.img"></v-img>
-
-                                <v-list-item class="mb-2" :subtitle="item.raw.subtitle">
-                                    <template v-slot:title>
-                                        <strong class="text-h6 mb-2">{{ item.raw.title }}</strong>
-                                    </template>
-                                </v-list-item>
-
-                                <div class="d-flex justify-space-between px-4">
-                                    <div class="d-flex align-center text-caption text-medium-emphasis me-1">
-                                        <v-icon icon="mdi-clock" start></v-icon>
-
-                                        <div class="text-truncate">{{ item.raw.duration }}</div>
-                                    </div>
-
-                                    <v-btn border flat size="small" class="text-none" text="Read">
-                                    </v-btn>
-                                </div>
-                            </v-card>
-                        </v-col>
-                    </v-row>
-                </v-container>
-            </template>
-
-            <template v-slot:footer="{ page, pageCount, prevPage, nextPage }">
-                <div class="d-flex align-center justify-center pa-4">
-                    <v-btn :disabled="page === 1" icon="mdi-arrow-left" density="comfortable" variant="tonal" rounded
-                        @click="prevPage"></v-btn>
-
-                    <div class="mx-2 text-caption">
-                        Page {{ page }} of {{ pageCount }}
-                    </div>
-
-                    <v-btn :disabled="page >= pageCount" icon="mdi-arrow-right" density="comfortable" variant="tonal"
-                        rounded @click="nextPage"></v-btn>
-                </div>
-            </template>
-        </v-data-iterator>
-    </v-card>
+          <div class="d-flex justify-space-between px-4">
+            <div class="d-flex align-center text-caption text-medium-emphasis me-1">
+              <v-icon icon="mdi-clock" start></v-icon>
+              <div class="text-truncate">{{ item.hora }}</div>
+            </div>
+            <v-btn border flat size="small" class="text-none" color="indigo" text="Atender"></v-btn>
+          </div>
+        </v-card>
+      </div>
+      <v-pagination v-model="currentPage" :length="totalPages" rounded="circle"></v-pagination>
+    </v-container>
+  </v-card>
 </template>
+  
 <script>
+import { ref, computed, watch, onMounted } from 'vue';
 export default {
-    data: () => ({
-        search: '',
-        games: [
-            {
-                img: 'https://cdn.vuetifyjs.com/docs/images/graphics/games/4.png',
-                title: 'The Sci-Fi Shooter Experience',
-                subtitle: 'Dive into a futuristic world of intense battles and alien encounters.',
-                advanced: false,
-                duration: '8 minutes',
-            },
-            {
-                img: 'https://cdn.vuetifyjs.com/docs/images/graphics/games/2.png',
-                title: 'Epic Adventures in Open Worlds',
-                subtitle: 'Embark on a journey through vast, immersive landscapes and quests.',
-                advanced: true,
-                duration: '10 minutes',
-            },
-            {
-                img: 'https://cdn.vuetifyjs.com/docs/images/graphics/games/3.png',
-                title: 'Surviving the Space Station Horror',
-                subtitle: 'Navigate a haunted space station in this chilling survival horror game.',
-                advanced: false,
-                duration: '9 minutes',
-            },
-            {
-                img: 'https://cdn.vuetifyjs.com/docs/images/graphics/games/5.png',
-                title: 'Neon-Lit High-Speed Racing Thrills',
-                subtitle: 'Experience adrenaline-pumping races in a futuristic, neon-soaked city.',
-                advanced: true,
-                duration: '12 minutes',
-            },
-            {
-                img: 'https://cdn.vuetifyjs.com/docs/images/graphics/games/6.png',
-                title: 'Retro-Style Platformer Adventures',
-                subtitle: 'Jump and dash through pixelated worlds in this classic-style platformer.',
-                advanced: false,
-                duration: '11 minutes',
-            },
-            {
-                img: 'https://cdn.vuetifyjs.com/docs/images/graphics/games/7.png',
-                title: 'Medieval Strategic War Campaigns',
-                subtitle: 'Lead armies into epic battles and conquer kingdoms in this strategic game.',
-                advanced: true,
-                duration: '10 minutes',
-            },
-            {
-                img: 'https://cdn.vuetifyjs.com/docs/images/graphics/games/1.png',
-                title: 'Underwater VR Exploration Adventure',
-                subtitle: 'Dive deep into the ocean and discover the mysteries of the underwater world.',
-                advanced: true,
-                duration: '11 minutes',
-            },
-            {
-                img: 'https://cdn.vuetifyjs.com/docs/images/graphics/games/8.png',
-                title: '1920s Mystery Detective Chronicles',
-                subtitle: 'Solve crimes and uncover secrets in the glamourous 1920s era.',
-                advanced: false,
-                duration: '9 minutes',
-            },
-        ],
-    }),
+  props: {
+    dataEvents: Array,
+  },
+  emits: ['selected-events'],
+  setup(props, { emit }) {
+    const search = ref('');
+    const currentPage = ref(1);
+    const itemsPerPage = ref(18);
+    const desserts = ref([])
+    const selectedDiscardEvents = ref(new Set());
+
+    onMounted(() => {
+      desserts.value = props.dataEvents
+    })
+
+    watch(() => props.dataEvents, (newVal) => {
+      desserts.value = newVal
+    })
+
+    const paginatedDesserts = computed(() => {
+      const startIndex = (currentPage.value - 1) * itemsPerPage.value;
+      const endIndex = startIndex + itemsPerPage.value;
+      return desserts.value.slice(startIndex, endIndex);
+    });
+
+    const totalPages = computed(() => {
+      return Math.ceil(desserts.value.length / itemsPerPage.value);
+    });
+
+    const goToPage = (pageNumber) => {
+      currentPage.value = pageNumber;
+    };
+
+    const toggleSelection = (itemId) => {
+      // Verifica si el elemento ya está seleccionado
+      if (selectedDiscardEvents.value.has(itemId)) {
+        // Si ya está seleccionado, lo elimina de la lista
+        selectedDiscardEvents.value.delete(itemId);
+      } else {
+        // Si no está seleccionado, lo agrega a la lista
+        selectedDiscardEvents.value.add(itemId);
+      }
+      emit('selected-events', { selected: Array.from(selectedDiscardEvents.value) })
+    };
+
+
+    return {
+      search,
+      desserts,
+      currentPage,
+      itemsPerPage,
+      paginatedDesserts,
+      totalPages,
+      toggleSelection,
+      goToPage,
+    };
+  },
 }
 </script>
+<style>
+/* CSS para pantallas muy pequeñas (menos de 1250px) */
+@media (max-width: 1249px) {
+  .grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+/* CSS para pantallas pequeñas (entre 1250px y 1549px) */
+@media (min-width: 1250px) and (max-width: 1549px) {
+  .grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+/* CSS para pantallas medianas (entre 1550px y 1649px) */
+@media (min-width: 1550px) and (max-width: 1649px) {
+  .grid {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
+}
+
+/* CSS para pantallas grandes (1650px o más) */
+@media (min-width: 1650px) {
+  .grid {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+  }
+}
+
+/* CSS para teléfonos móviles */
+@media (max-width: 599px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}
+</style>

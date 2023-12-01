@@ -67,7 +67,7 @@ export default {
                         children: []
                     },
                     {
-                        icon: "mdi-account-check",
+                        icon: "mdi-bell-check",
                         title: "Confirmados",
                         value: "Confirmados",
                         to: "confirmados",

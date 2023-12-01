@@ -1,0 +1,91 @@
+<template>
+    <div>
+        <h1 class="font-bold text-xl title_poppins pb-5">Eventos confirmados</h1>
+        <div class="w-full rounded-lg bg-white shadow-md p-5">
+            <div class="w-full flex justify-between pt-4">
+                <div class="lg:w-[30%] pb-4 w-full">
+                    <v-text-field clearable color="indigo" v-model="search" prepend-inner-icon="mdi-magnify" label="Buscar"
+                        hide-details density="compact" variant="outlined"></v-text-field>
+                </div>
+            </div>
+            <SimpleEventsTableVue :desserts="confirmedEvents" :listedHeaders="listedHeaders" :search="search" />
+        </div>
+    </div>
+</template>
+<script>
+import { notificationsAccountApi } from '@/api/EventsService';
+import SimpleEventsTableVue from '@/components/events/SimpleEventsTable.vue';
+import { onMounted, ref } from "vue";
+import store from '@/store';
+
+export default ({
+    components: {
+        SimpleEventsTableVue
+    },
+    setup(){
+        const search = ref('');
+        const confirmedEvents = ref([]);
+        const listedHeaders = ref([
+            {
+                title: 'Codigo evento',
+                align: 'start',
+                key: 'cod_evento',
+                sortable: true,
+            },
+            {
+                title: 'Placa',
+                align: 'start',
+                key: 'placa',
+                sortable: true,
+            },
+            {
+                title: 'Conductor',
+                align: 'start',
+                key: 'conductor',
+                sortable: true,
+            },
+            {
+                title: 'Fecha evento', align: 'start', key: 'fecha', sortable: true,
+            },
+            {
+                title: 'Fecha recepción', align: 'start', key: 'fecha_actual', sortable: true,
+            },
+            {
+                title: 'Velocidad', align: 'start', key: 'velocidad', sortable: true,
+            },
+            {
+                title: 'Dirección', align: 'start', key: 'direccion', sortable: true,
+            },
+            {
+                title: 'Estado', align: 'start', key: 'descripcion_estado', sortable: true,
+            },
+            {
+                title: 'Última acción', align: 'start', key: 'fecha_ultima_accion', sortable: true,
+            },
+            {
+                title: 'Prioridad', align: 'center', key: 'prioridad', sortable: true,
+            },
+            {
+                title: 'Evidencias', align: 'center', key: 'evidence', sortable: true,
+            }
+        ])
+
+        onMounted(async () => {
+            await loadData();
+        })
+
+        const loadData = async () => {
+            const responseEvent = await notificationsAccountApi(store.state.codcuenta, store.state.codcliente, store.state.username, store.state.codregla);
+            confirmedEvents.value = responseEvent.data.data.filter(event => {
+                return event.descripcion_estado === "Confirmado";
+            })
+        }
+
+        return {
+            listedHeaders,
+            confirmedEvents,
+            search
+        }
+    }
+})
+</script>

@@ -7,13 +7,14 @@
       </span>
     </template>
     <template v-slot:[`item.prioridad`]="{ item }">
-      <div class="h-5 w-5 rounded-full mr-2" :class="{
-        'bg-orange-300': item.prioridad === 'URGENTE',
-        'bg-red-300': item.prioridad === 'CRITICO',
-        'bg-blue-300': item.prioridad === 'REGULAR'
-      }">
+      <div class="flex justify-center">
+        <div class="h-5 w-5 rounded-full mr-2" :class="{
+          'bg-orange-300': item.prioridad === 'URGENTE',
+          'bg-red-300': item.prioridad === 'CRITICO',
+          'bg-blue-300': item.prioridad === 'REGULAR'
+        }">
+        </div>
       </div>
-
     </template>
     <template v-slot:[`item.actions`]="{ item }">
       <div class="flex gap-1">
@@ -35,7 +36,7 @@
 <script>
 import { ref, watch } from 'vue';
 import { VDataTable } from 'vuetify/labs/VDataTable';
-import ImgEvidencia from '@/assets/evidencias.jpg';
+import ImgEvidencia from '@/assets/events/evidencias.jpg';
 import Swal from 'sweetalert2';
 
 export default {
@@ -178,11 +179,3 @@ export default {
   color: #383838 !important
 }
 </style>
-
-
-<div v-if="item.state == 1" class="h-5 w-5 rounded-full bg-green-300 mr-2">
-  <v-tooltip activator="parent" location="top">Aprobado</v-tooltip>
-</div>
-<div v-else class="h-5 w-5 rounded-full bg-gray-300 mr-2">
-  <v-tooltip activator="parent" location="top">Pendiente</v-tooltip>
-</div>
