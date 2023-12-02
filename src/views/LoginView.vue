@@ -55,7 +55,7 @@ export default ({
             store.commit('setCodCliente', response.data.data.CodCliente);
             store.commit('setCodClienteAdmin', response.data.data.CodClienteAdmin);
             store.commit('setRol', response.data.data.Rol);
-
+            store.commit('setEmpresa', response.data.data.Empresa);
             store.commit('setCodRegla', response.data.data.Cod_Regla);
             store.commit('setUsername', response.data.data.Usuario);
             store.commit('setUsernameAdmin', response.data.data.UsuarioClienteAdmin);
