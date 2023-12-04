@@ -22,7 +22,7 @@ import CardEventsVue from '@/components/dashboard/CardEvents.vue';
 import EventNotificationVue from '@/components/dashboard/EventNotification.vue';
 import VehicleNotificationVue from '@/components/dashboard/VehicleNotification.vue';
 import OperatorNotificationVue from '@/components/dashboard/OperatorNotification.vue';
-import { notificationsAccountApi } from '@/api/EventsService';
+import { notificationsAccountApi } from '@/api/NotificationsService';
 import { homeClientsApi } from '@/api/DashboardService';
 import store from '@/store';
 

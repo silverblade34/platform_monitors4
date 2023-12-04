@@ -20,22 +20,22 @@ const router = createRouter({
                 {
                     name: "pendienteslistados",
                     path: "pendienteslistados",
-                    component: () => import("@/views/events/ListedEarringsView.vue"),
+                    component: () => import("@/views/notifications/ListedEarringsView.vue"),
                 },
                 {
                     name: "pendientesiconos",
                     path: "pendientesiconos",
-                    component: () => import("@/views/events/IconsEarringsView.vue"),
+                    component: () => import("@/views/notifications/IconsEarringsView.vue"),
                 },
                 {
                     name: "confirmados",
                     path: "confirmados",
-                    component: () => import("@/views/events/ConfirmedView.vue"),
+                    component: () => import("@/views/notifications/ConfirmedView.vue"),
                 },
                 {
                     name: "descartados",
                     path: "descartados",
-                    component: () => import("@/views/events/DiscardedView.vue"),
+                    component: () => import("@/views/notifications/DiscardedView.vue"),
                 },
                 {
                     name: "reportes",
@@ -46,6 +46,11 @@ const router = createRouter({
                     name: "usuarios",
                     path: "usuarios",
                     component: () => import("@/views/maintenance/UsersView.vue"),
+                },
+                {
+                    name: "tipoeventos",
+                    path: "tipoeventos",
+                    component: () => import("@/views/maintenance/EventsView.vue"),
                 }
             ]
         },

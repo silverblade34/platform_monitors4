@@ -45,8 +45,8 @@
     </div>
 </template>
 <script>
-import TableEventsVue from "@/components/events/listedEarrings/TableEvents.vue";
-import { notificationsAccountApi, massDiscardofEventsApi } from '@/api/EventsService';
+import TableEventsVue from "@/components/notifications/listedEarrings/TableEvents.vue";
+import { notificationsAccountApi, massDiscardofEventsApi } from '@/api/NotificationsService';
 import { confirmBasic, basicAlert } from '@/helpers/SweetAlert';
 import { onMounted, ref, watch, onBeforeUnmount } from "vue"
 import store from "@/store";

@@ -30,8 +30,8 @@
     </v-dialog>
 </template>
 <script>
-import DataIteratorsVue from '@/components/events/iconsEarrings/DataIterators.vue';
-import { notificationsAccountApi, massDiscardofEventsApi } from '@/api/EventsService';
+import DataIteratorsVue from '@/components/notifications/iconsEarrings/DataIterators.vue';
+import { notificationsAccountApi, massDiscardofEventsApi } from '@/api/NotificationsService';
 import { confirmBasic, basicAlert } from '@/helpers/SweetAlert';
 import { onMounted, ref, watch } from 'vue';
 import store from "@/store";

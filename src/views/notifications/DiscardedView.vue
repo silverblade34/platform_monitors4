@@ -1,6 +1,6 @@
 <template>
     <div>
-        <h1 class="font-bold text-xl title_poppins pb-5">Eventos confirmados</h1>
+        <h1 class="font-bold text-xl title_poppins pb-5">Eventos descartados</h1>
         <div class="w-full rounded-lg bg-white shadow-md p-5">
             <div class="w-full flex justify-between pt-4">
                 <div class="lg:w-[30%] pb-4 w-full">
@@ -8,13 +8,13 @@
                         hide-details density="compact" variant="outlined"></v-text-field>
                 </div>
             </div>
-            <SimpleEventsTableVue :desserts="confirmedEvents" :listedHeaders="listedHeaders" :search="search" />
+            <SimpleEventsTableVue :desserts="discardedEvents" :listedHeaders="listedHeaders" :search="search" />
         </div>
     </div>
 </template>
 <script>
-import { notificationsAccountApi } from '@/api/EventsService';
-import SimpleEventsTableVue from '@/components/events/SimpleEventsTable.vue';
+import { notificationsAccountApi } from '@/api/NotificationsService';
+import SimpleEventsTableVue from '@/components/notifications/SimpleEventsTable.vue';
 import { onMounted, ref } from "vue";
 import store from '@/store';
 
@@ -22,9 +22,9 @@ export default ({
     components: {
         SimpleEventsTableVue
     },
-    setup(){
+    setup() {
         const search = ref('');
-        const confirmedEvents = ref([]);
+        const discardedEvents = ref([]);
         const listedHeaders = ref([
             {
                 title: 'Codigo evento',
@@ -76,14 +76,14 @@ export default ({
 
         const loadData = async () => {
             const responseEvent = await notificationsAccountApi(store.state.codcuenta, store.state.codcliente, store.state.username, store.state.codregla);
-            confirmedEvents.value = responseEvent.data.data.filter(event => {
-                return event.descripcion_estado === "Confirmado";
+            discardedEvents.value = responseEvent.data.data.filter(event => {
+                return event.descripcion_estado === "Descartado";
             })
         }
 
         return {
             listedHeaders,
-            confirmedEvents,
+            discardedEvents,
             search
         }
     }
