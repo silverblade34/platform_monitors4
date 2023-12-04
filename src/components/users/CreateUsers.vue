@@ -12,7 +12,7 @@
                         v-model="name"></v-text-field>
                     <v-text-field variant="outlined" label="Usuario" prepend-inner-icon="mdi-clipboard-account"
                         color="indigo" v-model="username"></v-text-field>
-                    <v-select label="Estado" :items="['Operador', 'Supervisor']" variant="outlined" class="col-span-2"
+                    <v-select prepend-inner-icon="mdi-shield-account" label="Rol" :items="['Operador', 'Supervisor']" variant="outlined" class="col-span-2"
                         color="indigo" v-model="state"></v-select>
                     <v-text-field color="indigo" :append-inner-icon="visible ? 'mdi-eye-off' : 'mdi-eye'"
                         :type="visible ? 'text' : 'password'" label="Ingrese su contraseña"
