@@ -29,7 +29,7 @@
     </div>
 </template>
 <script>
-import { listEventsApi } from '@/api/MaintenanceEventsService';
+import { findAllEventsApi } from '@/api/EventsService';
 import ServerTableVue from '@/components/reports/ServerTable.vue';
 import { basicAlert } from '@/helpers/SweetAlert';
 import { onMounted, ref } from 'vue';
@@ -50,7 +50,7 @@ export default ({
         const dataFilter = ref({});
 
         onMounted(() => {
-            listEventsApi(store.state.codcuenta, store.state.codcliente)
+            findAllEventsApi(store.state.codcuenta, store.state.codcliente)
                 .then(response => {
                     listEventsData.value = response.data.data ? response.data.data[0].eventos : []
                 })

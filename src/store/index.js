@@ -9,7 +9,7 @@ export default createStore({
         codcliente: '',
         codclienteAdmin: '',
         rol: '',
-        codregla: '',
+        codregla: [],
         empresa: '',
         username: '',
         usernameAdmin: ''

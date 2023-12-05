@@ -50,6 +50,7 @@ export default ({
       const hashedPassword = md5(password.value); 
       await loginApi(username.value, hashedPassword)
         .then(response => {
+          console.log(response.data)
           if (response.data.status == true) {
             store.commit('setCodCuenta', response.data.data.CodCuenta);
             store.commit('setCodCliente', response.data.data.CodCliente);
