@@ -12,7 +12,7 @@
                         v-model="cod_evento"></v-text-field>
                     <v-text-field variant="outlined" label="Descripción" prepend-inner-icon="mdi-text-box" color="indigo"
                         v-model="descripcion"></v-text-field>
-                    <v-select prepend-inner-icon="mdi-priority-high" label="Prioridad" :items="['Regular', 'Urgente', 'Critico']"
+                    <v-select prepend-inner-icon="mdi-priority-high" label="Prioridad" :items="['REGULAR', 'URGENTE', 'CRITICO']"
                         variant="outlined" class="col-span-2" color="indigo" v-model="prioridad"></v-select>
                 </v-col>
             </v-card-text>

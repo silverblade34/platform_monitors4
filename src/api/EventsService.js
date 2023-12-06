@@ -9,3 +9,15 @@ export function findAllEventsApi(cod_cuenta, cod_cliente) {
             cod_cliente
         })
 }
+
+export function createEventsApi(data) {
+    return axios.post(`${baseURL}/createEvents`,data)
+}
+
+export function deleteEventsApi(data) {
+    return axios.post(`${baseURL}/deleteEvents`,data)
+}
+
+export function updateEventsApi(data) {
+    return axios.put(`${baseURL}/editEvents`,data)
+}

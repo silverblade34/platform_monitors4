@@ -28,12 +28,7 @@ export default ({
             findAllClientsToAccountApi(store.state.codcuenta)
                 .then(response => {
                     const clientes = response.data.data[0].clientes ? response.data.data[0].clientes : []
-                    console.log("-CLIENTES-")
-                    console.log(clientes)
-                    console.log("-EMPRESA-")
-                    console.log(store.state.empresa)
                     dataUsers.value = clientes.filter(cliente => cliente.empresa == store.state.empresa && cliente.rol != "Administrador")
-                    console.log(dataUsers.value)
                 })
         })
 

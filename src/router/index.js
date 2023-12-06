@@ -51,6 +51,11 @@ const router = createRouter({
                     name: "tipoeventos",
                     path: "tipoeventos",
                     component: () => import("@/views/maintenance/EventsView.vue"),
+                },
+                {
+                    name: "respuestaspredefinidas",
+                    path: "respuestaspredefinidas",
+                    component: () => import("@/views/maintenance/AnswersView.vue"),
                 }
             ]
         },

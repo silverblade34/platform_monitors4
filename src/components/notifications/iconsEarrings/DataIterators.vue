@@ -94,7 +94,7 @@ export default {
   },
 }
 </script>
-<style>
+<style scoped>
 /* CSS para pantallas muy pequeñas (menos de 1250px) */
 @media (max-width: 1249px) {
   .grid {

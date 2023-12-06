@@ -22,7 +22,7 @@ import avatarImage from "@/assets/iconuser_hombre.png";
 import logoBusiness from "@/assets/signia_logo.png";
 import HeaderLayout from "./HeaderLayout.vue";
 import SidebarLayout from './SidebarLayout.vue';
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 
 export default {
     components: {
@@ -32,12 +32,12 @@ export default {
     data() {
         return {
             avatarPath: avatarImage,
-            logoBusiness: logoBusiness,
-            drawer: true,
-            rail: true,
+            logoBusiness: logoBusiness
         }
     },
     setup() {
+        const drawer = ref(true);
+        const rail = ref(true);
         const ItemsNavegation = ref([
             {
                 icon: "mdi-home",
@@ -131,7 +131,7 @@ export default {
                         children: []
                     },
                     {
-                        icon: "mdi-car-estate",
+                        icon: "mdi-truck",
                         title: "Unidades",
                         value: "Unidades",
                         to: "unidades",
@@ -177,8 +177,18 @@ export default {
             }
         ]);
 
+        const handleResize = () => {
+            rail.value = window.innerWidth <= 1000; // Define aquí el ancho máximo para considerar como pantalla pequeña
+        };
+        onMounted(() => {
+            // Llama a la función handleResize al cargar la página y en cada cambio de tamaño de la ventana
+            handleResize();
+            window.addEventListener("resize", handleResize);
+        })
         return {
-            ItemsNavegation
+            ItemsNavegation,
+            drawer,
+            rail
         }
     }
 }
@@ -197,5 +207,4 @@ export default {
     height: 100%;
     padding-bottom: 5rem !important;
 }
-
 </style>

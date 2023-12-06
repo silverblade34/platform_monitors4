@@ -43,7 +43,7 @@ html{
 }
 
 .v-navigation-drawer__content::-webkit-scrollbar:vertical {
-    width:10px;
+    width:7px;
 }
 
 .v-navigation-drawer__content::-webkit-scrollbar-button:increment,.v-navigation-drawer__content::-webkit-scrollbar-button {

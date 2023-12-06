@@ -1,10 +1,5 @@
 <template>
     <v-data-table :headers="headers" :items="desserts" class="elevation-1 text-sm rounded-lg">
-        <template v-slot:[`item.estado`]="{ item }">
-            <v-chip :color="item.estado ? 'green' : 'red'">
-                {{ item.estado ? 'Activo': 'Desactivado' }}
-            </v-chip>
-        </template>
         <template v-slot:[`item.actions`]="{ item }">
             <div class="flex gap-1 justify-center">
                 <span @click="editItem(item)">
@@ -32,12 +27,10 @@ export default ({
     data() {
         return {
             headers: [
-                { title: 'Usuario', align: 'start', key: 'usuario' },
-                { title: 'Nombre', align: 'start', key: 'nombre_completo' },
-                { title: 'Turno', align: 'start', key: 'turno' },
-                { title: 'Rol', align: 'start', key: 'rol' },
-                { title: 'Estado', align: 'center', key: 'estado' },
-                { title: 'Acciones', key: 'actions', align: 'center' },
+                { title: 'Código', align: 'start', key: 'codigo' },
+                { title: 'Sigla', align: 'start', key: 'sigla' },
+                { title: 'Texto', align: 'start', key: 'text' },
+                { title: 'Acción', key: 'actions', align: 'center' },
             ]
         }
     },

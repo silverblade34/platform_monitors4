@@ -1,8 +1,8 @@
 <template>
-    <v-data-table :headers="headers" :items="desserts" class="elevation-1 text-sm">
+    <v-data-table :headers="headers" :items="desserts" class="elevation-1 text-sm rounded-lg">
         <template v-slot:[`item.status`]="{ item }">
             <v-chip :color="item.status ? 'green' : 'red'">
-                {{ item.status ? 'Activo' : 'Desactivo' }}
+                {{ item.status ? 'Activo' : 'Desactivado' }}
             </v-chip>
         </template>
         <template v-slot:[`item.actions`]="{ item }">
@@ -36,7 +36,7 @@ export default ({
                 { title: 'Descripción', align: 'start', key: 'descripcion' },
                 { title: 'Prioridad', align: 'start', key: 'prioridad' },
                 { title: 'Fecha creación', align: 'start', key: 'fecha_creacion' },
-                { title: 'Estado', align: 'start', key: 'status' },
+                { title: 'Estado', align: 'center', key: 'status' },
                 { title: 'Acciones', key: 'actions', align: 'center' },
             ]
         }

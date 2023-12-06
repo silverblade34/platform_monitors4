@@ -106,7 +106,6 @@ export default ({
 
         const onMassDiscard = () => {
             if (selectedDiscardEvents.value.length > 0) {
-                console.log(selectedDiscardEvents.value)
                 confirmBasic(async () => {
                     massDiscardofEventsApi(selectedDiscardEvents.value, store.state.codcuenta, store.state.codcliente)
                         .then(() => {
