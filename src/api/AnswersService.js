@@ -14,7 +14,6 @@ export function createAnswersApi(data) {
 }
 
 export function updateAnswersApi(data) {
-    console.log(data)
     return axios.put(`${baseURL}/editResponse`, data)
 }
 

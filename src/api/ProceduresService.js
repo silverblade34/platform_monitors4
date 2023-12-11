@@ -19,5 +19,5 @@ export function updateProceduresApi(data) {
 }
 
 export function deleteProceduresApi(data) {
-    return axios.post(`${baseURL}/deleteShifts`, data)
+    return axios.post(`${baseURL}/deleteProcedures`, data)
 }

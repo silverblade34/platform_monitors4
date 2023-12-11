@@ -66,6 +66,16 @@ const router = createRouter({
                     name: "procedimientos",
                     path: "procedimientos",
                     component: () => import("@/views/maintenance/ProceduresView.vue"),
+                },
+                {
+                    name: "vehiculos",
+                    path: "vehiculos",
+                    component: () => import("@/views/maintenance/VehiclesView.vue"),
+                },
+                {
+                    name: "grupousuarios",
+                    path: "grupousuarios",
+                    component: () => import("@/views/groups/GroupsUsersView.vue"),
                 }
             ]
         },

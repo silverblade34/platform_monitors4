@@ -2,35 +2,56 @@
     <div>
         <div class="flex justify-between w-full">
             <div>
-                <h1 class="font-bold text-xl title_poppins pb-5">Procedimientos</h1>
+                <h1 class="font-bold text-xl title_poppins pb-5">Grupo de usuarios</h1>
             </div>
             <CreateProceduresVue @create-item="onCreateItem" />
         </div>
-        <TableProceduresVue :desserts="listAnswersData" @edit-item="onEditItem" @delete-item="onDeleteItem"/>
+        <div class="w-full rounded-lg bg-white grid grid-cols-2 gap-3 p-4 shadow-md">
+            <div>
+                <v-alert color="#2A3B4D" theme="dark" icon="mdi-account-details" density="compact" border>
+                    Lista de usuarios
+                </v-alert>
+                <div class="p-3 border-2 border-blue-400 rounded-lg mt-3">
+                    <v-alert color="#bfdbfe" theme="dark" icon="mdi-account" density="compact">
+                        bryan.ope1
+                    </v-alert>
+                </div>
+            </div>
+            <div>
+                <v-alert color="#2A3B4D" theme="dark" icon="mdi-account-group" density="compact" border>
+                    Grupos de usuarios
+                </v-alert>
+                <div class="mt-3">
+                    <v-expansion-panels multiple>
+                        <v-expansion-panel color="blue" v-for="i in 3" :key="i">
+                            <v-expansion-panel-title color="blue-lighten-1">
+                                Pruebitaa
+                            </v-expansion-panel-title>
+                            <v-expansion-panel-text>
+                                <v-alert color="#bfdbfe" theme="dark" icon="mdi-account" density="compact">
+                                    bryan.ope1
+                                </v-alert>
+                            </v-expansion-panel-text>
+                        </v-expansion-panel>
+                    </v-expansion-panels>
+                </div>
+            </div>
+        </div>
     </div>
-    <EditProceduresVue :openModal="editDialog" :itemEdit="editItem" @cancel-item="editDialog = false"
-        @edit-item="onUpdateItem" />
 </template>
 <script>
-import { findAllProceduresApi, createProceduresApi, updateProceduresApi, deleteProceduresApi } from '@/api/ProceduresService';
-import TableProceduresVue from "@/components/procedures/TableProcedures.vue";
+import { findAllProceduresApi, createProceduresApi, deleteProceduresApi } from '@/api/ProceduresService';
 import CreateProceduresVue from '@/components/procedures/CreateProcedures.vue';
-import EditProceduresVue from '@/components/procedures/EditProcedures.vue';
 import { basicAlert, confirmBasic } from '@/helpers/SweetAlert';
 import { onMounted, ref } from "vue";
 import store from '@/store';
 
-
 export default ({
     components: {
-        TableProceduresVue,
         CreateProceduresVue,
-        EditProceduresVue
     },
     setup() {
         const listAnswersData = ref([]);
-        const editItem = ref({});
-        const editDialog = ref(false);
 
         onMounted(async () => {
             await loadData();
@@ -79,31 +100,10 @@ export default ({
             }, '¿Estás seguro de eliminar este procedimiento?', 'Aceptar');
         }
 
-        const onEditItem = (data) => {
-            editItem.value = data
-            editDialog.value = true
-        }
-
-        const onUpdateItem = (data) => {
-            updateProceduresApi(data)
-                .then(() => {
-                    basicAlert(async () => {
-                        await loadData();
-                    }, 'success', 'Logrado', 'Se ha editado el procedimiento correctamente')
-                })
-                .catch(() => {
-                    basicAlert(() => { }, 'error', 'Hubo un error', 'No se logro editar el procedimiento')
-                })
-        }
-
         return {
             listAnswersData,
-            editDialog,
-            editItem,
-            onUpdateItem,
             onDeleteItem,
             onCreateItem,
-            onEditItem
         }
     }
 })

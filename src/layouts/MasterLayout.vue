@@ -132,9 +132,9 @@ export default {
                     },
                     {
                         icon: "mdi-truck",
-                        title: "Unidades",
-                        value: "Unidades",
-                        to: "unidades",
+                        title: "Vehiculos",
+                        value: "Vehiculos",
+                        to: "vehiculos",
                         children: []
                     }
                 ]

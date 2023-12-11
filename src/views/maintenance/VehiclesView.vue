@@ -2,20 +2,20 @@
     <div>
         <div class="flex justify-between w-full">
             <div>
-                <h1 class="font-bold text-xl title_poppins pb-5">Procedimientos</h1>
+                <h1 class="font-bold text-xl title_poppins pb-5">Vehiculos</h1>
             </div>
-            <CreateProceduresVue @create-item="onCreateItem" />
+            <CreateVehiclesVue @create-item="onCreateItem" />
         </div>
-        <TableProceduresVue :desserts="listAnswersData" @edit-item="onEditItem" @delete-item="onDeleteItem"/>
+        <TableVehiclesVue :desserts="listUnitsData" @edit-item="onEditItem" @delete-item="onDeleteItem"/>
     </div>
-    <EditProceduresVue :openModal="editDialog" :itemEdit="editItem" @cancel-item="editDialog = false"
+    <EditVehiclesVue :openModal="editDialog" :itemEdit="editItem" @cancel-item="editDialog = false"
         @edit-item="onUpdateItem" />
 </template>
 <script>
-import { findAllProceduresApi, createProceduresApi, updateProceduresApi, deleteProceduresApi } from '@/api/ProceduresService';
-import TableProceduresVue from "@/components/procedures/TableProcedures.vue";
-import CreateProceduresVue from '@/components/procedures/CreateProcedures.vue';
-import EditProceduresVue from '@/components/procedures/EditProcedures.vue';
+import { findAllUnitsApi, createUnitsApi, updateUnitsApi, deleteUnitsApi } from '@/api/VehiclesService';
+import TableVehiclesVue from "@/components/vehicles/TableVehicles.vue";
+import CreateVehiclesVue from '@/components/vehicles/CreateVehicles.vue';
+import EditVehiclesVue from '@/components/vehicles/EditVehicles.vue';
 import { basicAlert, confirmBasic } from '@/helpers/SweetAlert';
 import { onMounted, ref } from "vue";
 import store from '@/store';
@@ -23,12 +23,12 @@ import store from '@/store';
 
 export default ({
     components: {
-        TableProceduresVue,
-        CreateProceduresVue,
-        EditProceduresVue
+        TableVehiclesVue,
+        CreateVehiclesVue,
+        EditVehiclesVue
     },
     setup() {
-        const listAnswersData = ref([]);
+        const listUnitsData = ref([]);
         const editItem = ref({});
         const editDialog = ref(false);
 
@@ -37,22 +37,22 @@ export default ({
         })
 
         const loadData = async () => {
-            findAllProceduresApi(store.state.codcuenta, store.state.codcliente)
+            findAllUnitsApi(store.state.codcuenta, store.state.codcliente)
                 .then(response => {
-                    listAnswersData.value = response.data.data[0].procedimientos
+                    listUnitsData.value = response.data.data[0].unidades
                 })
         }
 
         const onCreateItem = (data) => {
-            if (data.cod_evento != "" && data.descripcion != "" && data.detalles != "") {
-                createProceduresApi(data)
+            if (data.placa != "" ) {
+                createUnitsApi(data)
                     .then(() => {
                         basicAlert(async () => {
                             await loadData();
-                        }, 'success', 'Logrado', 'Se ha creado el procedimiento correctamente')
+                        }, 'success', 'Logrado', 'Se ha registrado el vehiculo correctamente')
                     })
                     .catch(() => {
-                        basicAlert(() => { }, 'error', 'Hubo un error', 'No se logro crear el procedimiento')
+                        basicAlert(() => { }, 'error', 'Hubo un error', 'No se logro registrar el vehiculo')
                     })
             } else {
                 basicAlert(() => { }, 'warning', 'Advertencia', 'Rellene todos los campos')
@@ -61,22 +61,23 @@ export default ({
 
         const onDeleteItem = (item) => {
             const data = {
-                "cod_evento": item.item.cod_evento,
+                "placa": item.item.placa,
+                "cod_unidad": item.item.cod_unidad,
                 "cod_cuenta": store.state.codcuenta,
                 "cod_cliente": store.state.codcliente
             }
             confirmBasic(async () => {
-                await deleteProceduresApi(data)
+                await deleteUnitsApi(data)
                     .then(() => {
                         basicAlert(async () => {
                             await loadData();
-                        }, 'success', 'Logrado', 'Se ha eliminado el procedimiento correctamente')
+                        }, 'success', 'Logrado', 'Se ha eliminado el vehículo correctamente')
                     })
                     .catch(error => {
                         console.log(error)
                         basicAlert(() => { }, 'error', 'Hubo un error', 'No se logro eliminar')
                     })
-            }, '¿Estás seguro de eliminar este procedimiento?', 'Aceptar');
+            }, '¿Estás seguro de eliminar este vehículo?', 'Aceptar');
         }
 
         const onEditItem = (data) => {
@@ -85,19 +86,19 @@ export default ({
         }
 
         const onUpdateItem = (data) => {
-            updateProceduresApi(data)
+            updateUnitsApi(data)
                 .then(() => {
                     basicAlert(async () => {
                         await loadData();
-                    }, 'success', 'Logrado', 'Se ha editado el procedimiento correctamente')
+                    }, 'success', 'Logrado', 'Se ha editado el vehículo correctamente')
                 })
                 .catch(() => {
-                    basicAlert(() => { }, 'error', 'Hubo un error', 'No se logro editar el procedimiento')
+                    basicAlert(() => { }, 'error', 'Hubo un error', 'No se logro editar el vehículo')
                 })
         }
 
         return {
-            listAnswersData,
+            listUnitsData,
             editDialog,
             editItem,
             onUpdateItem,
