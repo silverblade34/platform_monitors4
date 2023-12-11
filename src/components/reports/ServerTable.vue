@@ -67,8 +67,8 @@ export default {
             { title: 'Geocerca', key: 'geocerca', sortable: false, align: 'start' },
             { title: 'Fecha ult. acción', key: 'fecha_ultima_accion', sortable: false, align: 'start' },
             { title: 'Hora ult. acción', key: 'hora_ultima_accion', sortable: false, align: 'start' },
-            { title: 'Tiempo atención', key: 'segundos', sortable: false, align: 'end' },
-            { title: 'Estado', key: 'descripcion_estado', sortable: false, align: 'end' },
+            { title: 'Tiempo atención', key: 'segundos', sortable: false, align: 'start' },
+            { title: 'Estado', key: 'descripcion_estado', sortable: false, align: 'start' },
             { title: 'Comentario', key: 'list_comentarios', sortable: false, align: 'start' },
             { title: 'Usuario', key: 'usuario', sortable: false, align: 'end' },
             { title: 'Nombre usuario', key: 'nombre_usuario', sortable: false, align: 'end' }

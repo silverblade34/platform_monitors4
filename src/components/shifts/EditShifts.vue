@@ -2,14 +2,16 @@
     <v-dialog v-model="dialog" width="500" @click:outside="cancelItem">
         <v-card>
             <v-toolbar>
-                <span class="px-4 w-full text-center text-blue-400 font-bold title_views">Editar respuesta predefinida</span>
+                <span class="px-4 w-full text-center text-blue-400 font-bold title_views">Editar turno</span>
             </v-toolbar>
             <v-card-text>
                 <v-col cols="12">
-                    <v-text-field variant="outlined" label="Sigla" prepend-inner-icon="mdi-alphabetical-variant" color="indigo"
-                        v-model="sigla"></v-text-field>
-                    <v-textarea variant="outlined" label="Texto" prepend-inner-icon="mdi-text-box-check-outline" color="indigo"
-                        v-model="text" rows="3"></v-textarea>
+                    <v-text-field variant="outlined" label="Descripción" prepend-inner-icon="mdi-text-box-check-outline"
+                        color="indigo" v-model="description"></v-text-field>
+                    <v-text-field variant="outlined" label="Desde" prepend-inner-icon="mdi-account-clock" color="indigo"
+                        v-model="fromHour" type="time"></v-text-field>
+                    <v-text-field variant="outlined" label="Hasta" prepend-inner-icon="mdi-account-clock" color="indigo"
+                        v-model="toHour" type="time"></v-text-field>
                 </v-col>
             </v-card-text>
             <v-card-actions>
@@ -36,8 +38,9 @@ export default {
     emits: ['edit-item', 'cancel-item'],
     setup(props, { emit }) {
         const dialog = ref(false);
-        const sigla = ref('');
-        const text = ref('');
+        const description = ref('');
+        const fromHour = ref('');
+        const toHour = ref('');
 
         watch(() => props.openModal, (newVal) => {
             dialog.value = newVal
@@ -45,8 +48,9 @@ export default {
 
         watch(() => props.itemEdit, (newVal) => {
             if (Object.keys(newVal).length !== 0) {
-                sigla.value = newVal.item.sigla
-                text.value = newVal.item.text
+                description.value = newVal.item.descripcion
+                fromHour.value = newVal.item.desde
+                toHour.value = newVal.item.hasta
             }
         })
 
@@ -54,11 +58,12 @@ export default {
             emit('edit-item', {
                 cod_cuenta: store.state.codcuenta,
                 cod_cliente: store.state.codcliente,
-                codigo: props.itemEdit.item.codigo,
-                sigla: sigla.value,
-                text: text.value
+                cod_turno: props.itemEdit.item.cod_turno,
+                descripcion: description.value,
+                desde: fromHour.value,
+                hasta: toHour.value
             })
-            sigla.value = text.value = ""
+            description.value = fromHour.value = toHour.value = ""
             cancelItem()
         }
 
@@ -68,8 +73,9 @@ export default {
 
         return {
             dialog,
-            sigla,
-            text,
+            description,
+            fromHour,
+            toHour,
             editItem,
             cancelItem
         }
