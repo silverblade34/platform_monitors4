@@ -6,7 +6,7 @@
             </div>
             <CreateProceduresVue @create-item="onCreateItem" />
         </div>
-        <TableProceduresVue :desserts="listAnswersData" @edit-item="onEditItem" @delete-item="onDeleteItem"/>
+        <TableProceduresVue :desserts="listProceduresData" @edit-item="onEditItem" @delete-item="onDeleteItem"/>
     </div>
     <EditProceduresVue :openModal="editDialog" :itemEdit="editItem" @cancel-item="editDialog = false"
         @edit-item="onUpdateItem" />
@@ -28,7 +28,7 @@ export default ({
         EditProceduresVue
     },
     setup() {
-        const listAnswersData = ref([]);
+        const listProceduresData = ref([]);
         const editItem = ref({});
         const editDialog = ref(false);
 
@@ -39,7 +39,7 @@ export default ({
         const loadData = async () => {
             findAllProceduresApi(store.state.codcuenta, store.state.codcliente)
                 .then(response => {
-                    listAnswersData.value = response.data.data[0].procedimientos
+                    listProceduresData.value = response.data.data[0].procedimientos
                 })
         }
 
@@ -97,7 +97,7 @@ export default ({
         }
 
         return {
-            listAnswersData,
+            listProceduresData,
             editDialog,
             editItem,
             onUpdateItem,

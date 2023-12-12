@@ -8,3 +8,11 @@ export function findAllClientsToAccountApi(cod_cuenta) {
             cod_cuenta,
         })
 }
+
+export function findAllClientsApi(cod_cuenta, empresa) {
+    return axios.post(`${baseURL}/listClients`,
+        {
+            cod_cuenta,
+            empresa
+        })
+}

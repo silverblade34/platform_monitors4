@@ -60,12 +60,13 @@ export default ({
         const search = ref('');
         const selectedDiscardEvents = ref([]);
         const pendingEvents = ref([]);
-        const selectedColumns = ref(['cod_evento', 'placa', 'conductor', 'fecha', 'fecha_actual', 'velocidad',
+        const selectedColumns = ref(['cod_evento', 'placa', 'conductor', 'fleet_name', 'fecha', 'fecha_actual', 'velocidad',
             'direccion', 'descripcion_estado', 'fecha_ultima_accion', 'prioridad', 'actions']);
         const listedHeaders = ref([
             { title: 'Codigo evento', align: 'start', key: 'cod_evento', sortable: true },
             { title: 'Placa', align: 'start', key: 'placa', sortable: true },
             { title: 'Conductor', align: 'start', key: 'conductor', sortable: true },
+            { title: 'Flota', align: 'start', key: 'fleet_name', sortable: true },
             { title: 'Fecha evento', align: 'start', key: 'fecha', sortable: true },
             { title: 'Fecha recepción', align: 'start', key: 'fecha_actual', sortable: true },
             { title: 'Velocidad', align: 'start', key: 'velocidad', sortable: true },

@@ -10,7 +10,7 @@
     </div>
 </template>
 <script>
-import { findAllClientsToAccountApi } from '@/api/UsuariosService';
+import { findAllClientsToAccountApi } from '@/api/UsersService';
 import { onMounted, ref } from 'vue';
 import store from '@/store';
 import TableUsersVue from '@/components/users/TableUsers.vue';
