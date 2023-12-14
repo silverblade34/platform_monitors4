@@ -1,5 +1,5 @@
 <template>
-    <div class="w-full bg-white flex justify-between items-center px-3 container-header">
+    <div class="w-full bg-white flex justify-between items-center px-3 container-header shadow-sm">
         <v-btn variant="text" icon="mdi-menu" color="blue-grey-lighten-1" class="cursor-pointer btn-action-sidebar"
             @click.stop="onActionRail"></v-btn>
         <div class="flex items-center text-start text-xs">

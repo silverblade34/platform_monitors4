@@ -56,7 +56,7 @@
 import TableEventsVue from "@/components/notifications/listedEarrings/TableEvents.vue";
 import { notificationsAccountApi, massDiscardofEventsApi } from '@/api/NotificationsService';
 import { confirmBasic, basicAlert } from '@/helpers/SweetAlert';
-import { onMounted, ref, watch, onBeforeUnmount } from "vue"
+import { onMounted, ref, watch } from "vue"
 import store from "@/store";
 
 export default ({
@@ -88,25 +88,23 @@ export default ({
 
         const listedHeadersFilter = ref([]);
 
-        onMounted(async () => {
-            dialogLoader.value = true
-            await loadData();
-            updateColumnVisibility();
-            const interval = setInterval(loadData, 10000); // Llama a loadData() cada 10 segundos (10000 milisegundos)
-
-            // Limpiar el intervalo cuando el componente se desmonte para evitar fugas de memoria
-            onBeforeUnmount(() => {
-                clearInterval(interval);
-            });
-            dialogLoader.value = false
-        })
-
         const loadData = async () => {
             const responseEvent = await notificationsAccountApi(store.state.codcuenta, store.state.codcliente, store.state.username, store.state.codregla);
             pendingEvents.value = responseEvent.data.data.filter(event => {
                 return event.descripcion_estado === "Sin Atender" || event.descripcion_estado === "En Gestion";
             })
         }
+
+        onMounted(async () => {
+            dialogLoader.value = true
+            await loadData();
+            updateColumnVisibility();
+            dialogLoader.value = false
+        })
+
+        setInterval(() => {
+            loadData();
+        }, 10000);
 
         const updateColumnVisibility = () => {
             listedHeadersFilter.value = listedHeaders.value.filter(item => {
@@ -138,7 +136,7 @@ export default ({
                         })
                 }, '¿Estás seguro de realizar el descarte de los eventos seleccionados?', 'Aceptar');
             } else {
-                basicAlert(() => { }, 'warning', 'Advertencia', 'No se ha encontrado eventos seleccionados para el descarte masivo')
+                basicAlert(() => { }, 'warning', 'Advertencia', 'No hay eventos seleccionados para el descarte masivo')
             }
         }
 

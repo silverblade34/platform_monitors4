@@ -40,10 +40,12 @@
   </v-data-table>
 </template>
 <script>
+import ImgEvidencia from '@/assets/events/evidencias.jpg';
 import { ref, watch } from 'vue';
 import { VDataTable } from 'vuetify/labs/VDataTable';
-import ImgEvidencia from '@/assets/events/evidencias.jpg';
+import { useRouter } from 'vue-router';
 import Swal from 'sweetalert2';
+import store from '@/store';
 
 export default {
   props: {
@@ -57,6 +59,7 @@ export default {
   emits: ['selected-events'],
   setup(_, { emit }) {
     const selected = ref([]);
+    const router = useRouter();
 
     const seeEvidence = (link_img, link_video) => {
       // Función para mostrar el modal de imagen
@@ -168,8 +171,13 @@ export default {
       emit('selected-events', { selected: newVal })
     })
 
+    const editItem = (data) => {
+      store.commit('setEventAtended', data);
+      router.push('/atenderevento');
+    }
+
     return {
-      selected, seeEvidence
+      selected, seeEvidence, editItem
     }
   }
 }

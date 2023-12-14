@@ -12,7 +12,8 @@ export default createStore({
         codregla: [],
         empresa: '',
         username: '',
-        usernameAdmin: ''
+        usernameAdmin: '',
+        eventAtended: {}
     },
     getters: {
 
@@ -25,6 +26,11 @@ export default createStore({
         
         setCodCuenta(state, value) {
             state.codcuenta = value;
+            localStorage.setItem(localStorageKey, JSON.stringify(state));
+        },
+
+        setEventAtended(state, value) {
+            state.eventAtended = value;
             localStorage.setItem(localStorageKey, JSON.stringify(state));
         },
 

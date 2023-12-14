@@ -10,14 +10,14 @@ export function findAllGroupsUsersApi(cod_cuenta, cod_cliente) {
         })
 }
 
-export function createEventsApi(data) {
-    return axios.post(`${baseURL}/createEvents`,data)
+export function createGroupsUsersApi(data) {
+    return axios.post(`${baseURL}/createGroupUsers`,data)
 }
 
-export function deleteEventsApi(data) {
+export function deleteGroupsUsersApi(data) {
     return axios.post(`${baseURL}/deleteEvents`,data)
 }
 
-export function updateEventsApi(data) {
+export function updateGroupsUsersApi(data) {
     return axios.put(`${baseURL}/editEvents`,data)
 }

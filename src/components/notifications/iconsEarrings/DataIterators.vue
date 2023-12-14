@@ -1,7 +1,7 @@
 <template>
   <v-card class="elevation-0">
     <v-container class="pa-2" fluid>
-      <div class="grid gap-3" :class="gridClass">
+      <div class="grid gap-3">
         <v-card class="pb-3" border flat v-for="(item, index) in paginatedDesserts" :key="index">
           <div style="position: relative;">
             <!-- Checkbox -->
