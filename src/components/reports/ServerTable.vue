@@ -172,7 +172,7 @@ export default {
 }
 
 .table_server_events table thead {
-    background: rgb(93, 167, 196);
+    background: #60a5fa;
 }
 
 .table_server_events table thead th {

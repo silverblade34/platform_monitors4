@@ -12,8 +12,9 @@
                     Lista de usuarios
                 </v-alert>
                 <div class="p-3 border-2 border-blue-400 rounded-lg mt-3">
-                    <v-alert color="#bfdbfe" theme="dark" icon="mdi-account" density="compact" class="my-1" v-for="user in dataUsers" :key="user.usuario">
-                       {{ user.usuario }}
+                    <v-alert color="#bfdbfe" theme="dark" icon="mdi-account" density="compact" class="my-1"
+                        v-for="user in dataUsers" :key="user.usuario">
+                        {{ user.usuario }}
                     </v-alert>
                 </div>
             </div>
@@ -23,14 +24,21 @@
                 </v-alert>
                 <div class="mt-3">
                     <v-expansion-panels multiple>
-                        <v-expansion-panel v-for="i in 3" :key="i">
+                        <v-expansion-panel v-for="group in dataGroupUsers" :key="group.codigo">
                             <v-expansion-panel-title color="blue-grey-lighten-5">
-                                Pruebitaa
+                                {{ group.nombre }}
                             </v-expansion-panel-title>
                             <v-expansion-panel-text>
-                                <v-alert color="#bfdbfe" theme="dark" icon="mdi-account" density="compact">
-                                    bryan.ope1
-                                </v-alert>
+                                <div class="flex justify-end gap-2 pb-2">
+                                    <v-btn density="compact" color="red">Quitar usuarios</v-btn>
+                                    <v-btn density="compact" color="indigo">Guardar asignación</v-btn>
+                                </div>
+                                <div class="p-3 rounded-lg border">
+                                    <v-alert color="#bfdbfe" theme="dark" icon="mdi-account" density="compact"
+                                        v-for="user in group.usuarios" :key="user.name">
+                                        {{ user.name }}
+                                    </v-alert>
+                                </div>
                             </v-expansion-panel-text>
                         </v-expansion-panel>
                     </v-expansion-panels>
@@ -41,6 +49,7 @@
 </template>
 <script>
 import { findAllClientsApi } from '@/api/UsersService';
+import { findAllGroupsUsersApi } from '@/api/GroupUsersService';
 import CreateProceduresVue from '@/components/procedures/CreateProcedures.vue';
 import { onMounted, ref } from "vue";
 import store from '@/store';
@@ -51,20 +60,24 @@ export default ({
     },
     setup() {
         const dataUsers = ref([]);
+        const dataGroupUsers = ref([]);
 
         onMounted(async () => {
             await loadData();
         })
 
         const loadData = async () => {
-            findAllClientsApi(store.state.codcuenta, store.state.empresa)
-                .then(response => {
-                    dataUsers.value = response.data.data.filter(cliente => cliente.empresa == store.state.empresa && cliente.rol != "Administrador")
-                })
+            const [responseUsers, responseGroupUsers] = await Promise.all([
+                findAllClientsApi(store.state.codcuenta, store.state.empresa),
+                findAllGroupsUsersApi(store.state.codcuenta, store.state.codcliente)
+            ])
+            dataUsers.value = responseUsers.data.data.filter(cliente => cliente.empresa == store.state.empresa && cliente.rol != "Administrador")
+            dataGroupUsers.value = responseGroupUsers.data.data ? responseGroupUsers.data.data[0].grupos_usuarios : []
         }
 
         return {
             dataUsers,
+            dataGroupUsers
         }
     }
 })

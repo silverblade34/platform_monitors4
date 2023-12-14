@@ -22,13 +22,19 @@
           <v-btn icon="mdi-pencil" size="small" variant="text" color="green"></v-btn>
           <v-tooltip activator="parent" location="top">Atender</v-tooltip>
         </span>
-        <span>
-          <v-btn size="x-small" icon="mdi-video" v-if="item.link_video == '' && item.link_imagen == ''"
-            color="grey"></v-btn>
-          <v-btn icon="mdi-video" size="x-small" v-else color="indigo-lighten-2"
-            @click="seeEvidence(item.link_imagen, item.link_video)"></v-btn>
-          <v-tooltip activator="parent" location="top">Ver evidencias</v-tooltip>
-        </span>
+        <div>
+          <div v-if="item.link_video == '' && item.link_imagen == ''">
+            <v-btn size="x-small" icon="mdi-video" color="grey">
+            </v-btn>
+            <v-tooltip activator="parent" location="top">No hay evidencias</v-tooltip>
+          </div>
+          <div v-else>
+            <v-btn icon="mdi-video" size="x-small" color="indigo-lighten-2"
+              @click="seeEvidence(item.link_imagen, item.link_video)">
+            </v-btn>
+            <v-tooltip activator="parent" location="top">Ver evidencias</v-tooltip>
+          </div>
+        </div>
       </div>
     </template>
   </v-data-table>

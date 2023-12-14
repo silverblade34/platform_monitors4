@@ -43,6 +43,14 @@
             </div>
         </div>
     </div>
+    <v-dialog v-model="dialogLoader" :scrim="false" persistent width="auto">
+        <v-card color="blue">
+            <v-card-text>
+                Construyendo
+                <v-progress-linear indeterminate color="white" class="mb-0"></v-progress-linear>
+            </v-card-text>
+        </v-card>
+    </v-dialog>
 </template>
 <script>
 import TableEventsVue from "@/components/notifications/listedEarrings/TableEvents.vue";
@@ -60,6 +68,7 @@ export default ({
         const search = ref('');
         const selectedDiscardEvents = ref([]);
         const pendingEvents = ref([]);
+        const dialogLoader = ref(false);
         const selectedColumns = ref(['cod_evento', 'placa', 'conductor', 'fleet_name', 'fecha', 'fecha_actual', 'velocidad',
             'direccion', 'descripcion_estado', 'fecha_ultima_accion', 'prioridad', 'actions']);
         const listedHeaders = ref([
@@ -80,6 +89,7 @@ export default ({
         const listedHeadersFilter = ref([]);
 
         onMounted(async () => {
+            dialogLoader.value = true
             await loadData();
             updateColumnVisibility();
             const interval = setInterval(loadData, 10000); // Llama a loadData() cada 10 segundos (10000 milisegundos)
@@ -88,7 +98,7 @@ export default ({
             onBeforeUnmount(() => {
                 clearInterval(interval);
             });
-
+            dialogLoader.value = false
         })
 
         const loadData = async () => {
@@ -135,6 +145,7 @@ export default ({
         return {
             onMassDiscard,
             onSelectedEvents,
+            dialogLoader,
             listedHeadersFilter,
             selectedColumns,
             pendingEvents,

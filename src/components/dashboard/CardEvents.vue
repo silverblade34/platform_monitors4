@@ -16,7 +16,7 @@ export default ({
     props: {
         BgCard: String,
         Icon: String,
-        Amount: String,
+        Amount: Number,
         Title: String
     }
 })

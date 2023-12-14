@@ -23,6 +23,11 @@ const router = createRouter({
                     component: () => import("@/views/notifications/ListedEarringsView.vue"),
                 },
                 {
+                    name: "atenderevento",
+                    path: "atenderevento",
+                    component: () => import("@/views/notifications/AttendView.vue"),
+                },
+                {
                     name: "pendientesiconos",
                     path: "pendientesiconos",
                     component: () => import("@/views/notifications/IconsEarringsView.vue"),

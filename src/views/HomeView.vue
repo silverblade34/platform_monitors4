@@ -5,13 +5,13 @@
             <CardEventsVue :BgCard="card.bgCard" :Icon="card.icon" :Amount="card.amount" :Title="card.title"
                 v-for="(card, index) in listCards" :key="index" />
             <div class="col-span-2 max-h-[50rem]">
-                <EventNotificationVue :data="dataEvents"/>
+                <EventNotificationVue :data="dataEvents" />
             </div>
             <div class="col-span-1 max-h-[50rem]">
-                <VehicleNotificationVue :data="dataVehicles"/>
+                <VehicleNotificationVue :data="dataVehicles" />
             </div>
             <div class="col-span-1 max-h-[50rem]">
-                <OperatorNotificationVue :data="dataOperators"/>
+                <OperatorNotificationVue :data="dataOperators" />
             </div>
         </div>
     </div>
@@ -39,28 +39,28 @@ export default ({
             {
                 bgCard: "bg-yellow-400",
                 icon: "mdi-bell",
-                amount: "0",
+                amount: 0,
                 title: "Eventos sin atender",
                 key: "unattended_events"
             },
             {
                 bgCard: "bg-sky-400",
                 icon: "mdi-account-tie-voice",
-                amount: "0",
+                amount: 0,
                 title: "Eventos en Gestión",
                 key: "events_in_management"
             },
             {
                 bgCard: "bg-lime-400",
                 icon: "mdi-account-check",
-                amount: "0",
+                amount: 0,
                 title: "Eventos confirmados",
                 key: "confirmed_events"
             },
             {
                 bgCard: "bg-red-400",
                 icon: "mdi-bell-remove",
-                amount: "0",
+                amount: 0,
                 title: "Eventos descartados",
                 key: "discarded_events"
             }
@@ -105,7 +105,7 @@ export default ({
         });
 
         const filterByStatus = async (events, status) => {
-            return events.filter(event => event.descripcion_estado === status);
+            return events ? events.filter(event => event.descripcion_estado === status) : [];
         }
 
         const tableValuePorcentage = async (tableData) => {
