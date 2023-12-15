@@ -78,7 +78,6 @@ export default ({
         }
 
         const onUpdateItem = (data) => {
-            console.log(data)
             updateEventsApi(data)
                 .then(() => {
                     basicAlert(async () => {

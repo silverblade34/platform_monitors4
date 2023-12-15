@@ -11,6 +11,14 @@
             <SimpleEventsTableVue :desserts="discardedEvents" :listedHeaders="listedHeaders" :search="search" />
         </div>
     </div>
+    <v-dialog v-model="dialogLoader" :scrim="false" persistent width="auto">
+        <v-card color="blue">
+            <v-card-text>
+                Construyendo
+                <v-progress-linear indeterminate color="white" class="mb-0"></v-progress-linear>
+            </v-card-text>
+        </v-card>
+    </v-dialog>
 </template>
 <script>
 import { notificationsAccountApi } from '@/api/NotificationsService';
@@ -25,6 +33,7 @@ export default ({
     setup() {
         const search = ref('');
         const discardedEvents = ref([]);
+        const dialogLoader = ref(false);
         const listedHeaders = ref([
             {
                 title: 'Codigo evento',
@@ -71,7 +80,9 @@ export default ({
         ])
 
         onMounted(async () => {
+            dialogLoader.value = true
             await loadData();
+            dialogLoader.value = false
         })
 
         const loadData = async () => {
@@ -82,6 +93,7 @@ export default ({
         }
 
         return {
+            dialogLoader,
             listedHeaders,
             discardedEvents,
             search

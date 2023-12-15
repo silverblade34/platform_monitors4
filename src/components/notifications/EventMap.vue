@@ -28,7 +28,7 @@ function getLocation(lat, lng) {
 </script>
 
 <template>
-    <div ref="mapContainer" class="lg:min-w-[45rem] md:min-w-[30rem] md:min-h-[35rem] lg:min-h-[25rem] min-h-[20rem] min-w-[20rem] w-full" style="width: 400px; height: 400px"></div>
+    <div ref="mapContainer" class="lg:min-w-[47rem] md:min-w-[44rem] md:min-h-[32rem] lg:min-h-[25rem] min-h-[20rem] min-w-[20rem] w-full" style="width: 400px; height: 400px"></div>
 </template>
 
 <style scoped></style>

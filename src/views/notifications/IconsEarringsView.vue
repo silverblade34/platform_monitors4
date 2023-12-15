@@ -4,8 +4,8 @@
         <div class="w-full rounded-lg bg-white shadow-md p-4">
             <div class="pl-2">
                 <p class="text-xl text-gray-400">Realizar filtros</p>
-                <div class="w-full flex justify-between pt-3">
-                    <div class="w-[45%] grid grid-cols-5 gap-4">
+                <div class="w-full block lg:flex lg:justify-between pt-3">
+                    <div class="lg:w-[45%] w-full block lg:grid lg:grid-cols-5 gap-4">
                         <v-select label="Orden" :items="['Ascendente', 'Descendente']" variant="outlined" density="compact"
                             color="indigo" prepend-inner-icon="mdi-calendar-range" class="col-span-2"
                             v-model="order"></v-select>

@@ -9,11 +9,11 @@
             </router-link>
             Atender evento
         </h1>
-        <div class="w-full rounded-lg bg-white shadow-md p-5 grid grid-cols-2 gap-3">
+        <div class="w-full rounded-lg bg-white shadow-md p-5 block lg:grid lg:grid-cols-2 gap-4">
             <div>
-                <div class="font-bold text-blue-500 pb-3 flex justify-between">
+                <div class="font-bold text-blue-500 pb-3 block md:flex md:justify-between">
                     <span><v-icon>mdi-text-box-search-outline</v-icon> Detalles</span>
-                    <v-btn variant="tonal" :class="getPriorityColor(editEvent.prioridad)"> {{ editEvent.cod_evento }}
+                    <v-btn variant="tonal" :class="getPriorityColor(editEvent.prioridad)" class="mt-2 md:mt-0"> {{ editEvent.cod_evento }}
                     </v-btn>
                 </div>
                 <div class="block md:grid md:grid-cols-2 lg:grid lg:grid-cols-3 gap-2 text-gray-600 text-sm">
@@ -57,16 +57,17 @@
                 <p class="font-bold text-blue-500 pb-3 pt-3"> <v-icon>mdi-comment-text-multiple</v-icon> Registrar
                     comentarios</p>
                 <div class="block md:grid md:grid-cols-3 lg:grid lg:grid-cols-5 gap-1 pb-3">
-                    <v-btn color="yellow-darken-4" size="small">En gestión</v-btn>
-                    <v-btn color="indigo" size="small">Confirmado</v-btn>
-                    <v-btn color="red" size="small">Descartado</v-btn>
-                    <v-btn color="teal-lighten-2" size="small">Escalar</v-btn>
+                    <v-btn color="yellow-darken-4" size="small" @click="updateEventStatus('En Gestion')" class="my-1 md:my-0">En gestión</v-btn>
+                    <v-btn color="indigo" size="small" @click="updateEventStatus('Confirmado')" class="my-1 md:my-0">Confirmado</v-btn>
+                    <v-btn color="red" size="small" @click="updateEventStatus('Descartado')" class="my-1 md:my-0">Descartado</v-btn>
+                    <v-btn color="teal-lighten-2" size="small" class="my-1 md:my-0">Escalar</v-btn>
                 </div>
                 <v-textarea label="Agregue un comentario" variant="outlined" prepend-inner-icon="mdi-text-box-outline"
-                    color="indigo" rows="3"></v-textarea>
+                    color="indigo" rows="3" v-model="comment"></v-textarea>
                 <div class="block md:grid md:grid-cols-3 lg:grid lg:grid-cols-5 gap-1 pb-2">
-                    <v-btn color="light-blue-darken-1" size="small" v-for="answer in answersData" :key="answer.codigo">{{
-                        answer.sigla }}</v-btn>
+                    <v-btn color="light-blue-darken-1" size="small" v-for="answer in answersData" :key="answer.codigo"
+                        @click="insertComment(answer.text)">{{
+                            answer.sigla }}</v-btn>
                 </div>
             </div>
             <div class="overflow-hidden">
@@ -86,7 +87,11 @@
     </div>
 </template>
 <script>
+/* eslint-disable */
+import { addCommentEventsApi } from '@/api/NotificationsService';
+import { basicAlert, confirmBasic } from '@/helpers/SweetAlert';
 import { findAllAnswersApi } from '@/api/AnswersService';
+import { useRouter } from 'vue-router';
 import { onMounted, ref } from 'vue';
 import EventMapVue from '@/components/notifications/EventMap.vue';
 import { VDataTableVirtual } from 'vuetify/labs/VDataTable';
@@ -102,12 +107,37 @@ export default ({
         const latitud = ref('');
         const longitud = ref('');
         const answersData = ref([]);
+        const comment = ref('')
+        const currentDateTime = ref('');
+        const router = useRouter();
+
         const headers = [
             { title: 'Comentario', align: 'start', key: 'comentario' },
             { title: 'Estado', align: 'start', key: 'descripcion_estado' },
             { title: 'Usuario', align: 'start', key: 'usuario' },
             { title: 'Fecha', align: 'start', key: 'fecha_envio' },
         ]
+
+        const getCurrentDateTime = () => {
+            const currentDate = new Date();
+            const formattedDate = formatDate(currentDate);
+            const formattedTime = formatTime(currentDate);
+            currentDateTime.value = `${formattedDate} ${formattedTime}`;
+        };
+
+        const formatDate = (date) => {
+            const day = date.getDate().toString().padStart(2, '0');
+            const month = (date.getMonth() + 1).toString().padStart(2, '0');
+            const year = date.getFullYear();
+            return `${day}.${month}.${year}`;
+        };
+
+        const formatTime = (date) => {
+            const hours = date.getHours().toString().padStart(2, '0');
+            const minutes = date.getMinutes().toString().padStart(2, '0');
+            const seconds = date.getSeconds().toString().padStart(2, '0');
+            return `${hours}:${minutes}:${seconds}`;
+        };
 
         onMounted(() => {
             editEvent.value = store.state.eventAtended
@@ -133,8 +163,42 @@ export default ({
             }
         }
 
+        const insertComment = (text) => {
+            comment.value = text
+        }
+
+        const updateEventStatus = (status) => {
+            getCurrentDateTime()
+            const data = {
+                "id": editEvent.value.ID,
+                "comentario": comment.value,
+                "fecha_envio": currentDateTime.value,
+                "descripcion_estado": status,
+                "rol": store.state.rol,
+                "usuario": store.state.username
+            }
+            if (comment.value != "") {
+                confirmBasic(async () => {
+                    addCommentEventsApi(data)
+                        .then(() => {
+                            basicAlert(async () => {
+                                router.push('/pendienteslistados');
+                            }, 'success', 'Logrado', 'Se agrego el comentario correctamente')
+                        })
+                        .catch(() => {
+                            basicAlert(() => { }, 'error', 'Hubo un error', 'No se logro agregar el comentario')
+                        })
+                }, '¿Estás seguro de agregar este comentario?', 'Aceptar');
+            } else {
+                basicAlert(() => { }, 'warning', 'Advertencia', 'No se registro un comentario')
+            }
+        }
+
         return {
+            updateEventStatus,
             getPriorityColor,
+            insertComment,
+            comment,
             editEvent,
             answersData,
             latitud,
@@ -167,4 +231,5 @@ export default ({
     /* Color de fondo para prioridad CRITICO */
     color: white;
     /* Color del texto para prioridad CRITICO */
-}</style>
+}
+</style>
