@@ -9,6 +9,7 @@ export default createStore({
         codcliente: '',
         codclienteAdmin: '',
         rol: '',
+        ruc: '',
         codregla: [],
         empresa: '',
         username: '',
@@ -26,6 +27,11 @@ export default createStore({
         
         setCodCuenta(state, value) {
             state.codcuenta = value;
+            localStorage.setItem(localStorageKey, JSON.stringify(state));
+        },
+
+        setRuc(state, value) {
+            state.ruc = value;
             localStorage.setItem(localStorageKey, JSON.stringify(state));
         },
 

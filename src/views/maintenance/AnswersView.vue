@@ -65,7 +65,6 @@ export default ({
                 "cod_cuenta": store.state.codcuenta,
                 "cod_cliente": store.state.codcliente
             }
-            console.log(data)
             confirmBasic(async () => {
                 await deleteAnswersApi(data)
                     .then(() => {

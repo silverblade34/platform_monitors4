@@ -26,17 +26,24 @@
                     <v-expansion-panels multiple>
                         <v-expansion-panel v-for="group in dataGroupUsers" :key="group.codigo">
                             <v-expansion-panel-title color="blue-grey-lighten-5">
-                                {{ group.nombre }}
+                                <div class="flex gap-2">
+                                    <span @click.stop>
+                                        <v-icon color="green" size="small">mdi-square-edit-outline</v-icon>
+                                        <v-tooltip activator="parent" location="top">Editar</v-tooltip>
+                                    </span>
+                                    <span @click.stop>
+                                        <v-icon color="red" size="small"
+                                            @click="deleteGroup(group.codigo)">mdi-delete-empty</v-icon>
+                                        <v-tooltip activator="parent" location="top">Eliminar</v-tooltip>
+                                    </span>
+                                    <span>{{ group.nombre }}</span>
+                                </div>
                             </v-expansion-panel-title>
                             <v-expansion-panel-text>
-                                <!-- <div class="flex justify-end gap-2 pb-2">
-                                    <v-btn density="compact" color="red">Quitar usuarios</v-btn>
-                                    <v-btn density="compact" color="indigo">Guardar asignación</v-btn>
-                                </div> -->
                                 <div class="p-3 rounded-lg border min-h-[4rem]">
                                     <v-alert color="#bfdbfe" theme="dark" icon="mdi-account" density="compact"
-                                        v-for="user in group.usuarios" :key="user.name">
-                                        {{ user.name }}
+                                        v-for="user in group.usuarios" :key="user" class="my-1">
+                                        {{ user }}
                                     </v-alert>
                                 </div>
                             </v-expansion-panel-text>
@@ -49,9 +56,9 @@
 </template>
 <script>
 import { findAllClientsApi } from '@/api/UsersService';
-import { findAllGroupsUsersApi, createGroupsUsersApi } from '@/api/GroupUsersService';
-import CreateGroupVue from '@/components/groups/CreateGroup.vue';
-import { basicAlert } from '@/helpers/SweetAlert';
+import { findAllGroupsUsersApi, createGroupsUsersApi, deleteGroupsUsersApi } from '@/api/GroupUsersService';
+import CreateGroupVue from '@/components/groups/users/CreateGroupUsers.vue';
+import { basicAlert, confirmBasic } from '@/helpers/SweetAlert';
 import { onMounted, ref } from "vue";
 import store from '@/store';
 
@@ -92,10 +99,31 @@ export default ({
             }
         }
 
+        const deleteGroup = (codigo) => {
+            confirmBasic(async () => {
+                const data = {
+                    cod_cuenta: store.state.codcuenta,
+                    cod_cliente: store.state.codcliente,
+                    codigo: codigo,
+                    ruc_cuenta: store.state.ruc
+                }
+                deleteGroupsUsersApi(data)
+                    .then(() => {
+                        basicAlert(async () => {
+                            await loadData();
+                        }, 'success', 'Logrado', 'Se ha eliminado el grupo correctamente')
+                    })
+                    .catch(error => {
+                        basicAlert(() => { }, 'error', 'Hubo un error', error.response.data.message)
+                    })
+            }, '¿Estás seguro de eliminar este grupo?', 'Aceptar');
+        }
+
         return {
             dataUsers,
             dataGroupUsers,
-            onCreateItem
+            onCreateItem,
+            deleteGroup
         }
     }
 })

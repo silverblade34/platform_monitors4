@@ -50,7 +50,7 @@
 <script>
 import { findAllClientsApi } from '@/api/UsersService';
 import { findAllGroupsUsersApi, createGroupsUsersApi } from '@/api/GroupUsersService';
-import CreateGroupVue from '@/components/groups/CreateGroup.vue';
+import CreateGroupVue from '@/components/groups/users/CreateGroupUsers.vue';
 import { basicAlert } from '@/helpers/SweetAlert';
 import { onMounted, ref } from "vue";
 import store from '@/store';

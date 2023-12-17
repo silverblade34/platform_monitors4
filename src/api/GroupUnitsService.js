@@ -19,5 +19,5 @@ export function deleteGroupsUnitsApi(data) {
 }
 
 export function updateGroupsUnitsApi(data) {
-    return axios.put(`${baseURL}/editGroupsUnits`,data)
+    return axios.post(`${baseURL}/editGroupsUnits`,data)
 }

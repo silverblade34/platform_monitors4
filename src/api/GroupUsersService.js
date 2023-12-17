@@ -15,7 +15,7 @@ export function createGroupsUsersApi(data) {
 }
 
 export function deleteGroupsUsersApi(data) {
-    return axios.post(`${baseURL}/deleteEvents`,data)
+    return axios.post(`${baseURL}/deleteGroupUsers`,data)
 }
 
 export function updateGroupsUsersApi(data) {

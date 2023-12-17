@@ -55,7 +55,7 @@
 <script>
 import store from '@/store';
 import { ref, watch } from 'vue';
-import SelectItemsAndMoveVue from './SelectItemsAndMove.vue';
+import SelectItemsAndMoveVue from '../SelectItemsAndMove.vue';
 import { findAllClientsApi } from '@/api/UsersService.js';
 
 export default ({
@@ -95,7 +95,7 @@ export default ({
                 cod_cuenta: store.state.codcuenta,
                 cod_cliente: store.state.codcliente,
                 nombre: name.value,
-                usuarios: itemsAssigned.value
+                usuarios: itemsAssigned.value.map(user => user.name)
             })
             cancelItem()
         }
