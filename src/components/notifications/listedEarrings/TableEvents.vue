@@ -9,9 +9,9 @@
     <template v-slot:[`item.prioridad`]="{ item }">
       <div class="flex justify-center">
         <div class="h-5 w-5 rounded-full mr-2" :class="{
-          'bg-orange-300': item.prioridad === 'URGENTE',
-          'bg-red-300': item.prioridad === 'CRITICO',
-          'bg-blue-300': item.prioridad === 'REGULAR'
+          'bg-orange-400': item.prioridad === 'URGENTE',
+          'bg-red-400': item.prioridad === 'CRITICO',
+          'bg-blue-400': item.prioridad === 'REGULAR'
         }">
         </div>
       </div>

@@ -91,6 +91,10 @@ export default ({
                 return event.descripcion_estado === "Confirmado";
             })
         }
+        
+        setInterval(() => {
+            loadData();
+        }, 10000);
 
         return {
             dialogLoader,

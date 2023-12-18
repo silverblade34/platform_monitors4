@@ -13,7 +13,8 @@
             <div>
                 <div class="font-bold text-blue-500 pb-3 block md:flex md:justify-between">
                     <span><v-icon>mdi-text-box-search-outline</v-icon> Detalles</span>
-                    <v-btn variant="tonal" :class="getPriorityColor(editEvent.prioridad)" class="mt-2 md:mt-0"> {{ editEvent.cod_evento }}
+                    <v-btn variant="tonal" :class="getPriorityColor(editEvent.cod_evento)" class="mt-2 md:mt-0"> {{
+                        editEvent.cod_evento }}
                     </v-btn>
                 </div>
                 <div class="block md:grid md:grid-cols-2 lg:grid lg:grid-cols-3 gap-2 text-gray-600 text-sm">
@@ -32,11 +33,7 @@
                     </div>
                     <div>
                         <p>Fecha recepción</p>
-                        <div class="bg-gray-200 p-2 px-4 rounded-md">{{ editEvent.hora }} {{ editEvent.fecha }}</div>
-                    </div>
-                    <div>
-                        <p>Prioridad</p>
-                        <div class="bg-gray-200 p-2 px-4 rounded-md">{{ editEvent.prioridad }}</div>
+                        <div class="bg-gray-200 p-2 px-4 rounded-md">{{ editEvent.fecha }} {{ editEvent.hora }}</div>
                     </div>
                     <div>
                         <p>Origen</p>
@@ -57,10 +54,13 @@
                 <p class="font-bold text-blue-500 pb-3 pt-3"> <v-icon>mdi-comment-text-multiple</v-icon> Registrar
                     comentarios</p>
                 <div class="block md:grid md:grid-cols-3 lg:grid lg:grid-cols-5 gap-1 pb-3">
-                    <v-btn color="yellow-darken-4" size="small" @click="updateEventStatus('En Gestion')" class="my-1 md:my-0">En gestión</v-btn>
-                    <v-btn color="indigo" size="small" @click="updateEventStatus('Confirmado')" class="my-1 md:my-0">Confirmado</v-btn>
-                    <v-btn color="red" size="small" @click="updateEventStatus('Descartado')" class="my-1 md:my-0">Descartado</v-btn>
-                    <v-btn color="teal-lighten-2" size="small" class="my-1 md:my-0">Escalar</v-btn>
+                    <v-btn color="yellow-darken-4" size="small" @click="updateEventStatus('En Gestion')"
+                        class="my-1 md:my-0">En gestión</v-btn>
+                    <v-btn color="indigo" size="small" @click="updateEventStatus('Confirmado')"
+                        class="my-1 md:my-0">Confirmado</v-btn>
+                    <v-btn color="red" size="small" @click="updateEventStatus('Descartado')"
+                        class="my-1 md:my-0">Descartado</v-btn>
+                    <EscalateEventVue @send-email="onSendEmail" />
                 </div>
                 <v-textarea label="Agregue un comentario" variant="outlined" prepend-inner-icon="mdi-text-box-outline"
                     color="indigo" rows="3" v-model="comment"></v-textarea>
@@ -87,25 +87,29 @@
     </div>
 </template>
 <script>
-/* eslint-disable */
 import { addCommentEventsApi } from '@/api/NotificationsService';
 import { basicAlert, confirmBasic } from '@/helpers/SweetAlert';
 import { findAllAnswersApi } from '@/api/AnswersService';
+import { findAllEventsApi } from '@/api/EventsService';
+import { sendEmailsApi } from '@/api/EmailService';
 import { useRouter } from 'vue-router';
 import { onMounted, ref } from 'vue';
 import EventMapVue from '@/components/notifications/EventMap.vue';
 import { VDataTableVirtual } from 'vuetify/labs/VDataTable';
+import EscalateEventVue from '@/components/notifications/EscalateEvent.vue';
 import store from '@/store';
 
 export default ({
     components: {
         EventMapVue,
         VDataTableVirtual,
+        EscalateEventVue
     },
     setup() {
         const editEvent = ref({});
         const latitud = ref('');
         const longitud = ref('');
+        const listEventsData = ref([]);
         const answersData = ref([]);
         const comment = ref('')
         const currentDateTime = ref('');
@@ -139,27 +143,32 @@ export default ({
             return `${hours}:${minutes}:${seconds}`;
         };
 
-        onMounted(() => {
+        onMounted(async () => {
             editEvent.value = store.state.eventAtended
             latitud.value = editEvent.value.latitud
             longitud.value = editEvent.value.longitud
-            findAllAnswersApi(store.state.codclienteAdmin)
-                .then(response => {
-                    answersData.value = response.data.data ? response.data.data[0].respuestas : []
-                })
+            const [responseAnswer, responseEvents] = await Promise.all([
+                findAllAnswersApi(store.state.codclienteAdmin),
+                findAllEventsApi(store.state.codcuenta, store.state.codclienteAdmin)
+            ])
+            answersData.value = responseAnswer.data.data ? responseAnswer.data.data[0].respuestas : []
+            listEventsData.value = responseEvents.data.data ? responseEvents.data.data[0].eventos : []
         })
 
-        const getPriorityColor = (prioridad) => {
-            // Devuelve la clase CSS correspondiente según el valor de prioridad
-            switch (prioridad) {
-                case 'REGULAR':
-                    return 'regular-color-class'; // Reemplaza con la clase CSS para REGULAR
-                case 'URGENTE':
-                    return 'urgent-color-class'; // Reemplaza con la clase CSS para URGENTE
-                case 'CRITICO':
-                    return 'critical-color-class'; // Reemplaza con la clase CSS para CRITICO
-                default:
-                    return ''; // Si no coincide con ninguno, puedes establecer una clase predeterminada o dejar vacío
+        const getPriorityColor = (cod_evento) => {
+            if (cod_evento && listEventsData.value.length > 0) {
+                // Devuelve la clase CSS correspondiente según el valor de prioridad
+                const evento = listEventsData.value.find(event => event.cod_evento == cod_evento)
+                switch (evento.prioridad) {
+                    case 'REGULAR':
+                        return 'regular-color-class'; // Reemplaza con la clase CSS para REGULAR
+                    case 'URGENTE':
+                        return 'urgent-color-class'; // Reemplaza con la clase CSS para URGENTE
+                    case 'CRITICO':
+                        return 'critical-color-class'; // Reemplaza con la clase CSS para CRITICO
+                    default:
+                        return ''; // Si no coincide con ninguno, puedes establecer una clase predeterminada o dejar vacío
+                }
             }
         }
 
@@ -194,10 +203,27 @@ export default ({
             }
         }
 
+        const onSendEmail = (data) => {
+            // Seleccionar los campos requeridos del objeto "data"
+            // Construir el cuerpo del correo con los campos seleccionados en formato HTML
+            const body = ` Código Evento: ${editEvent.value.cod_evento} \n Conductor: ${editEvent.value.conductor} \n Placa: ${editEvent.value.placa} \n Fecha de evento: ${editEvent.value.fecha_actual} \n`;
+            // Crear el payload para enviar el correo
+            const payload = {
+                subject: 'Alerta de MONITORS4',
+                body: body,
+                to: data.email
+            };
+            sendEmailsApi(payload)
+                .then(() => {
+                    basicAlert(async () => { }, 'success', 'Logrado', 'Se escalo el evento correctamente')
+                })
+        }
+
         return {
             updateEventStatus,
             getPriorityColor,
             insertComment,
+            onSendEmail,
             comment,
             editEvent,
             answersData,
@@ -211,7 +237,7 @@ export default ({
 <style>
 /* Clase para prioridad REGULAR */
 .regular-color-class {
-    background-color: #4ca0af;
+    background-color: #60a5fa;
     /* Color de fondo para prioridad REGULAR */
     color: white;
     /* Color del texto para prioridad REGULAR */
@@ -219,7 +245,7 @@ export default ({
 
 /* Clase para prioridad URGENTE */
 .urgent-color-class {
-    background-color: #ff9800;
+    background-color: #fb923c;
     /* Color de fondo para prioridad URGENTE */
     color: white;
     /* Color del texto para prioridad URGENTE */
@@ -227,7 +253,7 @@ export default ({
 
 /* Clase para prioridad CRITICO */
 .critical-color-class {
-    background-color: #f44336;
+    background-color: #f87171;
     /* Color de fondo para prioridad CRITICO */
     color: white;
     /* Color del texto para prioridad CRITICO */

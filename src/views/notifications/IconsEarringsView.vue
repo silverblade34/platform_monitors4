@@ -67,6 +67,10 @@ export default ({
             eventCodes.value = uniqueEventCodes;
         }
 
+        setInterval(() => {
+            loadData();
+        }, 10000);
+
         watch(() => order.value, async () => {
             await filterEvents();
         })

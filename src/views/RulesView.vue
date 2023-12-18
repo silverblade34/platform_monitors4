@@ -4,21 +4,23 @@
             <div>
                 <h1 class="font-bold text-xl title_poppins pb-5">Reglas</h1>
             </div>
-            <CreateAnswersVue @create-item="onCreateItem" />
+            <CreateRulesVue @create-item="onCreateItem" :dataGroupUnitsProps="dataGroupUnits"
+                :dataGroupUsersProps="dataGroupUsers" :dataGroupEventsProps="dataGroupEvents" />
         </div>
-        <div class="w-full rounded-lg bg-white gap-3 p-4 shadow-md">
-            <div class="w-full bg-orange-400 text-white rounded-lg p-3">
-                Regla 1
-            </div>
-        </div>
+        <TableRulesVue :desserts="listRulesData" :dataGroupUnitsProps="dataGroupUnits" :dataGroupUsersProps="dataGroupUsers"
+            :dataGroupEventsProps="dataGroupEvents" />
     </div>
     <EditAnswersVue :openModal="editDialog" :itemEdit="editItem" @cancel-item="editDialog = false"
         @edit-item="onUpdateItem" />
 </template>
 <script>
-import { findAllRulesApi, createAnswersApi, updateAnswersApi, deleteAnswersApi } from '@/api/RulesService';
-import CreateAnswersVue from '@/components/answers/CreateAnswers.vue';
+import { findAllRulesApi, updateAnswersApi, deleteAnswersApi } from '@/api/RulesService';
+import { findAllGroupsUsersApi } from '@/api/GroupUsersService';
+import { findAllGroupsEventsApi } from '@/api/GroupEventsService';
+import { findAllGroupsUnitsApi } from '@/api/GroupUnitsService';
+import CreateRulesVue from '@/components/rules/CreateRules.vue';
 import EditAnswersVue from '@/components/answers/EditAnswers.vue';
+import TableRulesVue from '@/components/rules/TableRules.vue';
 import { basicAlert, confirmBasic } from '@/helpers/SweetAlert';
 import { onMounted, ref } from "vue";
 import store from '@/store';
@@ -26,11 +28,15 @@ import store from '@/store';
 
 export default ({
     components: {
-        CreateAnswersVue,
-        EditAnswersVue
+        CreateRulesVue,
+        EditAnswersVue,
+        TableRulesVue
     },
     setup() {
-        const listAnswersData = ref([]);
+        const dataGroupUnits = ref([]);
+        const dataGroupUsers = ref([]);
+        const dataGroupEvents = ref([]);
+        const listRulesData = ref([]);
         const editItem = ref({});
         const editDialog = ref(false);
 
@@ -39,25 +45,24 @@ export default ({
         })
 
         const loadData = async () => {
-            findAllRulesApi(store.state.codcuenta, store.state.codcliente)
-                .then(response => {
-                    listAnswersData.value = response.data.data[0].respuestas
-                })
+            const [responseRules, responseGroupUsers, reponseGroupEvents, responseGroupUnits] = await Promise.all([
+                findAllRulesApi(store.state.codcuenta, store.state.codcliente),
+                findAllGroupsUsersApi(store.state.codcuenta, store.state.codcliente),
+                findAllGroupsEventsApi(store.state.codcuenta, store.state.codcliente),
+                findAllGroupsUnitsApi(store.state.codcuenta, store.state.codcliente)
+            ])
+            listRulesData.value = responseRules.data.data ? responseRules.data.data[0].reglas : []
+            dataGroupUnits.value = responseGroupUnits.data.data ? responseGroupUnits.data.data[0].grupos_unidades : []
+            dataGroupUsers.value = responseGroupUsers.data.data ? responseGroupUsers.data.data[0].grupos_usuarios : []
+            dataGroupEvents.value = reponseGroupEvents.data.data ? reponseGroupEvents.data.data[0].grupos_tiposdeventos : []
         }
 
         const onCreateItem = (data) => {
-            if (data.sigla != "" && data.text != "") {
-                createAnswersApi(data)
-                    .then(() => {
-                        basicAlert(async () => {
-                            await loadData();
-                        }, 'success', 'Logrado', 'Se ha creado la respuesta predefinida correctamente')
-                    })
-                    .catch(() => {
-                        basicAlert(() => { }, 'error', 'Hubo un error', 'No se logro crear el evento')
-                    })
+            console.log(data)
+            if (data.regla != "" && data.cod_grupotiposdeventos.length > 0 && data.cod_grupounidades.length > 0 && data.cod_grupousuarios.length > 0) {
+                console.log(data)
             } else {
-                basicAlert(() => { }, 'warning', 'Advertencia', 'Rellene todos los campos')
+                basicAlert(() => { }, 'warning', 'Advertencia', 'Rellene todos los campos, se debe asignar al menos un grupo por cada tipo')
             }
         }
 
@@ -99,7 +104,10 @@ export default ({
         }
 
         return {
-            listAnswersData,
+            dataGroupUnits,
+            dataGroupUsers,
+            dataGroupEvents,
+            listRulesData,
             editDialog,
             editItem,
             onUpdateItem,

@@ -86,11 +86,15 @@ export default ({
         })
 
         const loadData = async () => {
-            const responseEvent = await notificationsAccountApi(store.state.codcuenta, store.state.codcliente, store.state.username, store.state.codregla);
+            const responseEvent = await notificationsAccountApi(store.state.codcuenta, store.state.codclienteAdmin, store.state.username, store.state.codregla);
             discardedEvents.value = responseEvent.data.data.filter(event => {
                 return event.descripcion_estado === "Descartado";
             })
         }
+
+        setInterval(() => {
+            loadData();
+        }, 10000);
 
         return {
             dialogLoader,

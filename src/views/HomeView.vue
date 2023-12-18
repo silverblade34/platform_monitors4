@@ -69,7 +69,7 @@ export default ({
         const dataVehicles = ref([])
         const dataOperators = ref([])
 
-        onMounted(async () => {
+        const loadData = async () => {
             const [responseEvent, tableEvent] = await Promise.all([
                 notificationsAccountApi(store.state.codcuenta, store.state.codclienteAdmin, store.state.username, store.state.codregla),
                 homeClientsApi(store.state.codcuenta, store.state.codclienteAdmin, store.state.username, store.state.codregla)
@@ -102,7 +102,15 @@ export default ({
             listCards.value[1].amount = filteredResults[1].length;
             listCards.value[2].amount = filteredResults[2].length;
             listCards.value[3].amount = filteredResults[3].length;
+        }
+
+        onMounted(async () => {
+            loadData()
         });
+
+        setInterval(() => {
+            loadData();
+        }, 10000);
 
         const filterByStatus = async (events, status) => {
             return events ? events.filter(event => event.descripcion_estado === status) : [];

@@ -54,7 +54,7 @@ export default ({
           if (response.data.status == true) {
             store.commit('setCodCuenta', response.data.data.CodCuenta);
             store.commit('setCodCliente', response.data.data.CodCliente);
-            store.commit('setCodClienteAdmin', response.data.data.CodClienteAdmin);
+            store.commit('setCodClienteAdmin', response.data.CodClienteAdmin);
             store.commit('setRol', response.data.data.Rol);
             store.commit('setRuc', response.data.data.Ruc);
             store.commit('setEmpresa', response.data.data.Empresa);
