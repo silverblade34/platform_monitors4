@@ -2,7 +2,7 @@
     <v-dialog v-model="dialog" width="600" @click:outside="cancelItem">
         <v-card>
             <v-toolbar>
-                <span class="px-4 w-full text-center text-blue-400 font-bold title_views">Editar grupo de unidades</span>
+                <span class="px-4 w-full text-center text-blue-400 font-bold title_views">Editar grupo de usuarios</span>
             </v-toolbar>
             <v-card-text>
                 <v-col cols="12">
@@ -11,7 +11,7 @@
                     <div class="w-full block lg:flex gap-1 items-center">
                         <div class="w-full">
                             <v-btn density="compact" class="w-full mb-2 text-none" color="blue-lighten-1" variant="tonal">
-                                UNIDADES DISPONIBLES
+                                USUARIOS DISPONIBLES
                             </v-btn>
                             <SelectItemsAndMoveVue :listGroups="itemsAvailable"
                                 @list-seleccionados="emitSelectedItemsAvailable" nameGrupo="Obras libres" />
@@ -30,7 +30,7 @@
                         </div>
                         <div class="w-full">
                             <v-btn density="compact" class="w-full mb-2 text-none" color="blue-lighten-1" variant="tonal">
-                                UNIDADES ASIGNADAS
+                                USUARIOS ASIGNADOS
                             </v-btn>
                             <SelectItemsAndMoveVue :listGroups="itemsAssigned"
                                 @list-seleccionados="emitSelectedItemsAssigned" nameGrupo="Obras asignadas" />
@@ -54,7 +54,7 @@
 import store from '@/store';
 import { ref, watch } from 'vue';
 import SelectItemsAndMoveVue from '../SelectItemsAndMove.vue';
-import { findAllUnitsApi } from '@/api/VehiclesService';
+import { findAllClientsApi } from '@/api/UsersService.js';
 
 export default ({
     components: {
@@ -66,7 +66,7 @@ export default ({
     },
     emits: ['edit-item', 'cancel-item'],
     setup(props, { emit }) {
-        const dataUnits = ref([]);
+        const dataUsers = ref([]);
         const dialog = ref(false);
         const name = ref('');
         const codigo = ref('');
@@ -91,13 +91,13 @@ export default ({
             if (Object.keys(newVal).length !== 0) {
                 codigo.value = newVal.codigo
                 name.value = newVal.nombre
-                itemsAssigned.value = newVal.unidades.map(unit => ({ name: unit }))
-                findAllUnitsApi(store.state.codcuenta, store.state.codcliente)
+                itemsAssigned.value = newVal.usuarios.map(user => ({ name: user }))
+                findAllClientsApi(store.state.codcuenta, store.state.empresa)
                     .then(response => {
-                        dataUnits.value = response.data.data ? response.data.data[0].unidades : []
-                        itemsAvailable.value = dataUnits.value
-                            .filter(unit => !newVal.unidades.includes(unit.placa))
-                            .map(unit => ({ name: unit.placa }));
+                        dataUsers.value = response.data.data ? response.data.data : []
+                        itemsAvailable.value = dataUsers.value
+                            .filter(user => !newVal.usuarios.includes(user.usuario) && user.rol != "Administrador")
+                            .map(user => ({ name: user.usuario }));
                     })
             }
         })
@@ -112,7 +112,7 @@ export default ({
                 cod_cliente: store.state.codcliente,
                 codigo: codigo.value,
                 nombre: name.value,
-                unidades: itemsAssigned.value.map(unit => unit.name)
+                usuarios: itemsAssigned.value.map(user => user.name)
             })
             cancelItem()
         }

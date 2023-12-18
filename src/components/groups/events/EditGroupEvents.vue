@@ -1,10 +1,8 @@
 <template>
-    <v-btn size="small" color="blue" @click="dialog = true"><v-icon icon="mdi-plus"></v-icon>
-        Crear Nuevo</v-btn>
     <v-dialog v-model="dialog" width="600" @click:outside="cancelItem">
         <v-card>
             <v-toolbar>
-                <span class="px-4 w-full text-center text-blue-400 font-bold title_views">Crear grupo de eventos</span>
+                <span class="px-4 w-full text-center text-blue-400 font-bold title_views">Editar grupo de unidades</span>
             </v-toolbar>
             <v-card-text>
                 <v-col cols="12">
@@ -13,7 +11,7 @@
                     <div class="w-full block lg:flex gap-1 items-center">
                         <div class="w-full">
                             <v-btn density="compact" class="w-full mb-2 text-none" color="blue-lighten-1" variant="tonal">
-                                EVENTOS DISPONIBLES
+                                UNIDADES DISPONIBLES
                             </v-btn>
                             <SelectItemsAndMoveVue :listGroups="itemsAvailable"
                                 @list-seleccionados="emitSelectedItemsAvailable" nameGrupo="Obras libres" />
@@ -32,7 +30,7 @@
                         </div>
                         <div class="w-full">
                             <v-btn density="compact" class="w-full mb-2 text-none" color="blue-lighten-1" variant="tonal">
-                                EVENTOS ASIGNADOS
+                                UNIDADES ASIGNADAS
                             </v-btn>
                             <SelectItemsAndMoveVue :listGroups="itemsAssigned"
                                 @list-seleccionados="emitSelectedItemsAssigned" nameGrupo="Obras asignadas" />
@@ -45,7 +43,7 @@
                 <v-btn color="blue-grey-lighten-2" variant="tonal" @click="cancelItem">
                     Cancelar
                 </v-btn>
-                <v-btn color="blue-lighten-1" variant="tonal" @click="createItem">
+                <v-btn color="blue-lighten-1" variant="tonal" @click="editItem">
                     Aceptar
                 </v-btn>
             </v-card-actions>
@@ -62,26 +60,44 @@ export default ({
     components: {
         SelectItemsAndMoveVue
     },
-    emits: ['create-item'],
-    setup(_, { emit }) {
+    props: {
+        itemEdit: Object,
+        openModal: Boolean
+    },
+    emits: ['edit-item', 'cancel-item'],
+    setup(props, { emit }) {
         const dataEvents = ref([]);
         const dialog = ref(false);
         const name = ref('');
+        const codigo = ref('');
         const selectedItemsAvailable = ref([]);
         const selectedItemsAssigned = ref([])
         const itemsAssigned = ref([])
         const itemsAvailable = ref([]);
         const isMobile = ref(false);
 
+        watch(() => props.openModal, (newVal) => {
+            dialog.value = newVal
+        })
+
         watch(() => dialog.value, (newVal) => {
             if (newVal == true) {
                 handleResize();
                 window.addEventListener("resize", handleResize);
+            }
+        })
 
+        watch(() => props.itemEdit, (newVal) => {
+            if (Object.keys(newVal).length !== 0) {
+                codigo.value = newVal.codigo
+                name.value = newVal.nombre
+                itemsAssigned.value = newVal.tiposeventos.map(event => ({ name: event }))
                 findAllEventsApi(store.state.codcuenta, store.state.codcliente)
                     .then(response => {
                         dataEvents.value = response.data.data ? response.data.data[0].eventos : []
-                        itemsAvailable.value = dataEvents.value.map(event => ({ name: event.cod_evento }))
+                        itemsAvailable.value = dataEvents.value
+                            .filter(event => !newVal.tiposeventos.includes(event.cod_evento))
+                            .map(event => ({ name: event.cod_evento }));
                     })
             }
         })
@@ -90,11 +106,11 @@ export default ({
             isMobile.value = window.innerWidth <= 500; // Define aquí el ancho máximo para considerar como pantalla pequeña
         };
 
-        const createItem = () => {
-            emit('create-item', {
+        const editItem = () => {
+            emit('edit-item', {
                 cod_cuenta: store.state.codcuenta,
                 cod_cliente: store.state.codcliente,
-                codigo: "",
+                codigo: codigo.value,
                 nombre: name.value,
                 tiposeventos: itemsAssigned.value.map(event => event.name)
             })
@@ -102,9 +118,7 @@ export default ({
         }
 
         const cancelItem = () => {
-            name.value = ""
-            itemsAssigned.value = []
-            dialog.value = false
+            emit('cancel-item')
         }
 
         const emitSelectedItemsAssigned = (data) => {
@@ -140,7 +154,7 @@ export default ({
             dialog,
             name,
             isMobile,
-            createItem,
+            editItem,
             cancelItem,
             selectedItemsAvailable,
             selectedItemsAssigned,

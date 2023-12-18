@@ -8,7 +8,7 @@
         </div>
         <div class="w-full rounded-lg bg-white grid grid-cols-2 gap-3 p-4 shadow-md">
             <div>
-                <v-alert color="#3b82f6" theme="dark" icon="mdi-account-details" density="compact" border>
+                <v-alert color="#3b82f6" theme="dark" icon="mdi-car" density="compact" border>
                     Lista de unidades
                 </v-alert>
                 <div class="p-3 border-2 border-blue-400 rounded-lg mt-3 min-h-[5rem]">
@@ -19,7 +19,7 @@
                 </div>
             </div>
             <div>
-                <v-alert color="#3b82f6" theme="dark" icon="mdi-account-group" density="compact" border>
+                <v-alert color="#3b82f6" theme="dark" icon="mdi-car-multiple" density="compact" border>
                     Grupos de unidades
                 </v-alert>
                 <div class="mt-3">

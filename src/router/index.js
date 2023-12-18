@@ -91,6 +91,11 @@ const router = createRouter({
                     name: "grupoeventos",
                     path: "grupoeventos",
                     component: () => import("@/views/groups/GroupsEventsView.vue"),
+                },
+                {
+                    name: "reglas",
+                    path: "reglas",
+                    component: () => import("@/views/RulesView.vue"),
                 }
             ]
         },

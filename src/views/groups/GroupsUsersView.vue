@@ -28,7 +28,8 @@
                             <v-expansion-panel-title color="blue-grey-lighten-5">
                                 <div class="flex gap-2">
                                     <span @click.stop>
-                                        <v-icon color="green" size="small">mdi-square-edit-outline</v-icon>
+                                        <v-icon color="green" size="small"
+                                            @click="editGroup(group)">mdi-square-edit-outline</v-icon>
                                         <v-tooltip activator="parent" location="top">Editar</v-tooltip>
                                     </span>
                                     <span @click.stop>
@@ -53,22 +54,27 @@
             </div>
         </div>
     </div>
+    <EditGroupUsersVue :itemEdit="editItem" :openModal="editDialog" @cancel-item="editDialog = false" @edit-item="onUpdateItem"/>
 </template>
 <script>
 import { findAllClientsApi } from '@/api/UsersService';
-import { findAllGroupsUsersApi, createGroupsUsersApi, deleteGroupsUsersApi } from '@/api/GroupUsersService';
+import { findAllGroupsUsersApi, createGroupsUsersApi, deleteGroupsUsersApi, updateGroupsUsersApi } from '@/api/GroupUsersService';
 import CreateGroupVue from '@/components/groups/users/CreateGroupUsers.vue';
+import EditGroupUsersVue from '@/components/groups/users/EditGroupUsers.vue';
 import { basicAlert, confirmBasic } from '@/helpers/SweetAlert';
 import { onMounted, ref } from "vue";
 import store from '@/store';
 
 export default ({
     components: {
-        CreateGroupVue
+        CreateGroupVue,
+        EditGroupUsersVue
     },
     setup() {
         const dataUsers = ref([]);
         const dataGroupUsers = ref([]);
+        const editItem = ref({});
+        const editDialog = ref(false);
 
         onMounted(async () => {
             await loadData();
@@ -119,11 +125,32 @@ export default ({
             }, '¿Estás seguro de eliminar este grupo?', 'Aceptar');
         }
 
+        const editGroup = (group) => {
+            editDialog.value = true
+            editItem.value = group
+        }
+
+        const onUpdateItem = (data) => {
+            updateGroupsUsersApi(data)
+                .then(() => {
+                    basicAlert(async () => {
+                        await loadData();
+                    }, 'success', 'Logrado', 'Se ha editado el grupo correctamente')
+                })
+                .catch(() => {
+                    basicAlert(() => { }, 'error', 'Hubo un error', 'No se logro editar el grupo')
+                })
+        }
+
         return {
             dataUsers,
             dataGroupUsers,
+            editDialog,
+            editItem,
             onCreateItem,
-            deleteGroup
+            deleteGroup,
+            editGroup,
+            onUpdateItem
         }
     }
 })

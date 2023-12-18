@@ -4,7 +4,7 @@
             <v-navigation-drawer v-model="drawer" :rail="rail" permanent @click="rail = false" color="indigo-darken-1"
                 class="border-2 border-sky-500">
                 <div class="p-2 py-8 flex items-center justify-center">
-                    <img :src="logoBusiness" class="w-[6rem] bg-white p-3 rounded-md" />
+                    <img :src="logoBusiness" class="w-[7rem] bg-white p-2 rounded-md" />
                 </div>
                 <SidebarLayout :itemsNavegation="ItemsNavegation" />
             </v-navigation-drawer>
@@ -19,7 +19,7 @@
 </template>
 <script>
 import avatarImage from "@/assets/iconuser_hombre.png";
-import logoBusiness from "@/assets/signia_logo.png";
+import logoBusiness from "@/assets/duragas_logo.png";
 import HeaderLayout from "./HeaderLayout.vue";
 import SidebarLayout from './SidebarLayout.vue';
 import { ref, onMounted } from 'vue';
@@ -153,7 +153,7 @@ export default {
                         children: []
                     },
                     {
-                        icon: "mdi-car-estate",
+                        icon: "mdi-truck",
                         title: "Unidades",
                         value: "GUnidades",
                         to: "grupounidades",
