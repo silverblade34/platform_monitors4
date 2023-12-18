@@ -8,7 +8,7 @@
                 </div>
                 <SidebarLayout :itemsNavegation="ItemsNavegation" />
             </v-navigation-drawer>
-            <v-main class="h-screen bg-slate-100">
+            <v-main class="h-screen bg-slate-100 block">
                 <HeaderLayout :avatarPath="avatarPath" @action-rail="rail = !rail" />
                 <section class="overflow-y-auto section_main p-8">
                     <router-view />
