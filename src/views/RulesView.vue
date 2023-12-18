@@ -16,7 +16,7 @@
         @edit-item="onUpdateItem" />
 </template>
 <script>
-import { findAllAnswersApi, createAnswersApi, updateAnswersApi, deleteAnswersApi } from '@/api/AnswersService';
+import { findAllRulesApi, createAnswersApi, updateAnswersApi, deleteAnswersApi } from '@/api/RulesService';
 import CreateAnswersVue from '@/components/answers/CreateAnswers.vue';
 import EditAnswersVue from '@/components/answers/EditAnswers.vue';
 import { basicAlert, confirmBasic } from '@/helpers/SweetAlert';
@@ -39,7 +39,7 @@ export default ({
         })
 
         const loadData = async () => {
-            findAllAnswersApi(store.state.codcliente)
+            findAllRulesApi(store.state.codcuenta, store.state.codcliente)
                 .then(response => {
                     listAnswersData.value = response.data.data[0].respuestas
                 })

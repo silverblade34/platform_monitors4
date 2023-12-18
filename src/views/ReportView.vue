@@ -50,7 +50,7 @@ export default ({
         const dataFilter = ref({});
 
         onMounted(() => {
-            findAllEventsApi(store.state.codcuenta, store.state.codcliente)
+            findAllEventsApi(store.state.codcuenta, store.state.codclienteAdmin)
                 .then(response => {
                     listEventsData.value = response.data.data ? response.data.data[0].eventos : []
                 })

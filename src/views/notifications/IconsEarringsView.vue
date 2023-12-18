@@ -58,7 +58,7 @@ export default ({
         })
 
         const loadData = async () => {
-            const responseEvent = await notificationsAccountApi(store.state.codcuenta, store.state.codcliente, store.state.username, store.state.codregla);
+            const responseEvent = await notificationsAccountApi(store.state.codcuenta, store.state.codclienteAdmin, store.state.username, store.state.codregla);
             pendingEvents.value = responseEvent.data.data.filter(event => {
                 return event.descripcion_estado === "Sin Atender" || event.descripcion_estado === "En Gestion";
             })
@@ -107,7 +107,7 @@ export default ({
         const onMassDiscard = () => {
             if (selectedDiscardEvents.value.length > 0) {
                 confirmBasic(async () => {
-                    massDiscardofEventsApi(selectedDiscardEvents.value, store.state.codcuenta, store.state.codcliente)
+                    massDiscardofEventsApi(selectedDiscardEvents.value, store.state.codcuenta, store.state.codclienteAdmin)
                         .then(() => {
                             basicAlert(async() => {
                                 await loadData();

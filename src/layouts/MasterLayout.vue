@@ -6,7 +6,7 @@
                 <div class="p-2 py-8 flex items-center justify-center">
                     <img :src="logoBusiness" class="w-[7rem] bg-white p-2 rounded-md" />
                 </div>
-                <SidebarLayout :itemsNavegation="ItemsNavegation" />
+                <SidebarLayout :itemsNavegation="filteredItems" />
             </v-navigation-drawer>
             <v-main class="h-screen bg-slate-100 block">
                 <HeaderLayout :avatarPath="avatarPath" @action-rail="rail = !rail" />
@@ -22,7 +22,8 @@ import avatarImage from "@/assets/iconuser_hombre.png";
 import logoBusiness from "@/assets/duragas_logo.png";
 import HeaderLayout from "./HeaderLayout.vue";
 import SidebarLayout from './SidebarLayout.vue';
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed } from 'vue';
+import store from "@/store";
 
 export default {
     components: {
@@ -177,6 +178,18 @@ export default {
             }
         ]);
 
+        const filteredItems = computed(() => {
+            // Lógica para filtrar los ítems según el rol
+            if (store.state.rol === 'Administrador') {
+                return ItemsNavegation.value; // Muestra todos los ítems para el rol de administrador
+            } else if (store.state.rol === 'Operador') {
+                // Filtra la lista para mostrar solo ciertos ítems para el rol de usuario
+                return ItemsNavegation.value.filter(item => item.value === 'Dashboard' || item.value === 'Eventos');
+            } else {
+                return []; // Si el rol no coincide con ninguna condición, muestra una lista vacía
+            }
+        });
+
         const handleResize = () => {
             rail.value = window.innerWidth <= 1000; // Define aquí el ancho máximo para considerar como pantalla pequeña
         };
@@ -186,6 +199,7 @@ export default {
             window.addEventListener("resize", handleResize);
         })
         return {
+            filteredItems,
             ItemsNavegation,
             drawer,
             rail

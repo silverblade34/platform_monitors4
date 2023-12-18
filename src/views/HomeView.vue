@@ -71,8 +71,8 @@ export default ({
 
         onMounted(async () => {
             const [responseEvent, tableEvent] = await Promise.all([
-                notificationsAccountApi(store.state.codcuenta, store.state.codcliente, store.state.username, store.state.codregla),
-                homeClientsApi(store.state.codcuenta, store.state.codcliente, store.state.username, store.state.codregla)
+                notificationsAccountApi(store.state.codcuenta, store.state.codclienteAdmin, store.state.username, store.state.codregla),
+                homeClientsApi(store.state.codcuenta, store.state.codclienteAdmin, store.state.username, store.state.codregla)
             ])
             const eventData = responseEvent.data.data;
             Promise.all([

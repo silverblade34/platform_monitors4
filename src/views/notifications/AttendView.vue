@@ -143,7 +143,7 @@ export default ({
             editEvent.value = store.state.eventAtended
             latitud.value = editEvent.value.latitud
             longitud.value = editEvent.value.longitud
-            findAllAnswersApi(store.state.codcliente)
+            findAllAnswersApi(store.state.codclienteAdmin)
                 .then(response => {
                     answersData.value = response.data.data ? response.data.data[0].respuestas : []
                 })
