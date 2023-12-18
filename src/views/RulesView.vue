@@ -6,14 +6,17 @@
             </div>
             <CreateAnswersVue @create-item="onCreateItem" />
         </div>
-        <TableAnswersVue :desserts="listAnswersData" @delete-item="onDeleteItem" @edit-item="onEditItem" />
+        <div class="w-full rounded-lg bg-white gap-3 p-4 shadow-md">
+            <div class="w-full bg-orange-400 text-white rounded-lg p-3">
+                Regla 1
+            </div>
+        </div>
     </div>
     <EditAnswersVue :openModal="editDialog" :itemEdit="editItem" @cancel-item="editDialog = false"
         @edit-item="onUpdateItem" />
 </template>
 <script>
 import { findAllAnswersApi, createAnswersApi, updateAnswersApi, deleteAnswersApi } from '@/api/AnswersService';
-import TableAnswersVue from "@/components/answers/TableAnswers.vue";
 import CreateAnswersVue from '@/components/answers/CreateAnswers.vue';
 import EditAnswersVue from '@/components/answers/EditAnswers.vue';
 import { basicAlert, confirmBasic } from '@/helpers/SweetAlert';
@@ -23,7 +26,6 @@ import store from '@/store';
 
 export default ({
     components: {
-        TableAnswersVue,
         CreateAnswersVue,
         EditAnswersVue
     },
