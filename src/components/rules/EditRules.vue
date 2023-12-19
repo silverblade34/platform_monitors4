@@ -1,26 +1,27 @@
 <template>
-    <v-btn size="small" color="blue" @click="dialog = true"><v-icon icon="mdi-plus"></v-icon>
-        Crear Nuevo</v-btn>
     <v-dialog v-model="dialog" width="680" @click:outside="cancelItem">
         <v-card>
             <v-toolbar>
-                <span class="px-4 w-full text-center text-blue-400 font-bold title_views">Crear regla</span>
+                <span class="px-4 w-full text-center text-blue-400 font-bold title_views">Editar regla</span>
             </v-toolbar>
             <v-card-text>
                 <v-col cols="12">
                     <v-text-field variant="outlined" label="Nombre" prepend-inner-icon="mdi-form-textbox" color="indigo"
                         v-model="name" hide-details></v-text-field>
-                    <div class="w-full bg-blue-400 text-white rounded-sm py-1 px-3 my-2 text-center text-sm">Grupos de usuarios
+                    <div class="w-full bg-blue-400 text-white rounded-sm py-1 px-3 my-2 text-center text-sm">Grupos de
+                        usuarios
                     </div>
                     <SelectGroups :assigned="assignedUsers" :available="dataGroupUsers" :isMobile="isMobile"
                         @selected-groups="selectedUsersGroup" />
 
-                    <div class="w-full bg-blue-400 text-white rounded-sm py-1 px-3 my-2 text-center text-sm">Grupos de unidades
+                    <div class="w-full bg-blue-400 text-white rounded-sm py-1 px-3 my-2 text-center text-sm">Grupos de
+                        unidades
                     </div>
                     <SelectGroups :assigned="assignedUnits" :available="dataGroupUnits" :isMobile="isMobile"
                         @selected-groups="selectedUnitsGroup" />
 
-                    <div class="w-full bg-blue-400 text-white rounded-sm py-1 px-3 my-2 text-center text-sm">Grupos de eventos
+                    <div class="w-full bg-blue-400 text-white rounded-sm py-1 px-3 my-2 text-center text-sm">Grupos de
+                        eventos
                     </div>
                     <SelectGroups :assigned="assignedEvents" :available="dataGroupEvents" :isMobile="isMobile"
                         @selected-groups="selectedEventsGroup" />
@@ -31,7 +32,7 @@
                 <v-btn color="blue-grey-lighten-2" variant="tonal" @click="cancelItem">
                     Cancelar
                 </v-btn>
-                <v-btn color="blue-lighten-1" variant="tonal" @click="createItem">
+                <v-btn color="blue-lighten-1" variant="tonal" @click="editItem">
                     Aceptar
                 </v-btn>
             </v-card-actions>
@@ -45,14 +46,13 @@ import SelectGroups from './SelectGroups.vue';
 
 export default ({
     props: {
-        dataGroupUnitsProps: Array,
-        dataGroupUsersProps: Array,
-        dataGroupEventsProps: Array
+        itemEdit: Object,
+        openModal: Boolean
     },
     components: {
         SelectGroups
     },
-    emits: ['create-item'],
+    emits: ['edit-item', 'cancel-item'],
     setup(props, { emit }) {
         const dialog = ref(false);
         const name = ref('');
@@ -67,35 +67,37 @@ export default ({
         const assignedUnits = ref([]);
         const assignedEvents = ref([]);
 
-        watch(() => dialog.value, (newVal) => {
+        watch(() => props.openModal, (newVal) => {
+            dialog.value = newVal
             if (newVal == true) {
                 handleResize();
                 window.addEventListener("resize", handleResize);
             }
         })
 
-        watch(() => props.dataGroupUnitsProps, (newVal) => {
-            dataGroupUnits.value = newVal.map(groupUnit => ({ nombre: groupUnit.nombre }))
+        watch(() => props.itemEdit, (newVal) => {
+            if (Object.keys(newVal).length !== 0) {
+                name.value = newVal.item.regla
+                dataGroupUnits.value = newVal.editAvailableGroupUnits
+                dataGroupUsers.value = newVal.editAvailableGroupUsers
+                dataGroupEvents.value = newVal.editAvailableGroupEvents
+                assignedUsers.value = newVal.editAssignedGroupUsers
+                assignedUnits.value = newVal.editAssignedGroupUnits
+                assignedEvents.value = newVal.editAssignedGroupEvents
+            }
         })
 
-        watch(() => props.dataGroupUsersProps, (newVal) => {
-            dataGroupUsers.value = newVal.map(groupUser => ({ nombre: groupUser.nombre }))
-        })
-
-        watch(() => props.dataGroupEventsProps, (newVal) => {
-            dataGroupEvents.value = newVal.map(groupEvent => ({ nombre: groupEvent.nombre }))
-        })
 
         const handleResize = () => {
-            isMobile.value = window.innerWidth <= 500; // Define aquí el ancho máximo para considerar como pantalla pequeña
+            isMobile.value = window.innerWidth <= 500;
         };
 
-        const createItem = () => {
-            emit('create-item', {
+        const editItem = () => {
+            emit('edit-item', {
                 cod_cuenta: store.state.codcuenta,
                 cod_cliente: store.state.codclienteAdmin,
-                empresa: store.state.empresa,
                 regla: name.value,
+                codigo: props.itemEdit.item.codigo,
                 cod_grupotiposdeventos: selectedGroupEvents.value,
                 cod_grupounidades: selectedGroupUnits.value,
                 cod_grupousuarios: selectedGroupUsers.value
@@ -105,10 +107,8 @@ export default ({
 
         const cancelItem = () => {
             name.value = ""
-            assignedUsers.value = []
-            assignedUnits.value = []
-            assignedEvents.value = []
-            dialog.value = false
+            assignedUsers.value = assignedUnits.value = assignedEvents.value = []
+            emit('cancel-item')
         }
 
         const selectedUsersGroup = (data) => {
@@ -124,16 +124,16 @@ export default ({
         }
 
         return {
+            dialog,
+            name,
+            isMobile,
             assignedEvents,
             assignedUnits,
             assignedUsers,
             dataGroupUnits,
             dataGroupUsers,
             dataGroupEvents,
-            dialog,
-            name,
-            isMobile,
-            createItem,
+            editItem,
             cancelItem,
             selectedUsersGroup,
             selectedUnitsGroup,

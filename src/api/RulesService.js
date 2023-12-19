@@ -14,10 +14,10 @@ export function createRulesApi(data) {
     return axios.post(`${baseURL}/createRoules`, data)
 }
 
-export function updateAnswersApi(data) {
-    return axios.put(`${baseURL}/editResponse`, data)
+export function updateRulesApi(data) {
+    return axios.post(`${baseURL}/editRoules`, data)
 }
 
-export function deleteAnswersApi(data) {
-    return axios.post(`${baseURL}/deleteResponse`, data)
+export function deleteRulesApi(data) {
+    return axios.post(`${baseURL}/deleteRoules`, data)
 }
