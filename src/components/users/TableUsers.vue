@@ -1,8 +1,11 @@
 <template>
     <v-data-table :headers="headers" :items="desserts" class="elevation-1 text-sm rounded-lg">
+        <template v-slot:[`item.codigo_turno`]="{ item }">
+            {{ findDescriptionShift(item.codigo_turno) }}
+        </template>
         <template v-slot:[`item.estado`]="{ item }">
             <v-chip :color="item.estado ? 'green' : 'red'">
-                {{ item.estado ? 'Activo': 'Desactivado' }}
+                {{ item.estado ? 'Activo' : 'Desactivado' }}
             </v-chip>
         </template>
         <template v-slot:[`item.actions`]="{ item }">
@@ -20,10 +23,13 @@
     </v-data-table>
 </template>
 <script>
+import { watch, ref } from 'vue';
 import { VDataTable } from 'vuetify/labs/VDataTable';
+
 export default ({
     props: {
-        desserts: Array
+        desserts: Array,
+        shiftsDataProps: Array
     },
     components: {
         VDataTable,
@@ -34,14 +40,20 @@ export default ({
             headers: [
                 { title: 'Usuario', align: 'start', key: 'usuario' },
                 { title: 'Nombre', align: 'start', key: 'nombre_completo' },
-                { title: 'Turno', align: 'start', key: 'turno' },
+                { title: 'Turno', align: 'start', key: 'codigo_turno' },
                 { title: 'Rol', align: 'start', key: 'rol' },
                 { title: 'Estado', align: 'center', key: 'estado' },
                 { title: 'Acciones', key: 'actions', align: 'center' },
             ]
         }
     },
-    setup(_, { emit }) {
+    setup(props, { emit }) {
+        const dataShifts = ref([]);
+
+        watch(() => props.shiftsDataProps, (newVal) => {
+            dataShifts.value = newVal
+        })
+
         const editItem = (item) => {
             emit('edit-item', { item })
         }
@@ -50,9 +62,19 @@ export default ({
             emit('delete-item', { item })
         }
 
+        const findDescriptionShift = (cod_shift) => {
+            if(cod_shift.length > 0){
+                const description = dataShifts.value.find(shift => shift.cod_turno == cod_shift).descripcion
+                return description
+            }else{
+                return 'Completo'
+            }
+        }
+
         return {
             editItem,
-            deleteItem
+            deleteItem,
+            findDescriptionShift
         }
     }
 })

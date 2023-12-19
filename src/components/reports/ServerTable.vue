@@ -168,7 +168,7 @@ export default {
 <style>
 .table_server_events {
     color: #797979 !important;
-    font-size: 0.7rem;
+    font-size: 0.8rem;
 }
 
 .table_server_events table thead {

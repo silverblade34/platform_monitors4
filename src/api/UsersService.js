@@ -16,3 +16,23 @@ export function findAllClientsApi(cod_cuenta, empresa) {
             empresa
         })
 }
+
+export function createClientsApi(data) {
+    return axios.post(`${baseURL}/createClient`, data)
+}
+
+export function editClientsApi(data) {
+    return axios.put(`${baseURL}/editClient`, data)
+}
+
+
+export function deleteClientsApi(data) {
+    return axios.post(`${baseURL}/deleteClient`, data)
+}
+
+export function repeatUserApi(usuario) {
+    return axios.post(`${baseURL}/repeatUser`,
+        {
+            usuario,
+        })
+}

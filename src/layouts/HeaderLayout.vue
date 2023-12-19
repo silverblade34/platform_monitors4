@@ -3,7 +3,6 @@
         <v-btn variant="text" icon="mdi-menu" color="blue-grey-lighten-1" class="cursor-pointer btn-action-sidebar"
             @click.stop="onActionRail"></v-btn>
         <div class="flex items-center text-start text-xs">
-            <v-btn icon="mdi-bell-ring" color="blue" size="small" variant="text"></v-btn>
             <v-list>
                 <v-list-item class="text-start text-xs item-personalizado" :prepend-avatar="avatarPath"
                     :title="`Hola, ${username}`" :subtitle="rol">
