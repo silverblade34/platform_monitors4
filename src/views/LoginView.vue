@@ -50,7 +50,6 @@ export default ({
       const hashedPassword = md5(password.value); 
       await loginApi(username.value, hashedPassword)
         .then(response => {
-          console.log(response.data)
           if (response.data.status == true) {
             store.commit('setCodCuenta', response.data.data.CodCuenta);
             store.commit('setCodCliente', response.data.data.CodCliente);
@@ -61,7 +60,6 @@ export default ({
             store.commit('setCodRegla', response.data.data.Cod_Regla);
             store.commit('setUsername', response.data.data.Usuario);
             store.commit('setUsernameAdmin', response.data.data.UsuarioClienteAdmin);
-
             store.commit('setIsAuthenticated', true);
             router.push('/');
 

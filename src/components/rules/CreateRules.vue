@@ -12,17 +12,17 @@
                         v-model="name" hide-details></v-text-field>
                     <div class="w-full bg-blue-400 text-white rounded-md py-1 px-3 my-2 text-center">Grupos de usuarios
                     </div>
-                    <SelectGroups :assigned="[]" :available="dataGroupUsers" :isMobile="isMobile"
+                    <SelectGroups :assigned="assignedUsers" :available="dataGroupUsers" :isMobile="isMobile"
                         @selected-groups="selectedUsersGroup" />
 
                     <div class="w-full bg-blue-400 text-white rounded-md py-1 px-3 my-2 text-center">Grupos de unidades
                     </div>
-                    <SelectGroups :assigned="[]" :available="dataGroupUnits" :isMobile="isMobile"
+                    <SelectGroups :assigned="assignedUnits" :available="dataGroupUnits" :isMobile="isMobile"
                         @selected-groups="selectedUnitsGroup" />
 
                     <div class="w-full bg-blue-400 text-white rounded-md py-1 px-3 my-2 text-center">Grupos de eventos
                     </div>
-                    <SelectGroups :assigned="[]" :available="dataGroupEvents" :isMobile="isMobile"
+                    <SelectGroups :assigned="assignedEvents" :available="dataGroupEvents" :isMobile="isMobile"
                         @selected-groups="selectedEventsGroup" />
                 </v-col>
             </v-card-text>
@@ -63,6 +63,9 @@ export default ({
         const selectedGroupUnits = ref([]);
         const selectedGroupUsers = ref([]);
         const selectedGroupEvents = ref([]);
+        const assignedUsers = ref([]);
+        const assignedUnits = ref([]);
+        const assignedEvents = ref([]);
 
         watch(() => dialog.value, (newVal) => {
             if (newVal == true) {
@@ -90,7 +93,7 @@ export default ({
         const createItem = () => {
             emit('create-item', {
                 cod_cuenta: store.state.codcuenta,
-                cod_cliente: store.state.codcliente,
+                cod_cliente: store.state.codclienteAdmin,
                 empresa: store.state.empresa,
                 regla: name.value,
                 cod_grupotiposdeventos: selectedGroupEvents.value,
@@ -107,20 +110,20 @@ export default ({
 
         const selectedUsersGroup = (data) => {
             selectedGroupUsers.value = data.itemsAssigned.map(item => item.nombre)
-            console.log(selectedGroupUsers.value)
         }
 
         const selectedUnitsGroup = (data) => {
             selectedGroupUnits.value = data.itemsAssigned.map(item => item.nombre)
-            console.log(selectedGroupUnits.value)
         }
 
         const selectedEventsGroup = (data) => {
             selectedGroupEvents.value = data.itemsAssigned.map(item => item.nombre)
-            console.log(selectedGroupEvents.value)
         }
 
         return {
+            assignedEvents,
+            assignedUnits,
+            assignedUsers,
             dataGroupUnits,
             dataGroupUsers,
             dataGroupEvents,

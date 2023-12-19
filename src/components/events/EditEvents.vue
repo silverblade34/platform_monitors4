@@ -61,7 +61,7 @@ export default {
         const editItem = () => {
             emit('edit-item', {
                 cod_cuenta: store.state.codcuenta,
-                cod_cliente: store.state.codcliente,
+                cod_cliente: store.state.codclienteAdmin,
                 cod_evento: cod_evento.value,
                 descripcion: descripcion.value,
                 fecha_creacion: props.itemEdit.item.fecha_creacion,

@@ -37,7 +37,7 @@ export default ({
         })
 
         const loadData = async () => {
-            findAllUnitsApi(store.state.codcuenta, store.state.codcliente)
+            findAllUnitsApi(store.state.codcuenta, store.state.codclienteAdmin)
                 .then(response => {
                     listUnitsData.value = response.data.data[0].unidades
                 })
@@ -64,7 +64,7 @@ export default ({
                 "placa": item.item.placa,
                 "cod_unidad": item.item.cod_unidad,
                 "cod_cuenta": store.state.codcuenta,
-                "cod_cliente": store.state.codcliente
+                "cod_cliente": store.state.codclienteAdmin
             }
             confirmBasic(async () => {
                 await deleteUnitsApi(data)

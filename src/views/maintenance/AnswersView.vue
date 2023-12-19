@@ -37,7 +37,7 @@ export default ({
         })
 
         const loadData = async () => {
-            findAllAnswersApi(store.state.codcliente)
+            findAllAnswersApi(store.state.codclienteAdmin)
                 .then(response => {
                     listAnswersData.value = response.data.data[0].respuestas
                 })
@@ -63,7 +63,7 @@ export default ({
             const data = {
                 "codigo": item.item.codigo,
                 "cod_cuenta": store.state.codcuenta,
-                "cod_cliente": store.state.codcliente
+                "cod_cliente": store.state.codclienteAdmin
             }
             confirmBasic(async () => {
                 await deleteAnswersApi(data)

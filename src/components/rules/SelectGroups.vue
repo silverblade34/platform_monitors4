@@ -27,7 +27,7 @@
     </div>
 </template>
 <script>
-import { ref, watch } from 'vue';
+import { onMounted, ref, watch } from 'vue';
 import SelectItemsAndMoveVue from './SelectItemsAndMove.vue';
 
 export default ({
@@ -45,6 +45,11 @@ export default ({
         const selectedItemsAssigned = ref([])
         const itemsAssigned = ref([])
         const itemsAvailable = ref([]);
+
+        onMounted(() => {
+            itemsAssigned.value = props.assigned
+            itemsAvailable.value = props.available
+        })
 
         watch(() => props.assigned, (newVal) => {
             itemsAssigned.value = newVal

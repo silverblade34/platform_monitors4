@@ -82,8 +82,8 @@ export default ({
 
         const loadData = async () => {
             const [responseEvents, responseGroupEvents] = await Promise.all([
-                findAllEventsApi(store.state.codcuenta, store.state.codcliente),
-                findAllGroupsEventsApi(store.state.codcuenta, store.state.codcliente)
+                findAllEventsApi(store.state.codcuenta, store.state.codclienteAdmin),
+                findAllGroupsEventsApi(store.state.codcuenta, store.state.codclienteAdmin)
             ])
             dataEvents.value = responseEvents.data.data ? responseEvents.data.data[0].eventos : []
             dataGroupEvents.value = responseGroupEvents.data.data ? responseGroupEvents.data.data[0].grupos_tiposdeventos : []
@@ -109,7 +109,7 @@ export default ({
             confirmBasic(async () => {
                 const data = {
                     cod_cuenta: store.state.codcuenta,
-                    cod_cliente: store.state.codcliente,
+                    cod_cliente: store.state.codclienteAdmin,
                     codigo: codigo
                 }
                 deleteGroupsEventsApi(data)

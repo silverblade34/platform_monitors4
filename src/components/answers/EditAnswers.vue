@@ -53,7 +53,7 @@ export default {
         const editItem = () => {
             emit('edit-item', {
                 cod_cuenta: store.state.codcuenta,
-                cod_cliente: store.state.codcliente,
+                cod_cliente: store.state.codclienteAdmin,
                 codigo: props.itemEdit.item.codigo,
                 sigla: sigla.value,
                 text: text.value

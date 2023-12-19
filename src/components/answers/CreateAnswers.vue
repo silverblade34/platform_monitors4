@@ -40,7 +40,7 @@ export default {
         const createItem = () => {
             emit('create-item', {
                 cod_cuenta: store.state.codcuenta,
-                cod_cliente: store.state.codcliente,
+                cod_cliente: store.state.codclienteAdmin,
                 sigla: sigla.value,
                 text: text.value
             })

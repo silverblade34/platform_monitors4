@@ -36,7 +36,7 @@ export default ({
         })
 
         const loadData = async () => {
-            await findAllEventsApi(store.state.codcuenta, store.state.codcliente)
+            await findAllEventsApi(store.state.codcuenta, store.state.codclienteAdmin)
                 .then(response => {
                     listEventsData.value = response.data.data ? response.data.data[0].eventos : []
                 })
@@ -53,7 +53,7 @@ export default ({
 
         const onCreateItem = (data) => {
             if (data.cod_evento != "" && data.descripcion != "" && data.prioridad != "") {
-                data.cod_cliente = store.state.codcliente
+                data.cod_cliente = store.state.codclienteAdmin
                 data.cod_cuenta = store.state.codcuenta
                 data.usuario = store.state.username
                 data.status = true
@@ -93,7 +93,7 @@ export default ({
             const data = {
                 "cod_evento": item.item.cod_evento,
                 "cod_cuenta": store.state.codcuenta,
-                "cod_cliente": store.state.codcliente
+                "cod_cliente": store.state.codclienteAdmin
             }
             confirmBasic(async () => {
                 await deleteEventsApi(data)

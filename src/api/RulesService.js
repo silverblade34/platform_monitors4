@@ -10,8 +10,8 @@ export function findAllRulesApi(cod_cuenta, cod_cliente) {
         })
 }
 
-export function createAnswersApi(data) {
-    return axios.post(`${baseURL}/createResponse`, data)
+export function createRulesApi(data) {
+    return axios.post(`${baseURL}/createRoules`, data)
 }
 
 export function updateAnswersApi(data) {

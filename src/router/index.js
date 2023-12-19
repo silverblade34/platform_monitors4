@@ -116,14 +116,12 @@ router.beforeEach((to, from, next) => {
         // Si la ruta requiere autenticación y el usuario no está autenticado, redirigir a la página de inicio de sesión
         next({ name: 'login' });
     } else if (to.name === 'login' && store.state.isAuthenticated) {
-        console.log(store.state.rol)
         if(store.state.rol == "Administrador"){
             next({ name: 'home' });
         }else if(store.state.rol == "Operador"){
             next({ name: 'pendienteslistados' });
         }
     } else if (to.path === '/' && store.state.isAuthenticated) {
-        console.log(store.state.rol)
         if(store.state.rol == "Administrador"){
             next({ name: 'home' });
         }else if(store.state.rol == "Operador"){

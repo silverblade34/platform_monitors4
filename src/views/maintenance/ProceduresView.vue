@@ -37,7 +37,7 @@ export default ({
         })
 
         const loadData = async () => {
-            findAllProceduresApi(store.state.codcuenta, store.state.codcliente)
+            findAllProceduresApi(store.state.codcuenta, store.state.codclienteAdmin)
                 .then(response => {
                     listProceduresData.value = response.data.data[0].procedimientos
                 })
@@ -63,7 +63,7 @@ export default ({
             const data = {
                 "cod_evento": item.item.cod_evento,
                 "cod_cuenta": store.state.codcuenta,
-                "cod_cliente": store.state.codcliente
+                "cod_cliente": store.state.codclienteAdmin
             }
             confirmBasic(async () => {
                 await deleteProceduresApi(data)

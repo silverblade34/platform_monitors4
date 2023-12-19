@@ -14,7 +14,7 @@
         @edit-item="onUpdateItem" />
 </template>
 <script>
-import { findAllRulesApi, updateAnswersApi, deleteAnswersApi } from '@/api/RulesService';
+import { findAllRulesApi, createRulesApi, updateAnswersApi, deleteAnswersApi } from '@/api/RulesService';
 import { findAllGroupsUsersApi } from '@/api/GroupUsersService';
 import { findAllGroupsEventsApi } from '@/api/GroupEventsService';
 import { findAllGroupsUnitsApi } from '@/api/GroupUnitsService';
@@ -46,10 +46,10 @@ export default ({
 
         const loadData = async () => {
             const [responseRules, responseGroupUsers, reponseGroupEvents, responseGroupUnits] = await Promise.all([
-                findAllRulesApi(store.state.codcuenta, store.state.codcliente),
-                findAllGroupsUsersApi(store.state.codcuenta, store.state.codcliente),
-                findAllGroupsEventsApi(store.state.codcuenta, store.state.codcliente),
-                findAllGroupsUnitsApi(store.state.codcuenta, store.state.codcliente)
+                findAllRulesApi(store.state.codcuenta, store.state.codclienteAdmin),
+                findAllGroupsUsersApi(store.state.codcuenta, store.state.codclienteAdmin),
+                findAllGroupsEventsApi(store.state.codcuenta, store.state.codclienteAdmin),
+                findAllGroupsUnitsApi(store.state.codcuenta, store.state.codclienteAdmin)
             ])
             listRulesData.value = responseRules.data.data ? responseRules.data.data[0].reglas : []
             dataGroupUnits.value = responseGroupUnits.data.data ? responseGroupUnits.data.data[0].grupos_unidades : []
@@ -58,9 +58,25 @@ export default ({
         }
 
         const onCreateItem = (data) => {
-            console.log(data)
             if (data.regla != "" && data.cod_grupotiposdeventos.length > 0 && data.cod_grupounidades.length > 0 && data.cod_grupousuarios.length > 0) {
-                console.log(data)
+                data.cod_grupotiposdeventos = data.cod_grupotiposdeventos.map(groupevent => {
+                    const groupEvent = dataGroupEvents.value.find(group => group.nombre == groupevent)
+                    return groupEvent.codigo
+                })
+                data.cod_grupounidades = data.cod_grupounidades.map(groupevent => {
+                    const groupUnits = dataGroupUnits.value.find(group => group.nombre == groupevent)
+                    return groupUnits.codigo
+                })
+                data.cod_grupousuarios =  data.cod_grupousuarios.map(groupevent => {
+                    const groupUsers = dataGroupUsers.value.find(group => group.nombre == groupevent)
+                    return groupUsers.codigo
+                })
+                createRulesApi(data)
+                    .then(() => {
+                        basicAlert(async () => {
+                            await loadData();
+                        }, 'success', 'Logrado', 'Se ha creado la regla correctamente')
+                    })
             } else {
                 basicAlert(() => { }, 'warning', 'Advertencia', 'Rellene todos los campos, se debe asignar al menos un grupo por cada tipo')
             }
@@ -70,7 +86,7 @@ export default ({
             const data = {
                 "codigo": item.item.codigo,
                 "cod_cuenta": store.state.codcuenta,
-                "cod_cliente": store.state.codcliente
+                "cod_cliente": store.state.codclienteAdmin
             }
             confirmBasic(async () => {
                 await deleteAnswersApi(data)

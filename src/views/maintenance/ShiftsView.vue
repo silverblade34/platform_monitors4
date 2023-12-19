@@ -37,7 +37,7 @@ export default ({
         })
 
         const loadData = async () => {
-            findAllShiftsApi(store.state.codcuenta, store.state.codcliente)
+            findAllShiftsApi(store.state.codcuenta, store.state.codclienteAdmin)
                 .then(response => {
                     listShiftsData.value = response.data.data[0].turnos
                 })
