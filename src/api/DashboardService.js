@@ -11,3 +11,11 @@ export function homeClientsApi(cod_cuenta, cod_cliente, usuario, cod_regla) {
             cod_regla
         })
 }
+
+export function homeAccountsApi(cod_cuenta, fecha_inicio, fecha_fin) {
+    return axios.post(`${baseURL}/home/accounts`, {
+        cod_cuenta,
+        fecha_inicio,
+        fecha_fin
+    })
+}

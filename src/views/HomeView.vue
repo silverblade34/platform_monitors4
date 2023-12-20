@@ -4,15 +4,23 @@
         <div class="grid grid-cols-4 gap-5 pt-5">
             <CardEventsVue :BgCard="card.bgCard" :Icon="card.icon" :Amount="card.amount" :Title="card.title"
                 v-for="(card, index) in listCards" :key="index" />
-            <div class="col-span-2 max-h-[50rem]">
-                <EventNotificationVue :data="dataEvents" />
-            </div>
-            <div class="col-span-1 max-h-[50rem]">
-                <VehicleNotificationVue :data="dataVehicles" />
-            </div>
-            <div class="col-span-1 max-h-[50rem]">
-                <OperatorNotificationVue :data="dataOperators" />
-            </div>
+            <template v-if="codcliente == 'All'">
+                <div class="col-span-2 p-4 rounded-lg bg-white shadow-sm">
+                    <p class="text-center text-gray-500 pb-3">Eventos por clientes</p>
+                    <BarChartVue :dataChart="dataBarChart" />
+                </div>
+            </template>
+            <template v-else>
+                <div class="col-span-2 max-h-[50rem]">
+                    <EventNotificationVue :data="dataEvents" />
+                </div>
+                <div class="col-span-1 max-h-[50rem]">
+                    <VehicleNotificationVue :data="dataVehicles" />
+                </div>
+                <div class="col-span-1 max-h-[50rem]">
+                    <OperatorNotificationVue :data="dataOperators" />
+                </div>
+            </template>
         </div>
     </div>
     <v-dialog v-model="dialogLoader" :scrim="false" persistent width="auto">
@@ -30,15 +38,17 @@ import CardEventsVue from '@/components/dashboard/CardEvents.vue';
 import EventNotificationVue from '@/components/dashboard/EventNotification.vue';
 import VehicleNotificationVue from '@/components/dashboard/VehicleNotification.vue';
 import OperatorNotificationVue from '@/components/dashboard/OperatorNotification.vue';
+import BarChartVue from '@/components/dashboard/BarChart.vue';
 import { notificationsAccountApi } from '@/api/NotificationsService';
 import { findAllClientsToAccountApi } from '@/api/UsersService';
 import { findAllUnitsApi } from '@/api/VehiclesService';
-import { homeClientsApi } from '@/api/DashboardService';
+import { homeClientsApi, homeAccountsApi } from '@/api/DashboardService';
 import store from '@/store';
 
 export default ({
     name: "HomeView",
     components: {
+        BarChartVue,
         CardEventsVue,
         EventNotificationVue,
         VehicleNotificationVue,
@@ -79,6 +89,8 @@ export default ({
         const dataVehicles = ref([])
         const dataOperators = ref([])
         const dialogLoader = ref(false);
+        const codcliente = ref('');
+        const dataBarChart = ref([]);
 
         const loadData = async () => {
             if (store.state.codclienteAdmin == "All") {
@@ -89,15 +101,22 @@ export default ({
         }
 
         const cardsForAccounts = async () => {
+            const today = new Date();
+            const year = today.getFullYear();
+            const month = String(today.getMonth() + 1).padStart(2, '0'); // Se suma 1 porque los meses van de 0 a 11
+            const day = String(today.getDate()).padStart(2, '0');
+
+            const formattedDate = `${year}-${month}-${day}`;
             listCards.value[0].title = "Eventos del día"
             listCards.value[1].title = "Clientes registrados"
             listCards.value[2].title = "Operadores registrados"
             listCards.value[3].title = "Unidades registradas"
             listCards.value[3].icon = "mdi-truck"
-            const [responseNotifications, responseClients, responseUnits] = await Promise.all([
+            const [responseNotifications, responseClients, responseUnits, responseBarChart] = await Promise.all([
                 notificationsAccountApi(store.state.codcuenta, store.state.codclienteAdmin, store.state.username, store.state.codregla),
                 findAllClientsToAccountApi(store.state.codcuenta),
-                findAllUnitsApi(store.state.codcuenta, store.state.codclienteAdmin)
+                findAllUnitsApi(store.state.codcuenta, store.state.codclienteAdmin),
+                homeAccountsApi(store.state.codcuenta, formattedDate, formattedDate)
             ])
             const nofitications = responseNotifications.data.data ? responseNotifications.data.data : []
             const usersClients = responseClients.data.data[0].clientes ? responseClients.data.data[0].clientes : []
@@ -105,6 +124,7 @@ export default ({
             const operators = usersClients.filter(client => client.rol != "Administrador")
             const dataUnits = responseUnits.data.data ? responseUnits.data.data : []
             const unidadesCodUnidad = dataUnits.flatMap(item => item.unidades.map(unidad => unidad.cod_unidad));
+            dataBarChart.value = responseBarChart.data.data.clientes_evento
             listCards.value[0].amount = nofitications.length
             listCards.value[1].amount = administrators.length
             listCards.value[2].amount = operators.length
@@ -148,6 +168,7 @@ export default ({
 
         onMounted(async () => {
             dialogLoader.value = true
+            codcliente.value = store.state.codclienteAdmin
             await loadData()
             dialogLoader.value = false
         });
@@ -175,6 +196,8 @@ export default ({
         };
 
         return {
+            dataBarChart,
+            codcliente,
             listCards,
             dataEvents,
             dialogLoader,

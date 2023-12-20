@@ -30,11 +30,16 @@
             </div>
             <div class="max-h-[15rem] min-h-[13rem] overflow-y-auto container_scroll">
                 <div class="item_event border-b border-gray-300" v-for="(item, i) in itemsLogs" :key="i">
-                    <div class="flex items-center">
-                        <div class="flex items-start pl-2">
-                            <div class="rounded-full w-2 h-2 bg-yellow-500 mr-2"></div> 
+                    <div class="w-full text-blue-500 pt-2 flex gap-1 items-center">
+                        <div class="flex items-center pl-2">
+                            <div class="rounded-full w-2 h-2 bg-blue-500 mr-2"></div> 
                         </div>
-                        <div class="flex-1 py-2 pr-3 pl-1">{{ item }}</div>
+                        <div>
+                            {{ item.Fecha }} {{ item.Hora }}
+                        </div>
+                    </div>
+                    <div class="flex items-center">
+                        <div class="flex-1 pb-2 px-3 pl-1">{{ item }}</div>
                     </div>
                 </div>
             </div>

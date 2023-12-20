@@ -9,12 +9,6 @@
                     <v-text-field variant="outlined" label="Nombre" prepend-inner-icon="mdi-form-textbox" color="indigo"
                         v-model="name" hide-details></v-text-field>
                     <div class="w-full bg-blue-400 text-white rounded-sm py-1 px-3 my-2 text-center text-sm">Grupos de
-                        usuarios
-                    </div>
-                    <SelectGroups :assigned="assignedUsers" :available="dataGroupUsers" :isMobile="isMobile"
-                        @selected-groups="selectedUsersGroup" />
-
-                    <div class="w-full bg-blue-400 text-white rounded-sm py-1 px-3 my-2 text-center text-sm">Grupos de
                         unidades
                     </div>
                     <SelectGroups :assigned="assignedUnits" :available="dataGroupUnits" :isMobile="isMobile"
@@ -58,12 +52,9 @@ export default ({
         const name = ref('');
         const isMobile = ref(false);
         const dataGroupUnits = ref([]);
-        const dataGroupUsers = ref([]);
         const dataGroupEvents = ref([]);
         const selectedGroupUnits = ref([]);
-        const selectedGroupUsers = ref([]);
         const selectedGroupEvents = ref([]);
-        const assignedUsers = ref([]);
         const assignedUnits = ref([]);
         const assignedEvents = ref([]);
 
@@ -79,9 +70,7 @@ export default ({
             if (Object.keys(newVal).length !== 0) {
                 name.value = newVal.item.regla
                 dataGroupUnits.value = newVal.editAvailableGroupUnits
-                dataGroupUsers.value = newVal.editAvailableGroupUsers
                 dataGroupEvents.value = newVal.editAvailableGroupEvents
-                assignedUsers.value = newVal.editAssignedGroupUsers
                 assignedUnits.value = newVal.editAssignedGroupUnits
                 assignedEvents.value = newVal.editAssignedGroupEvents
             }
@@ -100,19 +89,15 @@ export default ({
                 codigo: props.itemEdit.item.codigo,
                 cod_grupotiposdeventos: selectedGroupEvents.value,
                 cod_grupounidades: selectedGroupUnits.value,
-                cod_grupousuarios: selectedGroupUsers.value
+                cod_grupousuarios: props.itemEdit.item.cod_grupousuarios,
             })
             cancelItem()
         }
 
         const cancelItem = () => {
             name.value = ""
-            assignedUsers.value = assignedUnits.value = assignedEvents.value = []
+            assignedUnits.value = assignedEvents.value = []
             emit('cancel-item')
-        }
-
-        const selectedUsersGroup = (data) => {
-            selectedGroupUsers.value = data.itemsAssigned.map(item => item.nombre)
         }
 
         const selectedUnitsGroup = (data) => {
@@ -129,13 +114,10 @@ export default ({
             isMobile,
             assignedEvents,
             assignedUnits,
-            assignedUsers,
             dataGroupUnits,
-            dataGroupUsers,
             dataGroupEvents,
             editItem,
             cancelItem,
-            selectedUsersGroup,
             selectedUnitsGroup,
             selectedEventsGroup
         }
