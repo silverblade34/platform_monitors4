@@ -59,9 +59,9 @@ export default ({
 
         const loadData = async () => {
             const responseEvent = await notificationsAccountApi(store.state.codcuenta, store.state.codclienteAdmin, store.state.username, store.state.codregla);
-            pendingEvents.value = responseEvent.data.data.filter(event => {
+            pendingEvents.value = responseEvent.data.data? responseEvent.data.data.filter(event => {
                 return event.descripcion_estado === "Sin Atender" || event.descripcion_estado === "En Gestion";
-            })
+            }): []
             const uniqueEventCodes = [...new Set(pendingEvents.value.map((event) => event.cod_evento))];
             uniqueEventCodes.unshift('Todos');
             eventCodes.value = uniqueEventCodes;

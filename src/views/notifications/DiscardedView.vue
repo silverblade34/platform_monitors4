@@ -87,9 +87,9 @@ export default ({
 
         const loadData = async () => {
             const responseEvent = await notificationsAccountApi(store.state.codcuenta, store.state.codclienteAdmin, store.state.username, store.state.codregla);
-            discardedEvents.value = responseEvent.data.data.filter(event => {
+            discardedEvents.value = responseEvent.data.data? responseEvent.data.data.filter(event => {
                 return event.descripcion_estado === "Descartado";
-            })
+            }): []
         }
 
         setInterval(() => {

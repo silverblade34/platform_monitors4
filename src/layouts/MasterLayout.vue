@@ -6,7 +6,7 @@
                 <div class="p-2 py-8 flex items-center justify-center">
                     <img :src="logoBusiness" class="w-[7rem] bg-white p-2 rounded-md" />
                 </div>
-                <SidebarLayout :itemsNavegation="filteredItems" />
+                <SidebarLayout :itemsNavegation="filteredItems" :rail="rail"/>
             </v-navigation-drawer>
             <v-main class="h-screen bg-slate-100 block">
                 <HeaderLayout :avatarPath="avatarPath" @action-rail="rail = !rail" />
@@ -181,7 +181,11 @@ export default {
         const filteredItems = computed(() => {
             // Lógica para filtrar los ítems según el rol
             if (store.state.rol === 'Administrador') {
-                return ItemsNavegation.value; // Muestra todos los ítems para el rol de administrador
+                if (store.state.codclienteAdmin == "All") {
+                    return ItemsNavegation.value.filter(item => item.value === 'Eventos' || item.value === 'Mantenimientos');
+                }else{
+                    return ItemsNavegation.value; // Muestra todos los ítems para el rol de administrador
+                }
             } else if (store.state.rol === 'Operador') {
                 // Filtra la lista para mostrar solo ciertos ítems para el rol de usuario
                 return ItemsNavegation.value.filter(item => item.value === 'Eventos' || item.value === 'Reportes');

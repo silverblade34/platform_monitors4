@@ -10,7 +10,7 @@
                     <v-list-item v-bind="props" :prepend-icon="itemNavegation.icon" :title="itemNavegation.title"
                         active-class="bg-indigo-lighten-1"></v-list-item>
                 </template>
-                <div class="bg-indigo-lighten-1 rounded-lg my-2">
+                <div :class="{'m-2': !rail, 'my-2': rail}" class="bg-indigo-lighten-1 rounded-md">
                     <router-link :to="item.to" v-for="item in itemNavegation.children" :key="item.value">
                         <v-list-item :prepend-icon="item.icon" :title="item.title" :value="item.value" active-class="bg-indigo-darken-1"></v-list-item>
                     </router-link>
@@ -22,6 +22,7 @@
 <script>
 export default ({
     props: {
+        rail: Boolean,
         itemsNavegation: Array
     },
 })

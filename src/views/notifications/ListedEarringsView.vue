@@ -88,15 +88,23 @@ export default ({
 
         const listedHeadersFilter = ref([]);
 
+        const addSiglaHeaderIfNeeded = () => {
+            if (store.state.codcliente === 'All') {
+                listedHeaders.value.unshift({ title: 'Sigla', align: 'start', key: 'sigla_cliente', sortable: true });
+                selectedColumns.value.unshift('sigla_cliente')
+            }
+        };
+
         const loadData = async () => {
             const responseEvent = await notificationsAccountApi(store.state.codcuenta, store.state.codclienteAdmin, store.state.username, store.state.codregla);
-            pendingEvents.value = responseEvent.data.data.filter(event => {
+            pendingEvents.value = responseEvent.data.data ? responseEvent.data.data.filter(event => {
                 return event.descripcion_estado === "Sin Atender" || event.descripcion_estado === "En Gestion";
-            })
+            }) : []
         }
 
         onMounted(async () => {
             dialogLoader.value = true
+            addSiglaHeaderIfNeeded();
             await loadData();
             updateColumnVisibility();
             dialogLoader.value = false
