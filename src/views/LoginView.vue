@@ -62,7 +62,6 @@ export default ({
             store.commit('setUsernameAdmin', response.data.data.UsuarioClienteAdmin);
             store.commit('setIsAuthenticated', true);
             router.push('/');
-
           } else {
             basicAlert(() => { }, 'warning', 'Credenciales incorrectas', 'Verifique su usuario y contraseña')
           }

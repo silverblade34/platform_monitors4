@@ -117,21 +117,15 @@ router.beforeEach((to, from, next) => {
         next({ name: 'login' });
     } else if (to.name === 'login' && store.state.isAuthenticated) {
         if (store.state.rol == "Administrador") {
-            if (store.state.codclienteAdmin == "All") {
-                next({ name: 'pendienteslistados' });
-            } else {
-                next({ name: 'home' });
-            }
+            next({ name: 'home' });
         } else if (store.state.rol == "Operador") {
             next({ name: 'pendienteslistados' });
+        }else {
+            next();
         }
     } else if (to.path === '/' && store.state.isAuthenticated) {
         if (store.state.rol == "Administrador") {
-            if (store.state.codclienteAdmin == "All") {
-                next({ name: 'pendienteslistados' });
-            } else {
-                next({ name: 'home' });
-            }
+            next({ name: 'home' });
         } else if (store.state.rol == "Operador") {
             next({ name: 'pendienteslistados' });
         }

@@ -4,9 +4,9 @@
             <v-navigation-drawer v-model="drawer" :rail="rail" permanent @click="rail = false" color="indigo-darken-1"
                 class="border-2 border-sky-500">
                 <div class="p-2 py-8 flex items-center justify-center">
-                    <img :src="logoBusiness" class="w-[7rem] bg-white p-2 rounded-md" />
+                    <img :src="selectedLogo" class="w-[6rem] bg-white p-2 rounded-md" />
                 </div>
-                <SidebarLayout :itemsNavegation="filteredItems" :rail="rail"/>
+                <SidebarLayout :itemsNavegation="filteredItems" :rail="rail" />
             </v-navigation-drawer>
             <v-main class="h-screen bg-slate-100 block">
                 <HeaderLayout :avatarPath="avatarPath" @action-rail="rail = !rail" />
@@ -19,7 +19,9 @@
 </template>
 <script>
 import avatarImage from "@/assets/iconuser_hombre.png";
-import logoBusiness from "@/assets/duragas_logo.png";
+import logoBusinessDuragas from "@/assets/duragas_logo.png";
+import logoBusinessSignia from "@/assets/signia_logo.png";
+import logoBusinessSysnet from "@/assets/login/logo_sysnet.png";
 import HeaderLayout from "./HeaderLayout.vue";
 import SidebarLayout from './SidebarLayout.vue';
 import { ref, onMounted, computed } from 'vue';
@@ -33,7 +35,28 @@ export default {
     data() {
         return {
             avatarPath: avatarImage,
-            logoBusiness: logoBusiness
+            logoBusinessDuragas: logoBusinessDuragas,
+            logoBusinessSignia: logoBusinessSignia,
+            logoBusinessSysnet: logoBusinessSysnet
+        }
+    },
+    computed: {
+        selectedLogo() {
+            if (this.role === 'Administrador') {
+                if (this.codcliente === 'All') {
+                    return this.logoBusinessSysnet;
+                } else if (this.codcliente === 'SI001') {
+                    return this.logoBusinessSignia;
+                } else {
+                    return this.logoBusinessDuragas;
+                }
+            } else {
+                if (this.codcliente === 'SI001') {
+                    return this.logoBusinessSignia;
+                } else {
+                    return this.logoBusinessDuragas;
+                }
+            }
         }
     },
     setup() {
@@ -141,6 +164,35 @@ export default {
                 ]
             },
             {
+                icon: "mdi-cog",
+                title: "Mantenimientos",
+                value: "MantenimientosCuentas",
+                to: "",
+                children: [
+                    {
+                        icon: "mdi-account",
+                        title: "Usuarios",
+                        value: "Usuarios",
+                        to: "usuarios",
+                        children: []
+                    },
+                    {
+                        icon: "mdi-bell-plus-outline",
+                        title: "Tipo eventos",
+                        value: "Tipo eventos",
+                        to: "tipoeventos",
+                        children: []
+                    },
+                    {
+                        icon: "mdi-truck",
+                        title: "Vehiculos",
+                        value: "Vehiculos",
+                        to: "vehiculos",
+                        children: []
+                    }
+                ]
+            },
+            {
                 icon: "mdi-group",
                 title: "Grupos",
                 value: "Grupos",
@@ -178,13 +230,16 @@ export default {
             }
         ]);
 
+        const role = ref('');
+        const codcliente = ref('');
+
         const filteredItems = computed(() => {
             // Lógica para filtrar los ítems según el rol
             if (store.state.rol === 'Administrador') {
                 if (store.state.codclienteAdmin == "All") {
-                    return ItemsNavegation.value.filter(item => item.value === 'Eventos' || item.value === 'Mantenimientos');
-                }else{
-                    return ItemsNavegation.value; // Muestra todos los ítems para el rol de administrador
+                    return ItemsNavegation.value.filter(item => item.value === 'Dashboard' || item.value === 'Eventos' || item.value === 'MantenimientosCuentas');
+                } else {
+                    return ItemsNavegation.value.filter(item => item.value != 'MantenimientosCuentas');// Muestra todos los ítems para el rol de administrador
                 }
             } else if (store.state.rol === 'Operador') {
                 // Filtra la lista para mostrar solo ciertos ítems para el rol de usuario
@@ -198,6 +253,8 @@ export default {
             rail.value = window.innerWidth <= 1000; // Define aquí el ancho máximo para considerar como pantalla pequeña
         };
         onMounted(() => {
+            role.value = store.state.rol
+            codcliente.value = store.state.codclienteAdmin
             // Llama a la función handleResize al cargar la página y en cada cambio de tamaño de la ventana
             handleResize();
             window.addEventListener("resize", handleResize);
@@ -205,8 +262,10 @@ export default {
         return {
             filteredItems,
             ItemsNavegation,
+            codcliente,
             drawer,
-            rail
+            rail,
+            role
         }
     }
 }

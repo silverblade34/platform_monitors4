@@ -23,6 +23,8 @@ import EventNotificationVue from '@/components/dashboard/EventNotification.vue';
 import VehicleNotificationVue from '@/components/dashboard/VehicleNotification.vue';
 import OperatorNotificationVue from '@/components/dashboard/OperatorNotification.vue';
 import { notificationsAccountApi } from '@/api/NotificationsService';
+import { findAllClientsToAccountApi } from '@/api/UsersService';
+import { findAllUnitsApi } from '@/api/VehiclesService';
 import { homeClientsApi } from '@/api/DashboardService';
 import store from '@/store';
 
@@ -70,6 +72,34 @@ export default ({
         const dataOperators = ref([])
 
         const loadData = async () => {
+            if (store.state.codclienteAdmin == "All") {
+                cardsForAccounts()
+            } else {
+                cardsForClients()
+            }
+        }
+
+        const cardsForAccounts = async () => {
+            listCards.value[0].title = "Eventos del día"
+            listCards.value[1].title = "Clientes registrados"
+            listCards.value[2].title = "Operadores registrados"
+            listCards.value[3].title = "Unidades registradas"
+            listCards.value[3].icon = "mdi-truck"
+            const [responseClients, responseUnits] = await Promise.all([
+                findAllClientsToAccountApi(store.state.codcuenta),
+                findAllUnitsApi(store.state.codcuenta, store.state.codclienteAdmin)
+            ])
+            const usersClients = responseClients.data.data[0].clientes ? responseClients.data.data[0].clientes : []
+            const administrators = usersClients.filter(client => client.rol == "Administrador")
+            const operators = usersClients.filter(client => client.rol != "Administrador")
+            const dataUnits = responseUnits.data.data ? responseUnits.data.data : []
+            const unidadesCodUnidad = dataUnits.flatMap(item => item.unidades.map(unidad => unidad.cod_unidad));
+            listCards.value[1].amount = administrators.length
+            listCards.value[2].amount = operators.length
+            listCards.value[3].amount = unidadesCodUnidad.length
+        }
+
+        const cardsForClients = async () => {
             const [responseEvent, tableEvent] = await Promise.all([
                 notificationsAccountApi(store.state.codcuenta, store.state.codclienteAdmin, store.state.username, store.state.codregla),
                 homeClientsApi(store.state.codcuenta, store.state.codclienteAdmin, store.state.username, store.state.codregla)

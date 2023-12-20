@@ -12,7 +12,7 @@
                                 <span>{{ group.nombre }}</span>
                             </v-expansion-panel-title>
                             <v-expansion-panel-text>
-                                <div class="max-h-[7rem] overflow-y-auto">
+                                <div class="max-h-[7rem] overflow-y-auto container_scroll">
                                     <div class="bg-blue-200 rounded-sm p-1 px-3 w-full my-1 text-sm"
                                         v-for="item in group.items" :key="item" size="small">
                                         {{ item }}
