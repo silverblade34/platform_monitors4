@@ -96,6 +96,21 @@ const router = createRouter({
                     name: "reglas",
                     path: "reglas",
                     component: () => import("@/views/RulesView.vue"),
+                },
+                {
+                    name: "clientes",
+                    path: "clientes",
+                    component: () => import("@/views/accounts/ClientsView.vue"),
+                },
+                {
+                    name: "tiposeventos_cuentas",
+                    path: "tiposeventos_cuentas",
+                    component: () => import("@/views/accounts/EventsView.vue"),
+                },
+                {
+                    name: "vehiculos_cuentas",
+                    path: "vehiculos_cuentas",
+                    component: () => import("@/views/accounts/VehiclesView.vue"),
                 }
             ]
         },

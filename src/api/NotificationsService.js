@@ -26,3 +26,7 @@ export function massDiscardofEventsApi(eventsId, cod_cuenta, cod_cliente) {
 export function addCommentEventsApi(data) {
     return axios.post(`${baseURL}/addComment`, data)
 }
+
+export function notificationsLogsApi(data) {
+    return axios.post(`${baseURL}/allNotifications`, data)
+}

@@ -112,7 +112,7 @@ export default ({
 
         setInterval(() => {
             loadData();
-        }, 10000);
+        }, 15000);
 
         const updateColumnVisibility = () => {
             listedHeadersFilter.value = listedHeaders.value.filter(item => {

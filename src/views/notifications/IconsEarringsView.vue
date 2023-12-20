@@ -69,7 +69,7 @@ export default ({
 
         setInterval(() => {
             loadData();
-        }, 10000);
+        }, 15000);
 
         watch(() => order.value, async () => {
             await filterEvents();

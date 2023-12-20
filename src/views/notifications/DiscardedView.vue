@@ -94,7 +94,7 @@ export default ({
 
         setInterval(() => {
             loadData();
-        }, 10000);
+        }, 15000);
 
         return {
             dialogLoader,

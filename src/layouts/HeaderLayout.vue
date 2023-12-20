@@ -26,6 +26,7 @@ export default ({
     data() {
         return {
             username: store.state.username,
+            codcliente: store.state.codclienteAdmin,
             rol: store.state.rol,
         }
     },
@@ -45,9 +46,10 @@ export default ({
 <style scoped>
 /* CSS para teléfonos móviles */
 @media (max-width: 1000px) {
-    .container-header{
+    .container-header {
         justify-content: end !important;
     }
+
     .btn-action-sidebar {
         display: none !important;
     }

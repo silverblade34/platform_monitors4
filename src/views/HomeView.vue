@@ -15,6 +15,14 @@
             </div>
         </div>
     </div>
+    <v-dialog v-model="dialogLoader" :scrim="false" persistent width="auto">
+        <v-card color="blue">
+            <v-card-text>
+                Construyendo
+                <v-progress-linear indeterminate color="white" class="mb-0"></v-progress-linear>
+            </v-card-text>
+        </v-card>
+    </v-dialog>
 </template>
 <script>
 import { ref, onMounted } from 'vue';
@@ -70,12 +78,13 @@ export default ({
         const dataEvents = ref([])
         const dataVehicles = ref([])
         const dataOperators = ref([])
+        const dialogLoader = ref(false);
 
         const loadData = async () => {
             if (store.state.codclienteAdmin == "All") {
-                cardsForAccounts()
+                await cardsForAccounts()
             } else {
-                cardsForClients()
+                await cardsForClients()
             }
         }
 
@@ -85,15 +94,18 @@ export default ({
             listCards.value[2].title = "Operadores registrados"
             listCards.value[3].title = "Unidades registradas"
             listCards.value[3].icon = "mdi-truck"
-            const [responseClients, responseUnits] = await Promise.all([
+            const [responseNotifications, responseClients, responseUnits] = await Promise.all([
+                notificationsAccountApi(store.state.codcuenta, store.state.codclienteAdmin, store.state.username, store.state.codregla),
                 findAllClientsToAccountApi(store.state.codcuenta),
                 findAllUnitsApi(store.state.codcuenta, store.state.codclienteAdmin)
             ])
+            const nofitications = responseNotifications.data.data ? responseNotifications.data.data : []
             const usersClients = responseClients.data.data[0].clientes ? responseClients.data.data[0].clientes : []
             const administrators = usersClients.filter(client => client.rol == "Administrador")
             const operators = usersClients.filter(client => client.rol != "Administrador")
             const dataUnits = responseUnits.data.data ? responseUnits.data.data : []
             const unidadesCodUnidad = dataUnits.flatMap(item => item.unidades.map(unidad => unidad.cod_unidad));
+            listCards.value[0].amount = nofitications.length
             listCards.value[1].amount = administrators.length
             listCards.value[2].amount = operators.length
             listCards.value[3].amount = unidadesCodUnidad.length
@@ -135,12 +147,14 @@ export default ({
         }
 
         onMounted(async () => {
-            loadData()
+            dialogLoader.value = true
+            await loadData()
+            dialogLoader.value = false
         });
 
         setInterval(() => {
             loadData();
-        }, 10000);
+        }, 15000);
 
         const filterByStatus = async (events, status) => {
             return events ? events.filter(event => event.descripcion_estado === status) : [];
@@ -163,6 +177,7 @@ export default ({
         return {
             listCards,
             dataEvents,
+            dialogLoader,
             dataVehicles,
             dataOperators
         }

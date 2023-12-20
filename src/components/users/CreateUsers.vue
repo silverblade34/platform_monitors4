@@ -20,7 +20,7 @@
                         :items="shiftsData.map(shift => shift.descripcion)" variant="outlined" class="col-span-2"
                         color="indigo" v-model="shift" v-if="role == 'Operador'"></v-select>
                     <v-text-field color="indigo" :append-inner-icon="visible ? 'mdi-eye-off' : 'mdi-eye'"
-                        :type="visible ? 'text' : 'password'" label="Ingrese su contraseña"
+                        :type="visible ? 'text' : 'password'" label="Ingrese una contraseña"
                         prepend-inner-icon="mdi-lock-outline" variant="outlined" @click:append-inner="visible = !visible"
                         v-model="password"></v-text-field>
                     <v-text-field color="indigo" :append-inner-icon="visible2 ? 'mdi-eye-off' : 'mdi-eye'"
