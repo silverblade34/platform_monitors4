@@ -32,7 +32,7 @@
                 <div class="item_event border-b border-gray-300" v-for="(item, i) in itemsLogs" :key="i">
                     <div class="w-full text-blue-500 pt-2 flex gap-1 items-center">
                         <div class="flex items-center pl-2">
-                            <div class="rounded-full w-2 h-2 bg-blue-500 mr-2"></div> 
+                            <div class="rounded-full w-2 h-2 bg-blue-500 mr-2"></div>
                         </div>
                         <div>
                             {{ item.Fecha }} {{ item.Hora }}
@@ -224,6 +224,21 @@ export default {
                 ]
             },
             {
+                icon: "mdi-cog",
+                title: "Mantenimientos",
+                value: "MantenimientosRoot",
+                to: "",
+                children: [
+                    {
+                        icon: "mdi-account",
+                        title: "Cuentas",
+                        value: "Cuentas",
+                        to: "cuentas",
+                        children: []
+                    }
+                ]
+            },
+            {
                 icon: "mdi-group",
                 title: "Grupos",
                 value: "Grupos",
@@ -297,9 +312,13 @@ export default {
             // Lógica para filtrar los ítems según el rol
             if (store.state.rol === 'Administrador') {
                 if (store.state.codclienteAdmin == "All") {
-                    return ItemsNavegation.value.filter(item => item.value === 'Dashboard' || item.value === 'Eventos' || item.value === 'MantenimientosCuentas');
+                    if (store.state.codcuenta === '0000') {
+                        return ItemsNavegation.value.filter(item => item.value === 'Dashboard' || item.value === 'Eventos' || item.value === 'MantenimientosRoot');
+                    } else {
+                        return ItemsNavegation.value.filter(item => item.value === 'Dashboard' || item.value === 'Eventos' || item.value === 'MantenimientosCuentas');
+                    }
                 } else {
-                    return ItemsNavegation.value.filter(item => item.value != 'MantenimientosCuentas');// Muestra todos los ítems para el rol de administrador
+                    return ItemsNavegation.value.filter(item => item.value != 'MantenimientosCuentas' || item.value != 'MantenimientosRoot');// Muestra todos los ítems para el rol de administrador
                 }
             } else if (store.state.rol === 'Operador') {
                 // Filtra la lista para mostrar solo ciertos ítems para el rol de usuario
@@ -316,7 +335,7 @@ export default {
         onMounted(async () => {
             role.value = store.state.rol
             codcliente.value = store.state.codclienteAdmin
-            if (codcliente.value == "All") {
+            if (codcliente.value == "All" && store.state.codcuenta != "0000") {
                 await loadLogs()
             }
             // Llama a la función handleResize al cargar la página y en cada cambio de tamaño de la ventana

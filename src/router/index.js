@@ -103,6 +103,11 @@ const router = createRouter({
                     component: () => import("@/views/accounts/ClientsView.vue"),
                 },
                 {
+                    name: "cuentas",
+                    path: "cuentas",
+                    component: () => import("@/views/AccountsView.vue"),
+                },
+                {
                     name: "tiposeventos_cuentas",
                     path: "tiposeventos_cuentas",
                     component: () => import("@/views/accounts/EventsView.vue"),

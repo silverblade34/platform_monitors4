@@ -47,7 +47,7 @@ export default ({
     const router = useRouter();
 
     const validateCredential = async () => {
-      const hashedPassword = md5(password.value); 
+      const hashedPassword = md5(password.value);
       await loginApi(username.value, hashedPassword)
         .then(response => {
           if (response.data.status == true) {
@@ -62,12 +62,14 @@ export default ({
             store.commit('setUsernameAdmin', response.data.data.UsuarioClienteAdmin);
             store.commit('setIsAuthenticated', true);
             router.push('/');
-          } else {
-            basicAlert(() => { }, 'warning', 'Credenciales incorrectas', 'Verifique su usuario y contraseña')
           }
         })
-        .catch(() => {
-          basicAlert(() => { }, 'error', 'Error de conexión', 'Hubo un problema de conexión con el origen de datos')
+        .catch(error => {
+          if (error.response.data.status == false) {
+            basicAlert(() => { }, 'warning', 'Usuario invalido', 'Las credenciales son incorrectas')
+          }else{
+            basicAlert(() => { }, 'error', 'Error de conexión', 'Hubo un problema de conexión con el origen de datos')
+          }
         })
     }
     return {

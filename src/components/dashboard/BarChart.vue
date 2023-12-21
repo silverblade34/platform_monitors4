@@ -59,8 +59,13 @@ export default {
 
         watch(() => props.dataChart, (newVal) => {
             if (newVal.length > 0) {
+                const dataChart = props.dataChart.map(data => data.empresa);
+                const filledData = Array.from({ length: Math.max(6 - dataChart.length, 0) }, () => '');
+
+                const labels = dataChart.concat(filledData);
                 data.value = {
-                    labels: props.dataChart.map(data => data.empresa),
+                    // labels: props.dataChart.map(data => data.empresa),
+                    labels: labels,
                     datasets: [
                         {
                             label: 'Eventos',

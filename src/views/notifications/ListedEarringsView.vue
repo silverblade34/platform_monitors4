@@ -89,9 +89,14 @@ export default ({
         const listedHeadersFilter = ref([]);
 
         const addSiglaHeaderIfNeeded = () => {
-            if (store.state.codcliente === 'All') {
-                listedHeaders.value.unshift({ title: 'Sigla', align: 'start', key: 'sigla_cliente', sortable: true });
+            if (store.state.codclienteAdmin === 'All') {
+                listedHeaders.value.unshift({ title: 'Sigla cliente', align: 'start', key: 'sigla_cliente', sortable: true });
                 selectedColumns.value.unshift('sigla_cliente')
+                if (store.state.codcuenta === '0000') {
+                    listedHeaders.value.unshift({ title: 'Sigla cuenta', align: 'start', key: 'sigla_cuenta', sortable: true });
+                    selectedColumns.value.unshift('sigla_cuenta')
+                    selectedColumns.value = selectedColumns.value.filter(column => column !== 'actions' && column !== 'fecha_ultima_accion');
+                }
             }
         };
 

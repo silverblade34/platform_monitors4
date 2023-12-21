@@ -5,7 +5,7 @@
             <CardEventsVue :BgCard="card.bgCard" :Icon="card.icon" :Amount="card.amount" :Title="card.title"
                 v-for="(card, index) in listCards" :key="index" />
             <template v-if="codcliente == 'All'">
-                <div class="col-span-2 p-4 rounded-lg bg-white shadow-sm">
+                <div class="col-span-2 p-4 rounded-lg bg-white shadow-md">
                     <p class="text-center text-gray-500 pb-3">Eventos por clientes</p>
                     <BarChartVue :dataChart="dataBarChart" />
                 </div>
@@ -94,13 +94,17 @@ export default ({
 
         const loadData = async () => {
             if (store.state.codclienteAdmin == "All") {
-                await cardsForAccounts()
+                if (store.state.codcuenta == "0000") {
+                    console.log("-ROOT-")
+                } else {
+                    await dashboardForAccounts()
+                }
             } else {
-                await cardsForClients()
+                await dashboardForClients()
             }
         }
 
-        const cardsForAccounts = async () => {
+        const dashboardForAccounts = async () => {
             const today = new Date();
             const year = today.getFullYear();
             const month = String(today.getMonth() + 1).padStart(2, '0'); // Se suma 1 porque los meses van de 0 a 11
@@ -131,7 +135,7 @@ export default ({
             listCards.value[3].amount = unidadesCodUnidad.length
         }
 
-        const cardsForClients = async () => {
+        const dashboardForClients = async () => {
             const [responseEvent, tableEvent] = await Promise.all([
                 notificationsAccountApi(store.state.codcuenta, store.state.codclienteAdmin, store.state.username, store.state.codregla),
                 homeClientsApi(store.state.codcuenta, store.state.codclienteAdmin, store.state.username, store.state.codregla)
