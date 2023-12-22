@@ -318,7 +318,7 @@ export default {
                         return ItemsNavegation.value.filter(item => item.value === 'Dashboard' || item.value === 'Eventos' || item.value === 'MantenimientosCuentas');
                     }
                 } else {
-                    return ItemsNavegation.value.filter(item => item.value != 'MantenimientosCuentas' || item.value != 'MantenimientosRoot');// Muestra todos los ítems para el rol de administrador
+                    return ItemsNavegation.value.filter(item => item.value != 'MantenimientosCuentas' && item.value != 'MantenimientosRoot');// Muestra todos los ítems para el rol de administrador
                 }
             } else if (store.state.rol === 'Operador') {
                 // Filtra la lista para mostrar solo ciertos ítems para el rol de usuario
