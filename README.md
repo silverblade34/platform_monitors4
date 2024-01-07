@@ -1,4 +1,4 @@
-# template_vue_platform
+# platform_monitors4
 
 ## Project setup
 ```
