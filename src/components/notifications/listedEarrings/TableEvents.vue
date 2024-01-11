@@ -19,7 +19,9 @@
     <template v-slot:[`item.actions`]="{ item }">
       <div class="flex gap-1">
         <span @click="editItem(item)">
-          <v-btn icon="mdi-bell-alert" size="small" variant="text" color="green"></v-btn>
+          <v-btn size="small" variant="text" color="green">
+            <img :src="imgAttendedIcon" alt="" class="w-7 h-6">
+          </v-btn>
           <v-tooltip activator="parent" location="top">Atender</v-tooltip>
         </span>
         <div>
@@ -41,6 +43,7 @@
 </template>
 <script>
 import ImgEvidencia from '@/assets/events/evidencias.jpg';
+import ImgAttendedIcon from '@/assets/events/icon_atended.png';
 import { ref, watch } from 'vue';
 import { VDataTable } from 'vuetify/labs/VDataTable';
 import { useRouter } from 'vue-router';
@@ -52,6 +55,11 @@ export default {
     search: String,
     desserts: Array,
     listedHeaders: Array
+  },
+  data() {
+    return {
+      imgAttendedIcon: ImgAttendedIcon,
+    }
   },
   components: {
     VDataTable,
