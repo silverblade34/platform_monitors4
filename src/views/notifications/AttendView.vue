@@ -13,7 +13,7 @@
             <div>
                 <div class="font-bold text-blue-500 pb-3 block md:flex md:justify-between">
                     <span><v-icon>mdi-text-box-search-outline</v-icon> Detalles</span>
-                    <v-btn variant="tonal" :class="getPriorityColor(editEvent.cod_evento)" class="mt-2 md:mt-0"> {{
+                    <v-btn variant="tonal" :class="getPriorityColor(editEvent.prioridad)" class="mt-2 md:mt-0"> {{
                         editEvent.cod_evento }}
                     </v-btn>
                 </div>
@@ -25,11 +25,6 @@
                     <div>
                         <p>Velocidad</p>
                         <div class="bg-gray-200 p-2 px-4 rounded-md">{{ editEvent.velocidad }}</div>
-                    </div>
-                    <div>
-                        <p>Geocerca</p>
-                        <div class="bg-gray-200 p-2 px-4 rounded-md">{{ editEvent.geocerca ? editEvent.geocerca : "-" }}
-                        </div>
                     </div>
                     <div>
                         <p>Fecha recepción</p>
@@ -155,11 +150,9 @@ export default ({
             listEventsData.value = responseEvents.data.data ? responseEvents.data.data[0].eventos : []
         })
 
-        const getPriorityColor = (cod_evento) => {
-            if (cod_evento && listEventsData.value.length > 0) {
-                // Devuelve la clase CSS correspondiente según el valor de prioridad
-                const evento = listEventsData.value.find(event => event.cod_evento == cod_evento)
-                switch (evento.prioridad) {
+        const getPriorityColor = (prioridad) => {
+            if (prioridad && listEventsData.value.length > 0) {
+                switch (prioridad) {
                     case 'REGULAR':
                         return 'regular-color-class'; // Reemplaza con la clase CSS para REGULAR
                     case 'URGENTE':

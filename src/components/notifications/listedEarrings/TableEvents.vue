@@ -19,7 +19,7 @@
     <template v-slot:[`item.actions`]="{ item }">
       <div class="flex gap-1">
         <span @click="editItem(item)">
-          <v-btn icon="mdi-pencil" size="small" variant="text" color="green"></v-btn>
+          <v-btn icon="mdi-bell-alert" size="small" variant="text" color="green"></v-btn>
           <v-tooltip activator="parent" location="top">Atender</v-tooltip>
         </span>
         <div>
