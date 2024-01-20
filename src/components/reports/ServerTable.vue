@@ -38,10 +38,13 @@
             {{ item.segundos }} segundos
         </template>
     </v-data-table-server>
+    <SelectColumnVue :dataColumn="dataColumn" :openModal="openSelectColumn" @generate-column="initialsDataReport"
+        @cancel-item="openSelectColumn = false" />
 </template>
 <script>
 import { reportEventsApi } from '@/api/ReportEventsService';
 import { VDataTableServer } from 'vuetify/labs/VDataTable';
+import SelectColumnVue from './SelectColumn.vue';
 import store from '@/store';
 import { ref, watch } from 'vue';
 
@@ -52,29 +55,34 @@ export default {
     },
     components: {
         VDataTableServer,
+        SelectColumnVue
     },
-    setup(props) {
+    emits: ['update-keyscolumn'],
+    setup(props, { emit }) {
         const itemsPerPageInitials = ref(10);
-        const headers = ref([
-            { title: 'Codigo evento', align: 'start', sortable: false, key: 'cod_evento' },
-            { title: 'Prioridad', key: 'prioridad', sortable: false, align: 'start' },
-            { title: 'Placa', key: 'placa', sortable: false, align: 'start' },
-            { title: 'Fecha evento', key: 'fecha_actual', sortable: false, align: 'start' },
-            { title: 'Velocidad', key: 'velocidad', sortable: false, align: 'end' },
-            { title: 'Latitud', key: 'latitud', sortable: false, align: 'end' },
-            { title: 'Longitud', key: 'longitud', sortable: false, align: 'end' },
-            { title: 'Dirección', key: 'direccion', sortable: false, align: 'start' },
-            { title: 'Geocerca', key: 'geocerca', sortable: false, align: 'start' },
-            { title: 'Fecha ult. acción', key: 'fecha_ultima_accion', sortable: false, align: 'start' },
-            { title: 'Hora ult. acción', key: 'hora_ultima_accion', sortable: false, align: 'start' },
-            { title: 'Tiempo atención', key: 'segundos', sortable: false, align: 'start' },
-            { title: 'Estado', key: 'descripcion_estado', sortable: false, align: 'start' },
-            { title: 'Comentario', key: 'list_comentarios', sortable: false, align: 'start' },
-            { title: 'Usuario', key: 'usuario', sortable: false, align: 'end' },
-            { title: 'Nombre usuario', key: 'nombre_usuario', sortable: false, align: 'end' }
+        const dataColumn = ref([
+            { title: 'Codigo evento', align: 'start', sortable: false, key: 'cod_evento', status: true },
+            { title: 'Prioridad', key: 'prioridad', sortable: false, align: 'start', status: true },
+            { title: 'Flota', key: 'fleet_name', sortable: false, align: 'start', status: true },
+            { title: 'Conductor', key: 'conductor', sortable: false, align: 'start', status: true },
+            { title: 'Placa', key: 'placa', sortable: false, align: 'start', status: true },
+            { title: 'Fecha evento', key: 'fecha_actual', sortable: false, align: 'start', status: true },
+            { title: 'Velocidad', key: 'velocidad', sortable: false, align: 'end', status: true },
+            { title: 'Latitud', key: 'latitud', sortable: false, align: 'end', status: true },
+            { title: 'Longitud', key: 'longitud', sortable: false, align: 'end', status: true },
+            { title: 'Dirección', key: 'direccion', sortable: false, align: 'start', status: true },
+            { title: 'Geocerca', key: 'geocerca', sortable: false, align: 'start', status: true },
+            { title: 'Fecha ult. acción', key: 'fecha_ultima_accion', sortable: false, align: 'start', status: true },
+            { title: 'Hora ult. acción', key: 'hora_ultima_accion', sortable: false, align: 'start', status: true },
+            { title: 'Tiempo atención', key: 'segundos', sortable: false, align: 'start', status: true },
+            { title: 'Estado', key: 'descripcion_estado', sortable: false, align: 'start', status: true },
+            { title: 'Comentario', key: 'list_comentarios', sortable: false, align: 'start', status: true },
+            { title: 'Usuario', key: 'usuario', sortable: false, align: 'end', status: true },
+            { title: 'Nombre usuario', key: 'nombre_usuario', sortable: false, align: 'end', status: true }
         ])
-
+        const headers = ref([])
         const serverItems = ref([]);
+        const openSelectColumn = ref(false);
         const loading = ref(true);
         const totalItems = ref(0);
         const plate = ref('');
@@ -92,7 +100,7 @@ export default {
                 description_state.value = newVal.state;
                 dateFrom.value = newVal.dateFrom;
                 dateTo.value = newVal.dateTo;
-                initialsDataReport()
+                openSelectColumn.value = true
             }
         })
 
@@ -103,7 +111,9 @@ export default {
             return text;
         };
 
-        const initialsDataReport = async () => {
+        const initialsDataReport = async (data) => {
+            emit('update-keyscolumn', { keyscolumn: data.selectedColumn })
+            headers.value = dataColumn.value.filter(item => data.selectedColumn.includes(item.key));
             loading.value = true;
             await reportEventsApi(
                 store.state.codcuenta,
@@ -116,7 +126,9 @@ export default {
                 itemsPerPageInitials.value,
                 1
             ).then((response) => {
-                serverItems.value = serverItems.value = response.data.data ? response.data.data : [];
+                serverItems.value = response.data.data ? response.data.data : [];
+                console.log("--------------------------------")
+                console.log(serverItems.value)
                 totalItems.value = response.data.totalEventos;
                 loading.value = false;
             });
@@ -140,15 +152,16 @@ export default {
                     totalItems.value = response.data.totalEventos;
                     loading.value = false;
                 })
-                .catch(error => {
+                    .catch(error => {
                         console.log(error)
-                })
+                    })
             } else {
                 loading.value = false;
             }
         };
 
         return {
+            openSelectColumn,
             itemsPerPageInitials,
             headers,
             serverItems,
@@ -159,6 +172,8 @@ export default {
             description_state,
             dateFrom,
             dateTo,
+            dataColumn,
+            initialsDataReport,
             truncateText,
             loadItems,
         };

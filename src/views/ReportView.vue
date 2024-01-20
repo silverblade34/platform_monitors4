@@ -25,7 +25,8 @@
                     excel</v-btn>
             </div>
             <div class="w-full border">
-                <ServerTableVue :dataFilter="dataFilter" :searchstate="searchstate" />
+                <ServerTableVue :dataFilter="dataFilter" :searchstate="searchstate"
+                    @update-keyscolumn="onUpdateKeyscolumn" />
             </div>
         </div>
     </div>
@@ -55,6 +56,7 @@ export default ({
         const listEventsData = ref([]);
         const dateFrom = ref('');
         const dateTo = ref('');
+        const keyscolumn = ref([]);
         const plate = ref('');
         const type_event = ref('');
         const state = ref('');
@@ -86,59 +88,63 @@ export default ({
 
         const exportReports = async () => {
             if (dateFrom.value != "" && dateTo.value != "") {
-                dialogLoader.value = true
-                const filterExcel = {
-                    fecha_inicio: dateFrom.value,
-                    fecha_fin: dateTo.value,
-                    placa: plate.value,
-                    cod_evento: type_event.value,
-                    descripcion_estado: state.value == 'Todos' ? '' : state.value
+                if (keyscolumn.value.length > 0) {
+                    dialogLoader.value = true
+                    const filterExcel = {
+                        fecha_inicio: dateFrom.value,
+                        fecha_fin: dateTo.value,
+                        placa: plate.value,
+                        cod_evento: type_event.value,
+                        descripcion_estado: state.value == 'Todos' ? '' : state.value
+                    }
+                    reportEventsApi(store.state.codcuenta, store.state.codclienteAdmin, filterExcel.placa,
+                        filterExcel.cod_evento, filterExcel.descripcion_estado, filterExcel.fecha_inicio, filterExcel.fecha_fin, 0, 0)
+                        .then(response => {
+                            const datos = response.data.data
+                            const excelData = datos.map(obj => {
+                                const [fecha_ultima_accion, hora_ultima_accion] = obj.fecha_ultima_accion.split(" ");
+                                obj.list_comentarios = obj.list_comentarios && obj.list_comentarios.length > 0
+                                    ? obj.list_comentarios[obj.list_comentarios.length - 1].comentario
+                                    : ''
+                                obj.usuario = obj.list_comentarios && obj.list_comentarios.length > 0
+                                    ? obj.list_comentarios[obj.list_comentarios.length - 1].usuario
+                                    : ''
+                                obj.nombre_usuario = obj.list_comentarios && obj.list_comentarios.length > 0
+                                    ? obj.list_comentarios[obj.list_comentarios.length - 1].nombre_completo
+                                    : ''
+                                obj.fecha_ultima_accion = fecha_ultima_accion
+                                obj.hora_ultima_accion = hora_ultima_accion
+                                // Filtrar solo las propiedades que están en keysAFiltrar y están presentes en obj
+                                const filteredProperties = Object.fromEntries(
+                                    Object.entries(obj)
+                                        .filter(([key]) => keyscolumn.value.includes(key))
+                                );
+
+                                return filteredProperties;
+                            });
+
+                            // Crear una hoja de cálculo de Excel
+                            const workbook = XLSX.utils.book_new();
+                            // Convertir la matriz de datos a una hoja de cálculo de Excel
+                            const worksheet = XLSX.utils.json_to_sheet(excelData);
+                            // Agregar la hoja de cálculo al libro de trabajo
+                            const sheetName = 'DatosReportes';
+                            XLSX.utils.book_append_sheet(workbook, worksheet, sheetName);
+
+                            // Guardar el archivo de Excel
+                            XLSX.writeFile(workbook, 'Reporte(' + filterExcel.fecha_inicio + '/' + filterExcel.fecha_fin + ').xlsx', { bookType: 'xlsx', type: 'buffer' });
+                            dialogLoader.value = false
+                        })
+                } else {
+                    basicAlert(() => { }, 'warning', 'Advertencia', 'No hay un filtro de columnas registrado, generelo al dar click en el botón buscar')
                 }
-                reportEventsApi(store.state.codcuenta, store.state.codclienteAdmin, filterExcel.placa,
-                    filterExcel.cod_evento, filterExcel.descripcion_estado, filterExcel.fecha_inicio, filterExcel.fecha_fin, 0, 0)
-                    .then(response => {
-                        const datos = response.data.data
-                        const excelData = datos.map(obj => {
-                            const [fechaComentario, horaComentario] = obj.fecha_ultima_accion.split(" ");
-
-                            return {
-                                Cod_evento: obj.cod_evento,
-                                Placa: obj.placa,
-                                Origen: obj.origen,
-                                Prioridad: obj.prioridad,
-                                Fecha_evento: obj.fecha,
-                                Hora_evento: obj.hora,
-                                Fecha_recepción: obj.fecha_actual,
-                                Latitud: obj.latitud,
-                                Longitud: obj.longitud,
-                                Velocidad: obj.velocidad,
-                                Direccion: obj.direccion,
-                                Geocerca: obj.geocerca,
-                                Fecha_ultima_accion: fechaComentario,
-                                Hora_ultima_accion: horaComentario,
-                                Tiempo_atencion: obj.segundos,
-                                Descripcion_estado: obj.descripcion_estado,
-                                Usuario: obj.usuario,
-                                Nombre_usuario: obj.nombre_completo,
-                                Comentario: obj.comentario
-                            };
-                        });
-
-                        // Crear una hoja de cálculo de Excel
-                        const workbook = XLSX.utils.book_new();
-                        // Convertir la matriz de datos a una hoja de cálculo de Excel
-                        const worksheet = XLSX.utils.json_to_sheet(excelData);
-                        // Agregar la hoja de cálculo al libro de trabajo
-                        const sheetName = 'DatosReportes';
-                        XLSX.utils.book_append_sheet(workbook, worksheet, sheetName);
-
-                        // Guardar el archivo de Excel
-                        XLSX.writeFile(workbook, 'Reporte(' + filterExcel.fecha_inicio + '/' + filterExcel.fecha_fin + ').xlsx', { bookType: 'xlsx', type: 'buffer' });
-                        dialogLoader.value = false
-                    })
             } else {
                 basicAlert(() => { }, 'warning', 'Advertencia', 'Los campos fecha desde y fecha hasta son obligatorios')
             }
+        }
+
+        const onUpdateKeyscolumn = (data) => {
+            keyscolumn.value = data.keyscolumn
         }
 
         return {
@@ -152,7 +158,8 @@ export default ({
             dataFilter,
             searchstate,
             exportReports,
-            searchEventsReport
+            searchEventsReport,
+            onUpdateKeyscolumn
         }
     }
 })
