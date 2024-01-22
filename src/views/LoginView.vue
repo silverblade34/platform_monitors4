@@ -60,6 +60,8 @@ export default ({
             store.commit('setCodRegla', response.data.data.Cod_Regla);
             store.commit('setUsername', response.data.data.Usuario);
             store.commit('setUsernameAdmin', response.data.data.UsuarioClienteAdmin);
+            store.commit('setSelectedColumnsNotifications', ['cod_evento', 'placa', 'conductor', 'fleet_name', 'fecha', 'fecha_actual', 'velocidad',
+              'direccion', 'descripcion_estado', 'fecha_ultima_accion', 'prioridad', 'actions']);
             store.commit('setIsAuthenticated', true);
             router.push('/');
           }
@@ -67,7 +69,7 @@ export default ({
         .catch(error => {
           if (error.response.data.status == false) {
             basicAlert(() => { }, 'warning', 'Usuario invalido', 'Las credenciales son incorrectas')
-          }else{
+          } else {
             basicAlert(() => { }, 'error', 'Error de conexión', 'Hubo un problema de conexión con el origen de datos')
           }
         })

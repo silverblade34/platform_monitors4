@@ -69,8 +69,7 @@ export default ({
         const selectedDiscardEvents = ref([]);
         const pendingEvents = ref([]);
         const dialogLoader = ref(false);
-        const selectedColumns = ref(['cod_evento', 'placa', 'conductor', 'fleet_name', 'fecha', 'fecha_actual', 'velocidad',
-            'direccion', 'descripcion_estado', 'fecha_ultima_accion', 'prioridad', 'actions']);
+        const selectedColumns = ref(store.state.selectedColumnsNotifications);
         const listedHeaders = ref([
             { title: 'Codigo evento', align: 'start', key: 'cod_evento', sortable: true },
             { title: 'Placa', align: 'start', key: 'placa', sortable: true },
@@ -121,11 +120,12 @@ export default ({
 
         const updateColumnVisibility = () => {
             listedHeadersFilter.value = listedHeaders.value.filter(item => {
-                return selectedColumns.value.includes(item.key);
+                return store.state.selectedColumnsNotifications.includes(item.key);
             });
         }
 
         watch(() => selectedColumns.value, () => {
+            store.commit('setSelectedColumnsNotifications', selectedColumns.value);
             updateColumnVisibility();
         })
 

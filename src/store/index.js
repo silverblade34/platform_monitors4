@@ -11,6 +11,7 @@ export default createStore({
         rol: '',
         ruc: '',
         codregla: [],
+        selectedColumnsNotifications: [],
         empresa: '',
         username: '',
         usernameAdmin: '',
@@ -24,7 +25,7 @@ export default createStore({
             state.isAuthenticated = value;
             localStorage.setItem(localStorageKey, JSON.stringify(state));
         },
-        
+
         setCodCuenta(state, value) {
             state.codcuenta = value;
             localStorage.setItem(localStorageKey, JSON.stringify(state));
@@ -40,12 +41,17 @@ export default createStore({
             localStorage.setItem(localStorageKey, JSON.stringify(state));
         },
 
-        setCodCliente(state, value){
+        setSelectedColumnsNotifications(state, value) {
+            state.selectedColumnsNotifications = value;
+            localStorage.setItem(localStorageKey, JSON.stringify(state));
+        },
+
+        setCodCliente(state, value) {
             state.codcliente = value;
             localStorage.setItem(localStorageKey, JSON.stringify(state));
         },
 
-        setCodClienteAdmin(state, value){
+        setCodClienteAdmin(state, value) {
             state.codclienteAdmin = value;
             localStorage.setItem(localStorageKey, JSON.stringify(state));
         },
@@ -55,22 +61,22 @@ export default createStore({
             localStorage.setItem(localStorageKey, JSON.stringify(state));
         },
 
-        setCodRegla(state, value){
+        setCodRegla(state, value) {
             state.codregla = value;
             localStorage.setItem(localStorageKey, JSON.stringify(state));
         },
 
-        setEmpresa(state, value){
+        setEmpresa(state, value) {
             state.empresa = value;
             localStorage.setItem(localStorageKey, JSON.stringify(state));
         },
- 
-        setUsername(state, value){
+
+        setUsername(state, value) {
             state.username = value;
             localStorage.setItem(localStorageKey, JSON.stringify(state));
         },
 
-        setUsernameAdmin(state, value){
+        setUsernameAdmin(state, value) {
             state.usernameAdmin = value;
             localStorage.setItem(localStorageKey, JSON.stringify(state));
         },
