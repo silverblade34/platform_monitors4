@@ -5,13 +5,13 @@
                 <span class="px-4 w-full text-center">Seleccionar columnas a mostrar</span>
             </v-toolbar>
             <v-card-text>
-                <div class="w-full rounded-md my-2 flex gap-2 px-3 text-xs" v-for="column in columnList"
-                    :key="column.key">
+                <div class="grid grid-cols-2">
                     <v-checkbox :label="column.title" color="indigo" :value="column.key" hide-details class="text-xs"
-                        v-model="selectedColumn" density="small"></v-checkbox>
+                        v-model="selectedColumn" v-for="column in columnList" :key="column.key"></v-checkbox>
                 </div>
             </v-card-text>
             <v-card-actions>
+                <v-spacer></v-spacer>
                 <v-spacer></v-spacer>
                 <v-btn color="blue-grey-lighten-2" variant="tonal" @click="cancelItem">
                     Cancelar
@@ -45,7 +45,7 @@ export default {
         })
 
         const onGenerateColumn = () => {
-            emit('generate-column', {selectedColumn: selectedColumn.value})
+            emit('generate-column', { selectedColumn: selectedColumn.value })
             cancelItem();
         }
 
@@ -63,3 +63,12 @@ export default {
     }
 }
 </script>
+<style scoped>
+.v-checkbox .v-selection-control {
+    min-height: 10px !important;
+}
+
+.v-selection-control--density-default {
+    min-height: 10px !important;
+}
+</style>

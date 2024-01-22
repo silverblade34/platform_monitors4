@@ -85,6 +85,7 @@ export default {
         const openSelectColumn = ref(false);
         const loading = ref(true);
         const totalItems = ref(0);
+        const userFilter = ref('');
         const plate = ref('');
         const cod_evento = ref('');
         const description_state = ref('');
@@ -95,11 +96,12 @@ export default {
         watch(() => props.dataFilter, (newVal) => {
             if (props.searchstate) {
                 stateFilter.value = newVal
-                plate.value = newVal.plate;
-                cod_evento.value = newVal.type_event;
-                description_state.value = newVal.state;
-                dateFrom.value = newVal.dateFrom;
-                dateTo.value = newVal.dateTo;
+                plate.value = newVal.plate
+                userFilter.value = newVal.userFilter
+                cod_evento.value = newVal.type_event
+                description_state.value = newVal.state
+                dateFrom.value = newVal.dateFrom
+                dateTo.value = newVal.dateTo
                 openSelectColumn.value = true
             }
         })
@@ -124,7 +126,8 @@ export default {
                 dateFrom.value,
                 dateTo.value,
                 itemsPerPageInitials.value,
-                1
+                1,
+                userFilter.value
             ).then((response) => {
                 serverItems.value = response.data.data ? response.data.data : [];
                 totalItems.value = response.data.totalEventos;
@@ -144,7 +147,8 @@ export default {
                     dateFrom.value,
                     dateTo.value,
                     itemsPerPage,
-                    page
+                    page,
+                    userFilter.value
                 ).then(response => {
                     serverItems.value = response.data.data ? response.data.data : [];
                     totalItems.value = response.data.totalEventos;

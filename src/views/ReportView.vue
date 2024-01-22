@@ -12,11 +12,14 @@
                 <v-text-field clearable density="compact" color="indigo" v-model="plate" prepend-inner-icon="mdi-truck"
                     label="Placa" hide-details variant="outlined"></v-text-field>
 
-                <v-select label="Tipo evento" :items="listEventsData.map(event => event.cod_evento)" variant="outlined"
-                    color="indigo" hide-details density="compact" v-model="type_event"></v-select>
+                <v-select label="Tipo evento" :items="['Todos', ...listEventsData.map(event => event.cod_evento)]"
+                    variant="outlined" color="indigo" hide-details density="compact" v-model="type_event"></v-select>
 
                 <v-select label="Estado" :items="['Todos', 'Sin Atender', 'En Gestion', 'Confirmado', 'Descartado']"
                     variant="outlined" color="indigo" hide-details density="compact" v-model="state"></v-select>
+
+                <v-select label="Usuario" :items="['Todos', ...listClientsData.map(client => client.usuario)]"
+                    variant="outlined" color="indigo" hide-details density="compact" v-model="userFilter"></v-select>
 
                 <v-btn color="blue" class="mt-1 custom-btn" @click="searchEventsReport">Buscar</v-btn>
             </div>
@@ -42,6 +45,7 @@
 <script>
 import { reportEventsApi } from '@/api/ReportEventsService';
 import { findAllEventsApi } from '@/api/EventsService';
+import { findAllClientsApi } from '@/api/UsersService';
 import ServerTableVue from '@/components/reports/ServerTable.vue';
 import { basicAlert } from '@/helpers/SweetAlert';
 import { onMounted, ref } from 'vue';
@@ -54,7 +58,9 @@ export default ({
     },
     setup() {
         const listEventsData = ref([]);
+        const listClientsData = ref([]);
         const dateFrom = ref('');
+        const userFilter = ref('');
         const dateTo = ref('');
         const keyscolumn = ref([]);
         const plate = ref('');
@@ -64,11 +70,13 @@ export default ({
         const dataFilter = ref({});
         const dialogLoader = ref(false);
 
-        onMounted(() => {
-            findAllEventsApi(store.state.codcuenta, store.state.codclienteAdmin)
-                .then(response => {
-                    listEventsData.value = response.data.data ? response.data.data[0].eventos : []
-                })
+        onMounted(async () => {
+            const [eventsResponse, clientsResponse] = await Promise.all([
+                findAllEventsApi(store.state.codcuenta, store.state.codclienteAdmin),
+                findAllClientsApi(store.state.codcuenta, store.state.empresa)
+            ])
+            listEventsData.value = eventsResponse.data.data ? eventsResponse.data.data[0].eventos : []
+            listClientsData.value = clientsResponse.data.data ? clientsResponse.data.data.filter(client => client.rol != "Administrador") : []
         })
 
         const searchEventsReport = () => {
@@ -78,7 +86,8 @@ export default ({
                     dateFrom: dateFrom.value,
                     dateTo: dateTo.value,
                     plate: plate.value,
-                    type_event: type_event.value,
+                    userFilter: userFilter.value == 'Todos' ? '' : userFilter.value,
+                    type_event: type_event.value == 'Todos' ? '' : type_event.value,
                     state: state.value == 'Todos' ? '' : state.value
                 }
             } else {
@@ -94,11 +103,12 @@ export default ({
                         fecha_inicio: dateFrom.value,
                         fecha_fin: dateTo.value,
                         placa: plate.value,
-                        cod_evento: type_event.value,
-                        descripcion_estado: state.value == 'Todos' ? '' : state.value
+                        cod_evento: type_event.value == 'Todos' ? '' : type_event.value,
+                        descripcion_estado: state.value == 'Todos' ? '' : state.value,
+                        usuario: userFilter.value == 'Todos' ? '' : userFilter.value
                     }
                     reportEventsApi(store.state.codcuenta, store.state.codclienteAdmin, filterExcel.placa,
-                        filterExcel.cod_evento, filterExcel.descripcion_estado, filterExcel.fecha_inicio, filterExcel.fecha_fin, 0, 0)
+                        filterExcel.cod_evento, filterExcel.descripcion_estado, filterExcel.fecha_inicio, filterExcel.fecha_fin, 0, 0, filterExcel.usuario)
                         .then(response => {
                             const datos = response.data.data
                             const excelData = datos.map(obj => {
@@ -150,9 +160,11 @@ export default ({
         return {
             dateFrom,
             dateTo,
+            userFilter,
             plate,
             type_event,
             state,
+            listClientsData,
             dialogLoader,
             listEventsData,
             dataFilter,
