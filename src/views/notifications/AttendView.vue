@@ -140,6 +140,10 @@ export default ({
         };
 
         onMounted(async () => {
+            await loadData();
+        })
+
+        const loadData = async () => {
             editEvent.value = store.state.eventAtended
             latitud.value = editEvent.value.latitud
             longitud.value = editEvent.value.longitud
@@ -149,7 +153,7 @@ export default ({
             ])
             answersData.value = responseAnswer.data.data ? responseAnswer.data.data[0].respuestas : []
             listEventsData.value = responseEvents.data.data ? responseEvents.data.data[0].eventos : []
-        })
+        }
 
         const getPriorityColor = (prioridad) => {
             if (prioridad && listEventsData.value.length > 0) {
@@ -185,6 +189,7 @@ export default ({
                     addCommentEventsApi(data)
                         .then(() => {
                             basicAlert(async () => {
+                                await loadData();
                             }, 'success', 'Logrado', 'Se agrego el comentario correctamente')
                         })
                         .catch(() => {
