@@ -30,3 +30,7 @@ export function addCommentEventsApi(data) {
 export function notificationsLogsApi(data) {
     return axios.post(`${baseURL}/allNotifications`, data)
 }
+
+export function notificationsByIdApi(data) {
+    return axios.post(`${baseURL}/notificationsById`, data)
+}

@@ -71,7 +71,7 @@
             </div>
             <div class="p-4">
                 <p class="font-bold text-blue-500 pb-4"> <v-icon>mdi-table-check</v-icon> Registro de comentarios</p>
-                <v-data-table-virtual :headers="headers" :items="editEvent.list_comentarios" density="compact"
+                <v-data-table-virtual :headers="headers" :items="dataComments" density="compact"
                     class="text-sm border"></v-data-table-virtual>
             </div>
             <div class="p-4">
@@ -83,16 +83,16 @@
 </template>
 <script>
 /* eslint-disable */
-import { addCommentEventsApi } from '@/api/NotificationsService';
+import { addCommentEventsApi, notificationsByIdApi } from '@/api/NotificationsService';
 import { basicAlert, confirmBasic } from '@/helpers/SweetAlert';
 import { findAllAnswersApi } from '@/api/AnswersService';
 import { findAllEventsApi } from '@/api/EventsService';
 import { sendEmailsApi } from '@/api/EmailService';
-import { useRouter } from 'vue-router';
 import { onMounted, ref } from 'vue';
 import EventMapVue from '@/components/notifications/EventMap.vue';
 import { VDataTableVirtual } from 'vuetify/labs/VDataTable';
 import EscalateEventVue from '@/components/notifications/EscalateEvent.vue';
+import { useRouter } from 'vue-router';
 import store from '@/store';
 
 export default ({
@@ -109,6 +109,7 @@ export default ({
         const answersData = ref([]);
         const comment = ref('')
         const currentDateTime = ref('');
+        const dataComments = ref([]);
         const router = useRouter();
 
         const headers = [
@@ -145,6 +146,7 @@ export default ({
 
         const loadData = async () => {
             editEvent.value = store.state.eventAtended
+            dataComments.value = editEvent.value.list_comentarios
             latitud.value = editEvent.value.latitud
             longitud.value = editEvent.value.longitud
             const [responseAnswer, responseEvents] = await Promise.all([
@@ -189,7 +191,20 @@ export default ({
                     addCommentEventsApi(data)
                         .then(() => {
                             basicAlert(async () => {
-                                await loadData();
+                                if (status == "En Gestion") {
+                                    const payload = {
+                                        "id": editEvent.value.ID,
+                                        "cod_cuenta": store.state.codcuenta,
+                                        "cod_cliente": store.state.codclienteAdmin,
+                                    }
+                                    notificationsByIdApi(payload)
+                                        .then(response => {
+                                            dataComments.value = response.data.data.list_comentarios
+                                            comment.value = ""
+                                        })
+                                } else {
+                                    router.push('/pendienteslistados');
+                                }
                             }, 'success', 'Logrado', 'Se agrego el comentario correctamente')
                         })
                         .catch(() => {
@@ -218,6 +233,7 @@ export default ({
             updateEventStatus,
             getPriorityColor,
             insertComment,
+            dataComments,
             onSendEmail,
             comment,
             editEvent,

@@ -52,9 +52,6 @@ export default ({
         .then(response => {
           try {
             if (response.data.status == true) {
-              console.log("-------------------------")
-              console.log(response.data);
-              console.log("-------------------------")
               store.commit('setCodCuenta', response.data.data.cod_cuenta);
               store.commit('setCodCliente', response.data.data.cod_cliente);
               store.commit('setCodClienteAdmin', response.data.CodClienteAdmin);
