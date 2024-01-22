@@ -50,20 +50,28 @@ export default ({
       const hashedPassword = md5(password.value);
       await loginApi(username.value, hashedPassword)
         .then(response => {
-          if (response.data.status == true) {
-            store.commit('setCodCuenta', response.data.data.CodCuenta);
-            store.commit('setCodCliente', response.data.data.CodCliente);
-            store.commit('setCodClienteAdmin', response.data.CodClienteAdmin);
-            store.commit('setRol', response.data.data.Rol);
-            store.commit('setRuc', response.data.data.Ruc);
-            store.commit('setEmpresa', response.data.data.Empresa);
-            store.commit('setCodRegla', response.data.data.Cod_Regla);
-            store.commit('setUsername', response.data.data.Usuario);
-            store.commit('setUsernameAdmin', response.data.data.UsuarioClienteAdmin);
-            store.commit('setSelectedColumnsNotifications', ['cod_evento', 'placa', 'conductor', 'fleet_name', 'fecha', 'fecha_actual', 'velocidad',
-              'direccion', 'descripcion_estado', 'fecha_ultima_accion', 'prioridad', 'actions']);
-            store.commit('setIsAuthenticated', true);
-            router.push('/');
+          try {
+            if (response.data.status == true) {
+              console.log("-------------------------")
+              console.log(response.data);
+              console.log("-------------------------")
+              store.commit('setCodCuenta', response.data.data.cod_cuenta);
+              store.commit('setCodCliente', response.data.data.cod_cliente);
+              store.commit('setCodClienteAdmin', response.data.CodClienteAdmin);
+              store.commit('setRol', response.data.data.rol);
+              store.commit('setRuc', response.data.data.ruc);
+              store.commit('setEmpresa', response.data.data.empresa);
+              store.commit('setCodRegla', response.data.data.cod_regla);
+              store.commit('setUsername', response.data.data.usuario);
+              store.commit('setEmail', response.data.data.correo);
+              store.commit('setUsernameAdmin', response.data.data.UsuarioClienteAdmin);
+              store.commit('setSelectedColumnsNotifications', ['descripcion_evento', 'placa', 'conductor', 'fleet_name', 'fecha', 'fecha_actual', 'velocidad',
+                'direccion', 'descripcion_estado', 'fecha_ultima_accion', 'prioridad', 'actions']);
+              store.commit('setIsAuthenticated', true);
+              router.push('/');
+            }
+          } catch (e) {
+            console.log(e)
           }
         })
         .catch(error => {

@@ -12,6 +12,10 @@
                         color="indigo" v-model="businessCode" disabled></v-text-field>
                     <v-text-field variant="outlined" label="Sigla" prepend-inner-icon="mdi-signature-text" color="indigo"
                         v-model="initials"></v-text-field>
+                    <v-textarea label="Correos" prepend-inner-icon="mdi-email" color="indigo" v-model="emails"
+                        variant="outlined" rows="4"
+                        placeholder="Separe los correos por comas: example@gmail.com, example2@gmail.com">
+                    </v-textarea>
                     <v-text-field variant="outlined" label="Usuario" prepend-inner-icon="mdi-clipboard-account"
                         color="indigo" v-model="username" disabled></v-text-field>
                     <v-text-field color="indigo" :append-inner-icon="visible ? 'mdi-eye-off' : 'mdi-eye'"
@@ -49,6 +53,7 @@ export default {
         const businessCode = ref('');
         const initials = ref('');
         const state = ref(true);
+        const emails = ref('');
         const password = ref('');
         const visible = ref(false);
 
@@ -62,6 +67,7 @@ export default {
                 businessCode.value = newVal.item.ruc
                 initials.value = newVal.item.sigla
                 username.value = newVal.item.usuario
+                emails.value = newVal.item.correo
                 password.value = newVal.item.contrasena
                 state.value = newVal.item.estado
             }
@@ -72,6 +78,7 @@ export default {
                 initials: initials.value,
                 username: username.value,
                 password: password.value,
+                email: emails.value,
                 businessName: businessName.value,
                 businessCode: businessCode.value,
                 state: state.value
@@ -86,6 +93,7 @@ export default {
         return {
             visible,
             dialog,
+            emails,
             username,
             businessName,
             businessCode,

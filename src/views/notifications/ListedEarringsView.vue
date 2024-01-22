@@ -71,7 +71,7 @@ export default ({
         const dialogLoader = ref(false);
         const selectedColumns = ref(store.state.selectedColumnsNotifications);
         const listedHeaders = ref([
-            { title: 'Codigo evento', align: 'start', key: 'cod_evento', sortable: true },
+            { title: 'Desc. evento', align: 'start', key: 'descripcion_evento', sortable: true },
             { title: 'Placa', align: 'start', key: 'placa', sortable: true },
             { title: 'Conductor', align: 'start', key: 'conductor', sortable: true },
             { title: 'Flota', align: 'start', key: 'fleet_name', sortable: true },

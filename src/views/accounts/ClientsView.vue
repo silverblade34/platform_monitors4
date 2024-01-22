@@ -6,10 +6,10 @@
             </div>
             <CreateClientsVue @create-item="onCreateItem" />
         </div>
-        <TableClientsVue :desserts="dataUsers" @delete-item="onDeleteItem"
-            @edit-item="onEditItem" />
+        <TableClientsVue :desserts="dataUsers" @delete-item="onDeleteItem" @edit-item="onEditItem" />
     </div>
-    <EditClientsVue :openModal="editDialog" :itemEdit="editItem" @cancel-item="editDialog = false" @edit-item="onUpdateItem" />
+    <EditClientsVue :openModal="editDialog" :itemEdit="editItem" @cancel-item="editDialog = false"
+        @edit-item="onUpdateItem" />
 </template>
 <script>
 import { findAllClientsToAccountApi, deleteClientsApi, createClientsApi, editClientsApi } from '@/api/UsersService';
@@ -45,7 +45,7 @@ export default ({
         }
 
         const onCreateItem = (data) => {
-            if (data.initials != "" && data.username != "" && data.password != "" && data.businessName != "" && data.businessCode != "") {
+            if (data.initials != "" && data.username != "" && data.password != "" && data.businessName != "" && data.businessCode != "" && data.email != "") {
                 const newData = {
                     "id": idCuenta.value,
                     "cod_cliente": "",
@@ -54,6 +54,7 @@ export default ({
                     "sigla": data.initials,
                     "usuario": data.username,
                     "ruc": data.businessCode,
+                    "correo": data.email,
                     "nombre_completo": "",
                     "nombre_contacto1": "",
                     "telefono_contacto1": "",
@@ -111,6 +112,7 @@ export default ({
                 "sigla": data.initials,
                 "usuario": data.username,
                 "ruc": data.businessCode,
+                "correo": data.email,
                 "nombre_completo": editItem.value.item.nombre_completo,
                 "nombre_contacto1": editItem.value.item.nombre_contacto1,
                 "telefono_contacto1": editItem.value.item.telefono_contacto1,

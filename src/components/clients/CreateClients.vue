@@ -14,6 +14,9 @@
                         color="indigo" v-model="businessCode"></v-text-field>
                     <v-text-field variant="outlined" label="Sigla" prepend-inner-icon="mdi-signature-text" color="indigo"
                         v-model="initials"></v-text-field>
+                    <v-textarea label="Correos" prepend-inner-icon="mdi-email" color="indigo" v-model="emails"
+                        variant="outlined" rows="4" placeholder="Separe los correos por comas: example@gmail.com, example2@gmail.com">
+                    </v-textarea>
                     <v-text-field variant="outlined" label="Usuario" prepend-inner-icon="mdi-clipboard-account"
                         color="indigo" v-model="username" @input="checkUsernameAvailability" hide-details></v-text-field>
                     <span :class="statusValidateUser ? 'text-green-400' : 'text-red-400'" class="text-xs pl-3 pb-3">{{
@@ -49,6 +52,7 @@ export default {
         const businessCode = ref('');
         const initials = ref('');
         const password = ref('');
+        const emails = ref('');
         const visible = ref(false);
         const statusValidateUser = ref(false);
         const messageValidateUser = ref('');
@@ -60,7 +64,8 @@ export default {
                     username: username.value,
                     password: password.value,
                     businessName: businessName.value,
-                    businessCode: businessCode.value
+                    businessCode: businessCode.value,
+                    email: emails.value
                 })
                 cancelItem()
             }
@@ -97,6 +102,7 @@ export default {
         return {
             visible,
             dialog,
+            emails,
             username,
             initials,
             password,

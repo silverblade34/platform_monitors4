@@ -11,6 +11,7 @@ export default createStore({
         rol: '',
         ruc: '',
         codregla: [],
+        email: '',
         selectedColumnsNotifications: [],
         empresa: '',
         username: '',
@@ -68,6 +69,11 @@ export default createStore({
 
         setEmpresa(state, value) {
             state.empresa = value;
+            localStorage.setItem(localStorageKey, JSON.stringify(state));
+        },
+
+        setEmail(state, value) {
+            state.email = value;
             localStorage.setItem(localStorageKey, JSON.stringify(state));
         },
 

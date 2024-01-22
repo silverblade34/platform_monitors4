@@ -82,6 +82,7 @@
     </div>
 </template>
 <script>
+/* eslint-disable */
 import { addCommentEventsApi } from '@/api/NotificationsService';
 import { basicAlert, confirmBasic } from '@/helpers/SweetAlert';
 import { findAllAnswersApi } from '@/api/AnswersService';
@@ -154,13 +155,13 @@ export default ({
             if (prioridad && listEventsData.value.length > 0) {
                 switch (prioridad) {
                     case 'REGULAR':
-                        return 'regular-color-class'; // Reemplaza con la clase CSS para REGULAR
+                        return 'regular-color-class';
                     case 'URGENTE':
-                        return 'urgent-color-class'; // Reemplaza con la clase CSS para URGENTE
+                        return 'urgent-color-class';
                     case 'CRITICO':
-                        return 'critical-color-class'; // Reemplaza con la clase CSS para CRITICO
+                        return 'critical-color-class';
                     default:
-                        return ''; // Si no coincide con ninguno, puedes establecer una clase predeterminada o dejar vacío
+                        return '';
                 }
             }
         }
@@ -184,7 +185,6 @@ export default ({
                     addCommentEventsApi(data)
                         .then(() => {
                             basicAlert(async () => {
-                                router.push('/pendienteslistados');
                             }, 'success', 'Logrado', 'Se agrego el comentario correctamente')
                         })
                         .catch(() => {
@@ -197,14 +197,11 @@ export default ({
         }
 
         const onSendEmail = (data) => {
-            // Seleccionar los campos requeridos del objeto "data"
-            // Construir el cuerpo del correo con los campos seleccionados en formato HTML
-            const body = ` Código Evento: ${editEvent.value.cod_evento} \n Conductor: ${editEvent.value.conductor} \n Placa: ${editEvent.value.placa} \n Fecha de evento: ${editEvent.value.fecha_actual} \n`;
-            // Crear el payload para enviar el correo
             const payload = {
-                subject: 'Alerta de MONITORS4',
-                body: body,
-                to: data.email
+                "id": editEvent.value.ID,
+                "cod_cuenta": store.state.codcuenta,
+                "cod_cliente": store.state.codclienteAdmin,
+                "to": data.selectedEmail
             };
             sendEmailsApi(payload)
                 .then(() => {

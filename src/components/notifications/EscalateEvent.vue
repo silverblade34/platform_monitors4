@@ -1,14 +1,18 @@
 <template>
     <v-btn color="teal-lighten-2" size="small" class="my-1 md:my-0" @click="dialog = true">Escalar</v-btn>
-    <v-dialog v-model="dialog" width="500">
+    <v-dialog v-model="dialog" width="450">
         <v-card>
             <v-toolbar>
                 <span class="px-4 w-full text-center text-blue-400 font-bold title_views">Escalar evento</span>
             </v-toolbar>
             <v-card-text>
-                <v-col cols="12">
-                    <v-text-field variant="outlined" label="Correo" prepend-inner-icon="mdi-email"
-                        color="indigo" v-model="email"></v-text-field>
+                <v-col cols="12" class="overflow-y-auto max-[300px]">
+                    <p class="text-gray-400">Seleccione a los correos que desea escalar el evento: </p>
+                    <div class="w-full rounded-md flex gap-2 py-2 text-xs" v-for="(email, index) in emailList"
+                        :key="index">
+                        <v-checkbox :label="email" color="indigo" :value="email" hide-details class="text-xs"
+                            v-model="selectedEmail" density="small"></v-checkbox>
+                    </div>
                 </v-col>
             </v-card-text>
             <v-card-actions>
@@ -24,25 +28,35 @@
     </v-dialog>
 </template>
 <script>
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
+import store from '@/store';
 
 export default {
     emits: ['send-email'],
     setup(_, { emit }) {
         const dialog = ref(false);
-        const email = ref('');
+        const emailList = ref([]);
+        const selectedEmail = ref([]);
 
         const sendEmail = () => {
             emit('send-email', {
-                email: email.value
+                selectedEmail: selectedEmail.value
             })
-            email.value = ""
+            selectedEmail.value = []
             dialog.value = false
         }
+
+        onMounted(() => {
+            const emailString = store.state.email;
+            const emails = emailString.split(",").map(email => email.trim());
+            emailList.value = emails;
+        })
+
         return {
             dialog,
-            email,
-            sendEmail
+            sendEmail,
+            emailList,
+            selectedEmail
         }
     }
 }

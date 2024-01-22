@@ -127,8 +127,6 @@ export default {
                 1
             ).then((response) => {
                 serverItems.value = response.data.data ? response.data.data : [];
-                console.log("--------------------------------")
-                console.log(serverItems.value)
                 totalItems.value = response.data.totalEventos;
                 loading.value = false;
             });

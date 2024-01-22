@@ -36,9 +36,9 @@ export default ({
         const dialogLoader = ref(false);
         const listedHeaders = ref([
             {
-                title: 'Codigo evento',
+                title: 'Desc. evento',
                 align: 'start',
-                key: 'cod_evento',
+                key: 'descripcion_evento',
                 sortable: true,
             },
             {

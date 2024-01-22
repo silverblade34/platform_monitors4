@@ -14,7 +14,7 @@
 
           <v-list-item class="mb-2" :subtitle="item.placa + ' - ' + item.conductor">
             <template v-slot:title>
-              <strong class="text-h6 mb-2">{{ item.cod_evento }}</strong>
+              <strong class="text-md mb-2">{{ item.descripcion_evento }}</strong>
             </template>
           </v-list-item>
 
