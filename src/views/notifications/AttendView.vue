@@ -59,10 +59,12 @@
                 </div>
                 <v-textarea label="Agregue un comentario" variant="outlined" prepend-inner-icon="mdi-text-box-outline"
                     color="indigo" rows="3" v-model="comment"></v-textarea>
-                <div class="block md:grid md:grid-cols-3 lg:grid lg:grid-cols-5 gap-1 pb-2">
-                    <v-btn color="light-blue-darken-1" size="small" v-for="answer in answersData" :key="answer.codigo"
-                        @click="insertComment(answer.text)">{{
-                            answer.sigla }}</v-btn>
+                <div class="block md:grid md:grid-cols-3 lg:grid lg:grid-cols-3 gap-1 pb-2">
+                    <div v-for="answer in answersData" :key="answer.codigo" @click="insertComment(answer.text)">
+                        <v-btn color="light-blue-darken-1" size="small" class="w-full">
+                            {{ answer.sigla.length > 20 ? answer.sigla.slice(0, 20) + '...' : answer.sigla }}</v-btn>
+                        <v-tooltip activator="parent" location="top">{{ answer.sigla }}</v-tooltip>
+                    </div>
                 </div>
             </div>
             <div class="overflow-hidden">
