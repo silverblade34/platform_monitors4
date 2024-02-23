@@ -78,14 +78,18 @@ export default {
                     return this.logoBusinessSysnet;
                 } else if (this.codcliente === 'SI001') {
                     return this.logoBusinessSignia;
-                } else {
+                } else if (this.codcliente === 'DU001') {
                     return this.logoBusinessDuragas;
+                } else {
+                    return this.logoBusinessSysnet;
                 }
             } else {
                 if (this.codcliente === 'SI001') {
                     return this.logoBusinessSignia;
-                } else {
+                } else if (this.codcliente === 'DU001') {
                     return this.logoBusinessDuragas;
+                } else {
+                    return this.logoBusinessSysnet;
                 }
             }
         }
