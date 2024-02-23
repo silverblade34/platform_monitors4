@@ -323,6 +323,9 @@ export default {
             } else if (store.state.rol === 'Operador') {
                 // Filtra la lista para mostrar solo ciertos ítems para el rol de usuario
                 return ItemsNavegation.value.filter(item => item.value === 'Eventos' || item.value === 'Reportes');
+            } else if (store.state.rol === 'Supervisor') {
+                // Filtra la lista para mostrar solo ciertos ítems para el rol de usuario
+                return ItemsNavegation.value.filter(item => item.value === 'Dashboard' || item.value === 'Eventos' || item.value === 'Reportes');
             } else {
                 return []; // Si el rol no coincide con ninguna condición, muestra una lista vacía
             }

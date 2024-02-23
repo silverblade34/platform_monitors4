@@ -33,7 +33,7 @@
     </v-dialog>
 </template>
 <script>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, onUnmounted } from 'vue';
 import CardEventsVue from '@/components/dashboard/CardEvents.vue';
 import EventNotificationVue from '@/components/dashboard/EventNotification.vue';
 import VehicleNotificationVue from '@/components/dashboard/VehicleNotification.vue';
@@ -177,10 +177,13 @@ export default ({
             dialogLoader.value = false
         });
 
-        setInterval(() => {
+        const intervalId = setInterval(() => {
             loadData();
         }, 15000);
 
+        onUnmounted(() => {
+            clearInterval(intervalId);
+        });
         const filterByStatus = async (events, status) => {
             return events ? events.filter(event => event.descripcion_estado === status) : [];
         }

@@ -23,7 +23,7 @@
 <script>
 import { notificationsAccountApi } from '@/api/NotificationsService';
 import SimpleEventsTableVue from '@/components/notifications/SimpleEventsTable.vue';
-import { onMounted, ref } from "vue";
+import { onMounted, ref, onUnmounted } from "vue";
 import store from '@/store';
 
 export default ({
@@ -87,14 +87,19 @@ export default ({
 
         const loadData = async () => {
             const responseEvent = await notificationsAccountApi(store.state.codcuenta, store.state.codclienteAdmin, store.state.username, store.state.codregla);
-            discardedEvents.value = responseEvent.data.data? responseEvent.data.data.filter(event => {
+            discardedEvents.value = responseEvent.data.data ? responseEvent.data.data.filter(event => {
                 return event.descripcion_estado === "Descartado";
-            }): []
+            }) : []
         }
 
-        setInterval(() => {
+
+        const intervalId = setInterval(() => {
             loadData();
         }, 15000);
+
+        onUnmounted(() => {
+            clearInterval(intervalId);
+        });
 
         return {
             dialogLoader,

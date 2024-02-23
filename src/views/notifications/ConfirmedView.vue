@@ -23,7 +23,7 @@
 <script>
 import { notificationsAccountApi } from '@/api/NotificationsService';
 import SimpleEventsTableVue from '@/components/notifications/SimpleEventsTable.vue';
-import { onMounted, ref } from "vue";
+import { onMounted, ref, onUnmounted } from "vue";
 import store from '@/store';
 
 export default ({
@@ -92,9 +92,13 @@ export default ({
             }) : []
         }
 
-        setInterval(() => {
+        const intervalId = setInterval(() => {
             loadData();
         }, 15000);
+
+        onUnmounted(() => {
+            clearInterval(intervalId);
+        });
 
         return {
             dialogLoader,

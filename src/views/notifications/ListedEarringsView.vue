@@ -56,7 +56,7 @@
 import TableEventsVue from "@/components/notifications/listedEarrings/TableEvents.vue";
 import { notificationsAccountApi, massDiscardofEventsApi } from '@/api/NotificationsService';
 import { confirmBasic, basicAlert } from '@/helpers/SweetAlert';
-import { onMounted, ref, watch } from "vue"
+import { onMounted, ref, watch, onUnmounted } from "vue"
 import store from "@/store";
 
 export default ({
@@ -114,9 +114,13 @@ export default ({
             dialogLoader.value = false
         })
 
-        setInterval(() => {
+        const intervalId = setInterval(() => {
             loadData();
         }, 15000);
+
+        onUnmounted(() => {
+            clearInterval(intervalId);
+        });
 
         const updateColumnVisibility = () => {
             listedHeadersFilter.value = listedHeaders.value.filter(item => {

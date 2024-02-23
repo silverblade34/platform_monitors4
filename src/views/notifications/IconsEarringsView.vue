@@ -33,7 +33,7 @@
 import DataIteratorsVue from '@/components/notifications/iconsEarrings/DataIterators.vue';
 import { notificationsAccountApi, massDiscardofEventsApi } from '@/api/NotificationsService';
 import { confirmBasic, basicAlert } from '@/helpers/SweetAlert';
-import { onMounted, ref, watch } from 'vue';
+import { onMounted, ref, watch, onUnmounted } from 'vue';
 import store from "@/store";
 
 export default ({
@@ -59,17 +59,23 @@ export default ({
 
         const loadData = async () => {
             const responseEvent = await notificationsAccountApi(store.state.codcuenta, store.state.codclienteAdmin, store.state.username, store.state.codregla);
-            pendingEvents.value = responseEvent.data.data? responseEvent.data.data.filter(event => {
+            pendingEvents.value = responseEvent.data.data ? responseEvent.data.data.filter(event => {
                 return event.descripcion_estado === "Sin Atender" || event.descripcion_estado === "En Gestion";
-            }): []
+            }) : []
             const uniqueEventCodes = [...new Set(pendingEvents.value.map((event) => event.cod_evento))];
             uniqueEventCodes.unshift('Todos');
             eventCodes.value = uniqueEventCodes;
         }
 
-        setInterval(() => {
+
+        const intervalId = setInterval(() => {
             loadData();
         }, 15000);
+
+        onUnmounted(() => {
+            clearInterval(intervalId);
+        });
+
 
         watch(() => order.value, async () => {
             await filterEvents();
@@ -113,13 +119,13 @@ export default ({
                 confirmBasic(async () => {
                     massDiscardofEventsApi(selectedDiscardEvents.value, store.state.codcuenta, store.state.codclienteAdmin)
                         .then(() => {
-                            basicAlert(async() => {
+                            basicAlert(async () => {
                                 await loadData();
                                 await filterEvents();
                             }, 'success', 'Logrado', 'Se ha descartado los eventos correctamente')
                         })
                         .catch(() => {
-                            basicAlert(() => {}, 'error', 'Hubo un error', 'No se logro descartar los eventos')
+                            basicAlert(() => { }, 'error', 'Hubo un error', 'No se logro descartar los eventos')
                         })
                 }, '¿Estás seguro de realizar el descarte de los eventos seleccionados?', 'Aceptar');
             } else {

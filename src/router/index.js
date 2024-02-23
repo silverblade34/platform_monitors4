@@ -136,7 +136,7 @@ router.beforeEach((to, from, next) => {
         // Si la ruta requiere autenticación y el usuario no está autenticado, redirigir a la página de inicio de sesión
         next({ name: 'login' });
     } else if (to.name === 'login' && store.state.isAuthenticated) {
-        if (store.state.rol == "Administrador") {
+        if (store.state.rol == "Administrador" || store.state.rol == "Supervisor") {
             next({ name: 'home' });
         } else if (store.state.rol == "Operador") {
             next({ name: 'pendienteslistados' });
@@ -144,7 +144,7 @@ router.beforeEach((to, from, next) => {
             next();
         }
     } else if (to.path === '/' && store.state.isAuthenticated) {
-        if (store.state.rol == "Administrador") {
+        if (store.state.rol == "Administrador" || store.state.rol == "Supervisor") {
             next({ name: 'home' });
         } else if (store.state.rol == "Operador") {
             next({ name: 'pendienteslistados' });
