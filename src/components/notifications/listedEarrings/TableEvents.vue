@@ -95,7 +95,10 @@ export default {
           html: `
               <div class="flex justify-center">
                 <video width="400" height="320" controls>
-                  <source src="${link_video}" type="video/mp4">
+                  <source src="${link_video}" type="video/mp4" codecs="hvc1" probably>
+                  <source src="${link_video}" type="video/mp4" codecs="hevc">
+                  <source src="${link_video}" type="video/mp4" codecs="h.265">
+                  <source src="${link_video}" type="video/mp4" codecs="h265">
                 </video>
               </div>
               `,
