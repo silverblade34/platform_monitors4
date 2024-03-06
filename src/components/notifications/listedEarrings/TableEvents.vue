@@ -6,16 +6,18 @@
         {{ item.fecha }} {{ item.hora }}
       </span>
     </template>
+
     <template v-slot:[`item.prioridad`]="{ item }">
       <div class="flex justify-center">
         <div class="h-5 w-5 rounded-full mr-2" :class="{
-          'bg-orange-400': item.prioridad === 'URGENTE',
-          'bg-red-400': item.prioridad === 'CRITICO',
-          'bg-blue-400': item.prioridad === 'REGULAR'
-        }">
+    'bg-orange-400': item.prioridad === 'URGENTE',
+    'bg-red-400': item.prioridad === 'CRITICO',
+    'bg-blue-400': item.prioridad === 'REGULAR'
+  }">
         </div>
       </div>
     </template>
+
     <template v-slot:[`item.actions`]="{ item }">
       <div class="flex gap-1">
         <span @click="editItem(item)">
@@ -41,9 +43,11 @@
     </template>
   </v-data-table>
 </template>
+
 <script>
 import ImgEvidencia from '@/assets/events/evidencias.jpg';
 import ImgAttendedIcon from '@/assets/events/icon_atended.png';
+import { convertVideoApi } from '@/api/VideoService';
 import { ref, watch } from 'vue';
 import { VDataTable } from 'vuetify/labs/VDataTable';
 import { useRouter } from 'vue-router';
@@ -90,15 +94,15 @@ export default {
       };
 
       // Función para mostrar el modal de video
-      const showVideoModal = () => {
+      const showVideoModal = (newLinkVideo) => {
         Swal.fire({
           html: `
               <div class="flex justify-center">
                 <video width="400" height="320" controls>
-                  <source src="${link_video}" type="video/mp4" codecs="hvc1" probably>
-                  <source src="${link_video}" type="video/mp4" codecs="hevc">
-                  <source src="${link_video}" type="video/mp4" codecs="h.265">
-                  <source src="${link_video}" type="video/mp4" codecs="h265">
+                  <source src="${newLinkVideo}" type="video/mp4" codecs="hvc1" probably>
+                  <source src="${newLinkVideo}" type="video/mp4" codecs="hevc">
+                  <source src="${newLinkVideo}" type="video/mp4" codecs="h.265">
+                  <source src="${newLinkVideo}" type="video/mp4" codecs="h265">
                 </video>
               </div>
               `,
@@ -132,7 +136,7 @@ export default {
         focusConfirm: false,
         confirmButtonColor: '#6D68B8',
         focusCancel: false,
-      }).then((result) => {
+      }).then(async (result) => {
         // Manejar la lógica según la opción seleccionada
         if (result.isConfirmed) {
           if (link_img !== '') {
@@ -156,7 +160,9 @@ export default {
           }
         } else if (result.dismiss === Swal.DismissReason.cancel) {
           if (link_video !== '') {
-            showVideoModal(); // Mostrar modal de video
+            const responsevideo = await convertVideoApi(link_video);
+            const newLinkVideo = 'http://143.244.144.235:3020' + responsevideo.data.video_url
+            showVideoModal(newLinkVideo); // Mostrar modal de video
           } else {
             Swal.fire({
               html: `<p class="pt-4">No hay video disponible</p>`,
@@ -193,6 +199,7 @@ export default {
   }
 }
 </script>
+
 <style>
 .table_events {
   color: #797979 !important;
