@@ -10,10 +10,10 @@
     <template v-slot:[`item.prioridad`]="{ item }">
       <div class="flex justify-center">
         <div class="h-5 w-5 rounded-full mr-2" :class="{
-    'bg-orange-400': item.prioridad === 'URGENTE',
-    'bg-red-400': item.prioridad === 'CRITICO',
-    'bg-blue-400': item.prioridad === 'REGULAR'
-  }">
+          'bg-orange-400': item.prioridad === 'URGENTE',
+          'bg-red-400': item.prioridad === 'CRITICO',
+          'bg-blue-400': item.prioridad === 'REGULAR'
+        }">
         </div>
       </div>
     </template>
@@ -72,8 +72,26 @@ export default {
   setup(_, { emit }) {
     const selected = ref([]);
     const router = useRouter();
+    const loadingModal = ref(null);
 
-    const seeEvidence = (link_img, link_video) => {
+    const showLoadingModal = () => {
+      loadingModal.value = Swal.fire({
+        title: 'Construyendo Video...',
+        allowOutsideClick: false,
+        showConfirmButton: false,
+        willOpen: () => {
+          Swal.showLoading();
+        },
+      });
+    };
+
+    const hideLoadingModal = () => {
+      if (loadingModal.value) {
+        loadingModal.value.close();
+      }
+    };
+
+    const seeEvidence = async (link_img, link_video) => {
       // Función para mostrar el modal de imagen
       const showImageModal = () => {
         Swal.fire({
@@ -94,40 +112,46 @@ export default {
       };
 
       // Función para mostrar el modal de video
-      const showVideoModal = (newLinkVideo) => {
-        Swal.fire({
-          html: `
+      const showVideoModal = async () => {
+        showLoadingModal(); // Mostrar modal de carga
+
+        try {
+          const responsevideo = await convertVideoApi(link_video);
+          const newLinkVideo = 'http://143.244.144.235:3020' + responsevideo.data.video_url;
+          hideLoadingModal(); // Ocultar modal de carga
+          Swal.fire({
+            html: `
               <div class="flex justify-center">
-                <video width="400" height="320" controls autoplay>
-       
+                <video width="400" height="320" controls autoplay preload="auto">
                   <source src="${newLinkVideo}" type="video/mp4" codecs="hevc">
-             
                 </video>
-              </div>
-              `,
-          showCloseButton: true,
-          showCancelButton: true,
-          cancelButtonText: 'Volver al menú',
-          confirmButtonText: 'Cerrar',
-          confirmButtonColor: '#6D68B8',
-          reverseButtons: true
-        }).then((result) => {
-          if (result.isConfirmed) {
-            // Cerrar el modal del video
-          } else if (result.dismiss === Swal.DismissReason.cancel) {
-            // Volver al menú anterior (el modal principal)
-            seeEvidence(link_img, link_video);
-          }
-        });
+              </div>`,
+            showCloseButton: true,
+            showCancelButton: true,
+            cancelButtonText: 'Volver al menú',
+            confirmButtonText: 'Cerrar',
+            confirmButtonColor: '#6D68B8',
+            reverseButtons: true
+          }).then((result) => {
+            if (result.isConfirmed) {
+              // Cerrar el modal del video
+            } else if (result.dismiss === Swal.DismissReason.cancel) {
+              // Volver al menú anterior (el modal principal)
+              seeEvidence(link_img, link_video);
+            }
+          });
+        } catch (error) {
+          hideLoadingModal(); // Ocultar modal de carga en caso de error
+          console.error('Error al obtener la nueva URL del video:', error);
+        }
       };
 
       // Crear el modal principal con opciones "Ver imagen" y "Ver video"
       Swal.fire({
         html: `<p class="text-xl font-bold pt-1 text-gray-500">Ver evidencias disponibles</p>
-        <div class="w-full flex justify-center">
-        <img src="${ImgEvidencia}" alt="" class=w-[50%]>
-        </div>
-        `,
+          <div class="w-full flex justify-center">
+            <img src="${ImgEvidencia}" alt="" class=w-[50%]>
+          </div>`,
         showCancelButton: true,
         confirmButtonText: 'Ver imagen',
         cancelButtonText: 'Ver video',
@@ -159,9 +183,7 @@ export default {
           }
         } else if (result.dismiss === Swal.DismissReason.cancel) {
           if (link_video !== '') {
-            const responsevideo = await convertVideoApi(link_video);
-            const newLinkVideo = 'http://143.244.144.235:3020' + responsevideo.data.video_url
-            showVideoModal(newLinkVideo); // Mostrar modal de video
+            showVideoModal(); // Mostrar modal de video
           } else {
             Swal.fire({
               html: `<p class="pt-4">No hay video disponible</p>`,
