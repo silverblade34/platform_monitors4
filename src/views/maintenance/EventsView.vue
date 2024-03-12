@@ -33,7 +33,7 @@ export default ({
 
         onMounted(async () => {
             await loadData();
-        })
+        }) 
 
         const loadData = async () => {
             await findAllEventsApi(store.state.codcuenta, store.state.codclienteAdmin)

@@ -14,9 +14,10 @@
                 <div class="font-bold text-blue-500 pb-3 block md:flex md:justify-between">
                     <span><v-icon>mdi-text-box-search-outline</v-icon> Detalles</span>
                     <v-btn variant="tonal" :class="getPriorityColor(editEvent.prioridad)" class="mt-2 md:mt-0"> {{
-                        editEvent.cod_evento }}
+                        editEvent.descripcion_evento }}
                     </v-btn>
-                </div>
+                   
+                </div> 
                 <div class="block md:grid md:grid-cols-2 lg:grid lg:grid-cols-3 gap-2 text-gray-600 text-sm">
                     <div>
                         <p>Placa</p>
@@ -76,14 +77,23 @@
                 <v-data-table-virtual :headers="headers" :items="dataComments" density="compact"
                     class="text-sm border"></v-data-table-virtual>
             </div>
-            <div class="p-4">
-                <p class="font-bold text-blue-500 pb-4"> <v-icon>mdi-image-edit-outline</v-icon> Evidencias</p>
-                <img :src="editEvent.link_imagen" alt="">
-            </div>
+            <div class="p-4 flex flex-col items-center">
+    <p class="font-bold text-blue-500 pb-4"><v-icon>mdi-image-edit-outline</v-icon> Evidencias</p>
+    <div class="flex">
+        <div class="pr-4">
+            <img :src="editEvent.link_imagen" alt="">
+        </div>
+        <div class="video-container">
+            <video :src="editEvent.link_video" autoplay controls class="custom-video"></video>
+        </div>
+    </div>
+</div>
+
         </div>
     </div>
 </template>
 <script>
+
 /* eslint-disable */
 import { addCommentEventsApi, notificationsByIdApi } from '@/api/NotificationsService';
 import { basicAlert, confirmBasic } from '@/helpers/SweetAlert';
@@ -271,4 +281,17 @@ export default ({
     color: white;
     /* Color del texto para prioridad CRITICO */
 }
+</style>   
+
+<style scoped>
+    .video-container {
+        position: relative;
+        width: 100%;
+        max-width: 360px; /* Ajusta según tus preferencias */
+    }
+
+    .video-container video {
+        width: 100%;
+        height: auto;
+    }
 </style>

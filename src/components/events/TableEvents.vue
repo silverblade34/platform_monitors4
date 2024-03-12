@@ -64,6 +64,7 @@ export default ({
                 "cod_cliente": store.state.codcliente,
                 "cod_evento": item.cod_evento,
                 "sigla_cuenta": item.sigla_cuenta,
+                
                 "sigla_cliente": item.sigla_cliente,
                 "prioridad": item.prioridad,
                 "placa": "%UNIT%",
