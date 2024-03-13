@@ -10,41 +10,41 @@
         </template>
         <template v-slot:[`item.list_comentarios`]="{ item }">
             {{
-                item.list_comentarios && item.list_comentarios.length > 0
-                ? truncateText(item.list_comentarios[item.list_comentarios.length - 1].comentario)
-                : ''
-            }}
+        item.list_comentarios && item.list_comentarios.length > 0
+            ? truncateText(item.list_comentarios[item.list_comentarios.length - 1].comentario)
+            : ''
+    }}
         </template>
         <template v-slot:[`item.geocerca`]="{ item }">
             {{
-                truncateText(item.geocerca)
-            }}
+        truncateText(item.geocerca)
+    }}
         </template>
         <template v-slot:[`item.usuario`]="{ item }">
             {{
-                item.list_comentarios && item.list_comentarios.length > 0
-                ? item.list_comentarios[item.list_comentarios.length - 1].usuario
-                : ''
-            }}
+        item.list_comentarios && item.list_comentarios.length > 0
+            ? item.list_comentarios[item.list_comentarios.length - 1].usuario
+            : ''
+    }}
         </template>
         <template v-slot:[`item.nombre_usuario`]="{ item }">
             {{
-                item.list_comentarios && item.list_comentarios.length > 0
-                ? item.list_comentarios[item.list_comentarios.length - 1].nombre_completo
-                : ''
-            }}
+        item.list_comentarios && item.list_comentarios.length > 0
+            ? item.list_comentarios[item.list_comentarios.length - 1].nombre_completo
+            : ''
+    }}
         </template>
         <template v-slot:[`item.segundos`]="{ item }">
             {{ Math.abs(item.segundos) }} segundos
         </template>
         <template v-slot:[`item.fecha_actual`]="{ item }">
-        {{ item.fecha_actual.split(' ')[0] }}
-    </template>
-    <template v-slot:[`item.hora_evento`]="{ item }">
-        {{ item.fecha_actual.split(' ')[1] }}
-    </template>
-      
-       
+            {{ item.fecha_actual.split(' ')[0] }}
+        </template>
+        <template v-slot:[`item.hora_evento`]="{ item }">
+            {{ item.fecha_actual.split(' ')[1] }}
+        </template>
+
+
     </v-data-table-server>
     <SelectColumnVue :dataColumn="dataColumn" :openModal="openSelectColumn" @generate-column="initialsDataReport"
         @cancel-item="openSelectColumn = false" />
@@ -57,13 +57,13 @@ import store from '@/store';
 import { ref, watch } from 'vue';
 
 export default {
- 
+
     props: {
         dataFilter: Object,
         searchstate: Boolean,
         usuario: String,
-      nombre_completo: String,
-       
+        nombre_completo: String,
+
     },
     components: {
         VDataTableServer,
@@ -79,26 +79,26 @@ export default {
             { title: 'Conductor', key: 'conductor', sortable: false, align: 'start', status: true },
             { title: 'Flota', key: 'fleet_name', sortable: false, align: 'start', status: true },
             { title: 'Prioridad', key: 'prioridad', sortable: false, align: 'start', status: true },
-           
+
             { title: 'Fecha evento', key: 'fecha_actual', sortable: false, align: 'start', status: true },
             { title: 'Hora evento', key: 'hora_evento', sortable: false, align: 'start', status: true },
-          
+
             { title: 'Latitud', key: 'latitud', sortable: false, align: 'end', status: true },
             { title: 'Longitud', key: 'longitud', sortable: false, align: 'end', status: true },
             { title: 'Velocidad', key: 'velocidad', sortable: false, align: 'end', status: true },
             { title: 'Geocerca', key: 'geocerca', sortable: false, align: 'start', status: true },
             { title: 'Dirección', key: 'direccion', sortable: false, align: 'start', status: true },
-      
+
             { title: 'Fecha ult. acción', key: 'fecha_ultima_accion', sortable: false, align: 'start', status: true },
             { title: 'Hora ult. acción', key: 'hora_ultima_accion', sortable: false, align: 'start', status: true },
-           
+
             { title: 'Estado', key: 'descripcion_estado', sortable: false, align: 'start', status: true },
             { title: 'Usuario', key: 'usuario', sortable: false, align: 'end', status: true },
             { title: 'Nombre usuario', key: 'nombre_usuario', sortable: false, align: 'end', status: true },
             { title: 'Tiempo atención', key: 'segundos', sortable: false, align: 'start', status: true },
             { title: 'Comentario', key: 'list_comentarios', sortable: false, align: 'start', status: true },
-           
-           
+
+
         ])
         const headers = ref([])
         const serverItems = ref([]);
@@ -126,9 +126,6 @@ export default {
             }
         })
 
-  
-       
-
         const truncateText = (text) => {
             if (text && text.length > 20) {
                 return text.slice(0, 20) + '...';
@@ -136,37 +133,37 @@ export default {
             return text;
         };
 
-                        const initialsDataReport = async (data) => {
-                    emit('update-keyscolumn', { keyscolumn: data.selectedColumn })
-                    headers.value = dataColumn.value.filter(item => data.selectedColumn.includes(item.key));
-                    loading.value = true;
-                    await reportEventsApi(
-                        store.state.codcuenta,
-                        store.state.codcliente,
-                        plate.value,
-                        cod_evento.value,
-                        description_state.value,
-                        dateFrom.value,
-                        dateTo.value,
-                        itemsPerPageInitials.value,
-                        1,
-                        userFilter.value
-                    ).then((response) => {
-                        serverItems.value = response.data.data ? response.data.data.map(item => {
-                            const empresa = item.placa.split(' - ')[1] || ''; // Obtener la parte después del "-" de la placa
-                            item.hora_evento = item.fecha_actual.split(' ')[1];
-                            item.segundos = Math.abs(item.segundos);
-                           
-                            return {
-                                ...item,
-                                empresa: empresa,
-                                placa: item.placa.replace(` - ${empresa}`, '') // Eliminar la parte después del "-" de la placa
-                            };
-                        }) : [];
-                        totalItems.value = response.data.totalEventos;
-                        loading.value = false;
-                    });
-                }
+        const initialsDataReport = async (data) => {
+            emit('update-keyscolumn', { keyscolumn: data.selectedColumn })
+            headers.value = dataColumn.value.filter(item => data.selectedColumn.includes(item.key));
+            loading.value = true;
+            await reportEventsApi(
+                store.state.codcuenta,
+                store.state.codcliente,
+                plate.value,
+                cod_evento.value,
+                description_state.value,
+                dateFrom.value,
+                dateTo.value,
+                itemsPerPageInitials.value,
+                1,
+                userFilter.value
+            ).then((response) => {
+                serverItems.value = response.data.data ? response.data.data.map(item => {
+                    const empresa = item.placa.split(' - ')[1] || ''; // Obtener la parte después del "-" de la placa
+                    item.hora_evento = item.fecha_actual.split(' ')[1];
+                    item.segundos = Math.abs(item.segundos);
+
+                    return {
+                        ...item,
+                        empresa: empresa,
+                        placa: item.placa.replace(` - ${empresa}`, '') // Eliminar la parte después del "-" de la placa
+                    };
+                }) : [];
+                totalItems.value = response.data.totalEventos;
+                loading.value = false;
+            });
+        }
 
         const loadItems = ({ page, itemsPerPage }) => {
             if (stateFilter.value) {
@@ -183,7 +180,18 @@ export default {
                     page,
                     userFilter.value
                 ).then(response => {
-                    serverItems.value = response.data.data ? response.data.data : [];
+
+                    serverItems.value = response.data.data ? response.data.data.map(item => {
+                        const empresa = item.placa.split(' - ')[1] || ''; // Obtener la parte después del "-" de la placa
+                        item.hora_evento = item.fecha_actual.split(' ')[1];
+                        item.segundos = Math.abs(item.segundos);
+
+                        return {
+                            ...item,
+                            empresa: empresa,
+                            placa: item.placa.replace(` - ${empresa}`, '') // Eliminar la parte después del "-" de la placa
+                        };
+                    }) : [];
                     totalItems.value = response.data.totalEventos;
                     loading.value = false;
                 })
@@ -211,8 +219,6 @@ export default {
             initialsDataReport,
             truncateText,
             loadItems,
-        
-            
         };
     }
 }
