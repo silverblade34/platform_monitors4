@@ -53,7 +53,7 @@ export default ({
       onMounted(async () => {
           dialogLoader.value = true
           await loadData();
-          await filterEvents();
+          await filterEvents(); 
           dialogLoader.value = false
       })
 
@@ -62,7 +62,7 @@ export default ({
           pendingEvents.value = responseEvent.data.data ? responseEvent.data.data.filter(event => {
               return event.descripcion_estado === "Sin Atender" || event.descripcion_estado === "En Gestion";
           }) : []
-          const uniqueEventCodes = [...new Set(pendingEvents.value.map((event) => event.cod_evento))];
+          const uniqueEventCodes = [...new Set(pendingEvents.value.map((event) => event.descripcion_evento))];
           uniqueEventCodes.unshift('Todos');
           eventCodes.value = uniqueEventCodes;
       }
@@ -87,7 +87,7 @@ export default ({
 
       const filterEvents = async () => {
           if (eventfilter.value !== 'Todos') {
-              listEventsFilter.value = pendingEvents.value.filter(event => event.cod_evento === eventfilter.value);
+              listEventsFilter.value = pendingEvents.value.filter(event => event.descripcion_evento === eventfilter.value);
           } else {
               listEventsFilter.value = pendingEvents.value
           }

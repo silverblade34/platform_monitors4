@@ -287,11 +287,22 @@ export default ({
     .video-container {
         position: relative;
         width: 100%;
-        max-width: 360px; /* Ajusta según tus preferencias */
+        max-width: auto; /* Ajusta según tus preferencias */
     }
 
     .video-container video {
         width: 100%;
         height: auto;
+    }
+    .pr-4{
+        position: relative;
+        width: 100%;
+        max-width: auto;  
+    }
+
+    .pr-4 img {
+        width: 100%;
+        height: auto;
+
     }
 </style>

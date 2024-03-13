@@ -45,7 +45,7 @@
 </template>
 
 <script>
-import ImgEvidencia from '@/assets/events/evidencias.jpg';
+// import ImgEvidencia from '@/assets/events/evidencias.jpg';
 import ImgAttendedIcon from '@/assets/events/icon_atended.png';
 import { convertVideoApi } from '@/api/VideoService';
 import { ref, watch } from 'vue';
@@ -148,10 +148,12 @@ export default {
 
       // Crear el modal principal con opciones "Ver imagen" y "Ver video"
       Swal.fire({
-        html: `<p class="text-xl font-bold pt-1 text-gray-500">Ver evidencias disponibles</p>
-          <div class="w-full flex justify-center">
-            <img src="${ImgEvidencia}" alt="" class=w-[50%]>
-          </div>`,
+        html: `<p class="text-x1 font-bold pt-10 text-gray-500">Ver evidencias disponibles</p>
+          `,
+
+          // <div class="w-full flex justify-center">
+          //   <img src="${ImgEvidencia}" alt="" class=w-[50%]>
+          // </div>
         showCancelButton: true,
         confirmButtonText: 'Ver imagen',
         cancelButtonText: 'Ver video',
