@@ -113,7 +113,6 @@ export default ({
             hora_ultima_accion: 'HORA ATENCION',
             descripcion_estado: 'ESTADO',
             usuario: 'USUARIO',
-            nombre_usuario: 'NOMBRE USUARIO',
             segundos: 'TIEMPO DE ATENCION',
             list_comentarios: 'COMENTARIO'
 
@@ -133,6 +132,7 @@ export default ({
                 cod_evento: type_event.value == 'Todos' ? '' : type_event.value,
                 descripcion_estado: state.value == 'Todos' ? '' : state.value,
                 usuario: userFilter.value == 'Todos' ? '' : userFilter.value
+                
             }
             reportEventsApi(store.state.codcuenta, store.state.codclienteAdmin, filterExcel.placa,
                 filterExcel.cod_evento, filterExcel.descripcion_estado, filterExcel.fecha_inicio, filterExcel.fecha_fin, 0, 0, filterExcel.usuario)
@@ -143,36 +143,38 @@ export default ({
                         obj.list_comentarios = obj.list_comentarios && obj.list_comentarios.length > 0
                             ? obj.list_comentarios[obj.list_comentarios.length - 1].comentario
                             : ''
-                        obj.usuario = obj.list_comentarios && obj.list_comentarios.length > 0
-                            ? obj.list_comentarios[obj.list_comentarios.length - 1].usuario
-                            : ''
-                        obj.nombre_usuario = obj.list_comentarios && obj.list_comentarios.length > 0
-                            ? obj.list_comentarios[obj.list_comentarios.length - 1].nombre_completo
-                            : ''
+                        // obj.usuario = obj.list_comentarios && obj.list_comentarios.length > 0
+                        //     ? obj.list_comentarios[obj.list_comentarios.length - 1].usuario
+                        //     : ''
+                        // obj.nombre_usuario = nombre_completo
                         obj.fecha_ultima_accion = fecha_ultima_accion
                         obj.hora_ultima_accion = hora_ultima_accion
                       
                         const empresa = obj.placa.split(' - ')[1] || '';
                         // Agregar la columna "Empresa" al objeto exportado
+
+                    
                         const exportObj = {
                             ...obj,
                             empresa: empresa,
                             placa: obj.placa.replace(` - ${empresa}`, ''),
                             hora_evento: obj.hora_evento,
-                            segundos: obj.segundos
-                        
-                          
+                            usuario: obj.usuario,  // Asegúrate de incluir estas propiedades
                             
-                       
+                          
+
+                        
+                            
                         };
 
                        
                         // Filtrar solo las propiedades que están en keysAFiltrar y están presentes en obj
                         const filteredProperties = Object.fromEntries(
-                            keyscolumn.value
-                                .filter(key => Object.keys(exportObj).includes(key))
-                                .map(key => [customColumnNames[key] || key, exportObj[key]])
-                        );
+    keyscolumn.value
+        .filter(key => Object.keys(exportObj).includes(key))
+        .map(key => [customColumnNames[key] || key, exportObj[key]])
+);
+console.log('exportObj:', exportObj);
 
                         const idColumn = { ID: index + 1 };
                         
@@ -221,6 +223,7 @@ export default ({
             exportReports,
             searchEventsReport,
             onUpdateKeyscolumn,
+            
             
         }
     }

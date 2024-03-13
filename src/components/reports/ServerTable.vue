@@ -61,6 +61,8 @@ export default {
     props: {
         dataFilter: Object,
         searchstate: Boolean,
+        usuario: String,
+      nombre_completo: String,
        
     },
     components: {
@@ -154,6 +156,7 @@ export default {
                             const empresa = item.placa.split(' - ')[1] || ''; // Obtener la parte después del "-" de la placa
                             item.hora_evento = item.fecha_actual.split(' ')[1];
                             item.segundos = Math.abs(item.segundos);
+                           
                             return {
                                 ...item,
                                 empresa: empresa,
