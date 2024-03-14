@@ -30,12 +30,12 @@
         <template v-slot:[`item.nombre_usuario`]="{ item }">
             {{
         item.list_comentarios && item.list_comentarios.length > 0
-            ? item.list_comentarios[item.list_comentarios.length - 1].nombre_completo
+            ? truncateText(item.list_comentarios[item.list_comentarios.length - 1].nombre_completo)
             : ''
     }}
         </template>
         <template v-slot:[`item.segundos`]="{ item }">
-            {{ Math.abs(item.segundos) }} segundos
+            {{ Math.abs(item.segundos)  }} 
         </template>
         <template v-slot:[`item.fecha_actual`]="{ item }">
             {{ item.fecha_actual.split(' ')[0] }}
@@ -61,8 +61,7 @@ export default {
     props: {
         dataFilter: Object,
         searchstate: Boolean,
-        usuario: String,
-        nombre_completo: String,
+       
 
     },
     components: {
@@ -151,13 +150,17 @@ export default {
             ).then((response) => {
                 serverItems.value = response.data.data ? response.data.data.map(item => {
                     const empresa = item.placa.split(' - ')[1] || ''; // Obtener la parte después del "-" de la placa
-                    item.hora_evento = item.fecha_actual.split(' ')[1];
-                    item.segundos = Math.abs(item.segundos);
-
+                    // item.hora_evento = item.fecha_actual.split(' ')[1];
+                    // item.segundos = Math.abs(item.segundos);
+                       
                     return {
                         ...item,
                         empresa: empresa,
-                        placa: item.placa.replace(` - ${empresa}`, '') // Eliminar la parte después del "-" de la placa
+                        placa: item.placa.replace(` - ${empresa}`, ''), // Eliminar la parte después del "-" de la placa
+                        // segundos : Math.abs(item.segundos);
+                       
+
+
                     };
                 }) : [];
                 totalItems.value = response.data.totalEventos;
@@ -183,8 +186,8 @@ export default {
 
                     serverItems.value = response.data.data ? response.data.data.map(item => {
                         const empresa = item.placa.split(' - ')[1] || ''; // Obtener la parte después del "-" de la placa
-                        item.hora_evento = item.fecha_actual.split('')[1];  {{ item.fecha_actual.split(' ')[1] }}
-                        item.segundos = Math.abs(item.segundos);
+                        // item.hora_evento = item.fecha_actual.split(' ')[1];  
+                        // item.segundos = Math.abs(item.segundos);
 
                         return {
                             ...item,
@@ -219,6 +222,7 @@ export default {
             initialsDataReport,
             truncateText,
             loadItems,
+
         };
     }
 }

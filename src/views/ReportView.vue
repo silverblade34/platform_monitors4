@@ -113,9 +113,10 @@ export default ({
             hora_ultima_accion: 'HORA ATENCION',
             descripcion_estado: 'ESTADO',
             usuario: 'USUARIO',
-            name_user: 'NOMBRE USUARIO',
+            nombre_usuario : 'NOMBRE DE USUARIO',
             segundos: 'TIEMPO DE ATENCION',
-            list_comentarios: 'COMENTARIO'
+            list_comentarios: 'COMENTARIO',
+            hora_evento: 'HORA EVENTO'
         };
 
         const exportReports = async () => {
@@ -128,37 +129,49 @@ export default ({
                         placa: plate.value,
                         cod_evento: type_event.value == 'Todos' ? '' : type_event.value,
                         descripcion_estado: state.value == 'Todos' ? '' : state.value,
-                        usuario: userFilter.value == 'Todos' ? '' : userFilter.value
+                        usuario: userFilter.value == 'Todos' ? '' : userFilter.value,
+
+                        // nombre_usuario: userFilter.value == 'Todos' ? '': userFilter.value
 
                     }
                     reportEventsApi(store.state.codcuenta, store.state.codclienteAdmin, filterExcel.placa,
-                        filterExcel.cod_evento, filterExcel.descripcion_estado, filterExcel.fecha_inicio, filterExcel.fecha_fin, 0, 0, filterExcel.usuario)
+                        filterExcel.cod_evento, filterExcel.descripcion_estado, filterExcel.fecha_inicio, filterExcel.fecha_fin, 0, 0, filterExcel.usuario )
                         .then(response => {
                             const datos = response.data.data
                             const excelData = datos.map((obj, index) => {
                                 const [fecha_ultima_accion, hora_ultima_accion] = obj.fecha_ultima_accion.split(" ");
+                                
                                 obj.list_comentarios = obj.list_comentarios && obj.list_comentarios.length > 0
                                     ? obj.list_comentarios[obj.list_comentarios.length - 1].comentario
                                     : ''
-                                // obj.usuario = obj.list_comentarios && obj.list_comentarios.length > 0
-                                //     ? obj.list_comentarios[obj.list_comentarios.length - 1].usuario
-                                //     : ''
-                                // obj.nombre_usuario = nombre_completo
+                               
+
                                 obj.fecha_ultima_accion = fecha_ultima_accion
                                 obj.hora_ultima_accion = hora_ultima_accion
-                                obj.nombre_completo = obj.list_comentarios && obj.list_comentarios.length > 0
-                                    ? obj.list_comentarios[obj.list_comentarios.length - 1].nombre_completo
-                                    : ''
+                           
+                                //   obj.nombre_usuario = obj.nombre_usuario && obj.nombre_usuario.length > 0
+                                //     ? obj.nombre_usuario[obj.nombre_usuario.length - 1].nombre_completo
+                                //    : ''
+                        
+                                const [fecha_actual,hora_evento ] = obj.fecha_actual.split(" ");
+                               obj.fecha_actual= fecha_actual;
+
+                               
+                                
+                            
+                               obj.hora_evento= hora_evento
+                                
                                 const empresa = obj.placa.split(' - ')[1] || '';
                                 // Agregar la columna "Empresa" al objeto exportado
-
-
+                                const segundos = Math.abs(obj.segundos); 
+                                 obj.segundos = segundos; 
                                 const exportObj = {
                                     ...obj,
                                     empresa: empresa,
                                     placa: obj.placa.replace(` - ${empresa}`, ''),
-                                    hora_evento: obj.hora_evento,
-                                    usuario: obj.usuario,  // Asegúrate de incluir estas propiedades
+                                    
+
+                                    
                                 };
 
                                 // Filtrar solo las propiedades que están en keysAFiltrar y están presentes en obj
