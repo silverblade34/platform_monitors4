@@ -8,7 +8,7 @@
         <template v-slot:[`item.hora_ultima_accion`]="{ item }">
             {{ item.fecha_ultima_accion.split(' ')[1] }}
         </template>
-        <template v-slot:[`item.list_comentarios`]="{ item }">
+        <template v-slot:[`item.list_comentario`]="{ item }">
             {{
         item.list_comentarios && item.list_comentarios.length > 0
             ? truncateText(item.list_comentarios[item.list_comentarios.length - 1].comentario)
@@ -20,14 +20,14 @@
         truncateText(item.geocerca)
     }}
         </template>
-        <template v-slot:[`item.usuario`]="{ item }">
+        <!-- <template v-slot:[`item.usuari`]="{ item }">
             {{
         item.list_comentarios && item.list_comentarios.length > 0
-            ? item.list_comentarios[item.list_comentarios.length - 1].usuario
+            ? item.list_comentarios[item.list_comentarios.length - 1].usuari
             : ''
     }}
-        </template>
-        <template v-slot:[`item.nombre_usuario`]="{ item }">
+        </template> -->
+        <template v-slot:[`item.nombre`]="{ item }">
             {{
         item.list_comentarios && item.list_comentarios.length > 0
             ? truncateText(item.list_comentarios[item.list_comentarios.length - 1].nombre_completo)
@@ -35,7 +35,7 @@
     }}
         </template>
         <template v-slot:[`item.segundos`]="{ item }">
-            {{ Math.abs(item.segundos)  }} 
+            {{ Math.abs(item.segundos) >= 60 ? Math.floor(Math.abs(item.segundos) / 60) + ' min ' + (Math.abs(item.segundos) % 60) + ' s' : Math.abs(item.segundos) + ' s' }} 
         </template>
         <template v-slot:[`item.fecha_actual`]="{ item }">
             {{ item.fecha_actual.split(' ')[0] }}
@@ -93,9 +93,9 @@ export default {
 
             { title: 'Estado', key: 'descripcion_estado', sortable: false, align: 'start', status: true },
             { title: 'Usuario', key: 'usuario', sortable: false, align: 'end', status: true },
-            { title: 'Nombre usuario', key: 'nombre_usuario', sortable: false, align: 'end', status: true },
+            { title: 'Nombre usuario', key: 'nombre', sortable: false, align: 'end', status: true },
             { title: 'Tiempo atención', key: 'segundos', sortable: false, align: 'start', status: true },
-            { title: 'Comentario', key: 'list_comentarios', sortable: false, align: 'start', status: true },
+            { title: 'Comentario', key: 'list_comentario', sortable: false, align: 'start', status: true },
 
 
         ])
@@ -131,6 +131,8 @@ export default {
             }
             return text;
         };
+
+
 
         const initialsDataReport = async (data) => {
             emit('update-keyscolumn', { keyscolumn: data.selectedColumn })
@@ -181,6 +183,7 @@ export default {
                     dateTo.value,
                     itemsPerPage,
                     page,
+                    
                     userFilter.value
                 ).then(response => {
 

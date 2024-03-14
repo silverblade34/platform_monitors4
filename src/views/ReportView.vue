@@ -18,8 +18,8 @@
                 <v-select label="Estado" :items="['Todos', 'Sin Atender', 'En Gestion', 'Confirmado', 'Descartado']"
                     variant="outlined" color="indigo" hide-details density="compact" v-model="state"></v-select>
 
-                <v-select label="Usuario" :items="['Todos', ...listClientsData.map(client => client.usuario)]"
-                    variant="outlined" color="indigo" hide-details density="compact" v-model="userFilter"></v-select>
+                 <v-select label="Usuario" :items="['Todos', ...listClientsData.map(client => client.usuario)]"
+                    variant="outlined" color="indigo" hide-details density="compact" v-model="userFilter"></v-select> 
 
                 <v-btn color="blue" class="mt-1 custom-btn" @click="searchEventsReport">Buscar</v-btn>
             </div>
@@ -102,8 +102,8 @@ export default ({
             fleet_name: 'FLOTA',
             empresa: 'EMPRESA',
             conductor: 'CONDUCTOR',
-            fecha: 'FEC. EVENTO',
-            hora: 'H. EVENTO',
+            fecha_actual: 'FEC. EVENTO',
+            hora_evento : 'HORA EVENTO',
             latitud: 'LAT',
             longitud: 'LOG',
             velocidad: 'VELOCIDAD',
@@ -112,11 +112,12 @@ export default ({
             fecha_ultima_accion: 'FEC. ATENCION',
             hora_ultima_accion: 'HORA ATENCION',
             descripcion_estado: 'ESTADO',
-            usuario: 'USUARIO',
-            nombre_usuario : 'NOMBRE DE USUARIO',
+            usuario: 'USUARIOs',
+            nombre: 'NOMBRE DE USUARIO',
             segundos: 'TIEMPO DE ATENCION',
-            list_comentarios: 'COMENTARIO',
-            hora_evento: 'HORA EVENTO'
+            list_comentario: 'COMENTARIO',
+         
+           
         };
 
         const exportReports = async () => {
@@ -129,30 +130,33 @@ export default ({
                         placa: plate.value,
                         cod_evento: type_event.value == 'Todos' ? '' : type_event.value,
                         descripcion_estado: state.value == 'Todos' ? '' : state.value,
-                        usuario: userFilter.value == 'Todos' ? '' : userFilter.value,
+                        // usuario: userFilter.value == 'Todos' ? '' : userFilter.value,
 
-                        // nombre_usuario: userFilter.value == 'Todos' ? '': userFilter.value
+                       
 
                     }
                     reportEventsApi(store.state.codcuenta, store.state.codclienteAdmin, filterExcel.placa,
-                        filterExcel.cod_evento, filterExcel.descripcion_estado, filterExcel.fecha_inicio, filterExcel.fecha_fin, 0, 0, filterExcel.usuario )
+                        filterExcel.cod_evento, filterExcel.descripcion_estado, filterExcel.fecha_inicio, filterExcel.fecha_fin, 0, 0 , filterExcel.usuario) //
                         .then(response => {
                             const datos = response.data.data
                             const excelData = datos.map((obj, index) => {
                                 const [fecha_ultima_accion, hora_ultima_accion] = obj.fecha_ultima_accion.split(" ");
                                 
-                                obj.list_comentarios = obj.list_comentarios && obj.list_comentarios.length > 0
+                                obj.list_comentario = obj.list_comentarios && obj.list_comentarios.length > 0
                                     ? obj.list_comentarios[obj.list_comentarios.length - 1].comentario
                                     : ''
-                               
+                                    
+                                    obj.nombre = obj.list_comentarios && obj.list_comentarios.length > 0
+                                    ? obj.list_comentarios[obj.list_comentarios.length - 1].nombre_completo
+                                    : ''
 
+
+                                    
                                 obj.fecha_ultima_accion = fecha_ultima_accion
                                 obj.hora_ultima_accion = hora_ultima_accion
                            
-                                //   obj.nombre_usuario = obj.nombre_usuario && obj.nombre_usuario.length > 0
-                                //     ? obj.nombre_usuario[obj.nombre_usuario.length - 1].nombre_completo
-                                //    : ''
-                        
+                             
+                    
                                 const [fecha_actual,hora_evento ] = obj.fecha_actual.split(" ");
                                obj.fecha_actual= fecha_actual;
 
@@ -163,7 +167,7 @@ export default ({
                                 
                                 const empresa = obj.placa.split(' - ')[1] || '';
                                 // Agregar la columna "Empresa" al objeto exportado
-                                const segundos = Math.abs(obj.segundos); 
+                                const segundos = Math.abs(obj.segundos) >= 60 ? Math.floor(Math.abs(obj.segundos) / 60) + ' min ' + (Math.abs(obj.segundos) % 60) + ' s' : Math.abs(obj.segundos) + ' s'; 
                                  obj.segundos = segundos; 
                                 const exportObj = {
                                     ...obj,
