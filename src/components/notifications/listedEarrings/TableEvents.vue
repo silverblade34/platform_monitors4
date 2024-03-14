@@ -122,7 +122,7 @@ export default {
           Swal.fire({
             html: `
               <div class="flex justify-center">
-                <video width="400" height="320" controls autoplay preload="auto">
+                <video width="400" height="320" controls autoplay preload="auto"> 
                   <source src="${newLinkVideo}" type="video/mp4" codecs="hevc">
                 </video>
               </div>`,

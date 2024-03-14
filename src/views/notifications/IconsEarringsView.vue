@@ -36,7 +36,7 @@ import { confirmBasic, basicAlert } from '@/helpers/SweetAlert';
 import { onMounted, ref, watch, onUnmounted } from 'vue';
 import store from "@/store";
 
-export default ({
+export default ({ 
   name: "IconsEarringsView",
   components: {
       DataIteratorsVue

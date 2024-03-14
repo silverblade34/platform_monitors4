@@ -28,7 +28,7 @@
             </div>
 
             <!-- Botón para ver el video -->
-            <v-btn @click="openVideoModal(item.link_video)" icon width="10" height="10">
+            <v-btn @click="openVideoModal(item.link_video)" icon width="10" >
               <v-icon >mdi-video</v-icon>
             </v-btn>
             <v-btn border flat size="small" class="text-none" color="indigo" text="Atender" @click="editItem(item)"></v-btn>
@@ -61,6 +61,7 @@
 import { ref, computed, watch, onMounted } from 'vue';
 import store from '@/store';
 import { useRouter } from 'vue-router';
+import { convertVideoApi } from '@/api/VideoService';
 
 export default {
   props: {
@@ -119,10 +120,17 @@ export default {
     const videoUrl = ref('');
 
     // Método para abrir el modal del video
-    const openVideoModal = (url) => {
-      videoUrl.value = url;
-      videoModal.value = true;
-    };
+   // Método para abrir el modal del video
+const openVideoModal = async (url) => {
+  try {
+    const response = await convertVideoApi(url); // Convertir el enlace del video
+    videoUrl.value = 'http://143.244.144.235:3020' + response.data.video_url;
+    videoModal.value = true; // Mostrar el modal del video con el nuevo enlace convertido
+  } catch (error) {
+    console.error('Error al convertir el enlace del video:', error);
+    // Manejar el error aquí
+  }
+};
 
     // Método para cerrar el modal del video
     const closeVideoModal = () => {
