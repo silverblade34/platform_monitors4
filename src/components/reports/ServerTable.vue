@@ -103,7 +103,7 @@ export default {
         const headers = ref([])
         const serverItems = ref([]);
         const openSelectColumn = ref(false);
-        const loading = ref(true);
+        const loading = ref(true); 
         const totalItems = ref(0);
         const userFilter = ref('');
         const plate = ref('');
@@ -183,7 +183,7 @@ export default {
 
                     serverItems.value = response.data.data ? response.data.data.map(item => {
                         const empresa = item.placa.split(' - ')[1] || ''; // Obtener la parte después del "-" de la placa
-                        item.hora_evento = item.fecha_actual.split(' ')[1];
+                        item.hora_evento = item.fecha_actual.split('')[1];  
                         item.segundos = Math.abs(item.segundos);
 
                         return {

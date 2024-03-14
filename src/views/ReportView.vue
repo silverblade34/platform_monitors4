@@ -146,7 +146,7 @@ export default ({
                                 // obj.nombre_usuario = nombre_completo
                                 obj.fecha_ultima_accion = fecha_ultima_accion
                                 obj.hora_ultima_accion = hora_ultima_accion
-                                obj.name_user = obj.list_comentarios && obj.list_comentarios.length > 0
+                                obj.nombre_completo = obj.list_comentarios && obj.list_comentarios.length > 0
                                     ? obj.list_comentarios[obj.list_comentarios.length - 1].nombre_completo
                                     : ''
                                 const empresa = obj.placa.split(' - ')[1] || '';
