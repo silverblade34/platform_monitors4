@@ -183,7 +183,7 @@ export default {
 
                     serverItems.value = response.data.data ? response.data.data.map(item => {
                         const empresa = item.placa.split(' - ')[1] || ''; // Obtener la parte después del "-" de la placa
-                        item.hora_evento = item.fecha_actual.split('')[1];  
+                        item.hora_evento = item.fecha_actual.split('')[1];  {{ item.fecha_actual.split(' ')[1] }}
                         item.segundos = Math.abs(item.segundos);
 
                         return {
